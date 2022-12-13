@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
 
-class CalendarCell extends StatelessWidget {
-  const CalendarCell({super.key});
+const double width = 50;
+const double height = 75;
 
+class CalendarCell extends StatelessWidget {
+  int day;
+  bool visible;
+
+  CalendarCell({required this.day, required this.visible});
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: 50,
-        width: 50,
-        decoration: BoxDecoration(
-          border: Border.all(),
-          borderRadius: BorderRadius.circular(10),
-        ));
+    if (visible) {
+      return Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            border: Border.all(),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text(day.toString()));
+    } else {
+      return const SizedBox(width: width, height: height);
+    }
   }
 }
