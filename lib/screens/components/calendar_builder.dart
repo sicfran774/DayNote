@@ -12,12 +12,11 @@ class _CalendarBuilderState extends State<CalendarBuilder> {
   final DateTime _date = DateTime.now();
   late final int _daysInMonth = DateTime(_date.year, _date.month + 1, 0).day;
 
-  late int _startWeekday = _date.weekday;
+  late int _startWeekday = DateTime(_date.year, _date.month, 0).weekday;
   late int _currentDay = 1;
 
   @override
   Widget build(BuildContext context) {
-    _currentDay = 1;
     List<TableRow> dayNameRow =
         List.generate(1, (index) => _generateDayNameRow(context));
     List<TableRow> tableRows = [...dayNameRow, ..._generateDayRows()];
@@ -50,7 +49,7 @@ class _CalendarBuilderState extends State<CalendarBuilder> {
   }
 
   bool isVisible() {
-    if (_startWeekday >= -1) {
+    if (_startWeekday >= 0 && _startWeekday != 6) {
       _startWeekday--;
       return false;
     } else {
@@ -60,8 +59,12 @@ class _CalendarBuilderState extends State<CalendarBuilder> {
   }
 
   int _calculateNumWeeks() {
-    return (_daysInMonth + _startWeekday - 1) % 7 > 0
-        ? (_daysInMonth + _startWeekday) ~/ 7
-        : (_daysInMonth + _startWeekday) ~/ 7;
+    if (_daysInMonth + _startWeekday - 1 >= 35 && _startWeekday != 6) {
+      return 6;
+    } else if (_daysInMonth + _startWeekday - 1 > 28) {
+      return 5;
+    } else {
+      return 4;
+    }
   }
 }
