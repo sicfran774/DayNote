@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:outfit_tracker/screens/components/calendar_cell.dart';
 
 class CalendarBuilder extends StatefulWidget {
-  int month;
-  int year;
-  CalendarBuilder({super.key, required this.year, required this.month});
+  final int month;
+  final int year;
+  const CalendarBuilder({super.key, required this.year, required this.month});
 
   @override
   State<CalendarBuilder> createState() => _CalendarBuilderState();
@@ -65,7 +65,6 @@ class _CalendarBuilderState extends State<CalendarBuilder> {
   }
 
   int _calculateNumWeeks() {
-    print("weekday: ${_startWeekday}");
     if (_daysInMonth + _startWeekday - 1 >= 35 && _startWeekday != 7) {
       return 6;
     } else if (_daysInMonth + _startWeekday - 1 > 28) {

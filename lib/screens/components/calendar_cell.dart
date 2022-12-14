@@ -4,10 +4,10 @@ const double width = 50;
 const double height = 75;
 
 class CalendarCell extends StatelessWidget {
-  int day;
-  bool visible;
+  final int day;
+  final bool visible;
 
-  CalendarCell({required this.day, required this.visible});
+  const CalendarCell({super.key, required this.day, required this.visible});
   @override
   Widget build(BuildContext context) {
     if (visible) {
@@ -16,9 +16,9 @@ class CalendarCell extends StatelessWidget {
           height: height,
           decoration: BoxDecoration(
             border: Border.all(),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(8),
           ),
-          child: Text(day.toString()));
+          child: Text(" ${day.toString()}"));
     } else {
       return const SizedBox(width: width, height: height);
     }
