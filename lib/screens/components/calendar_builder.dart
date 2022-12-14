@@ -67,7 +67,7 @@ class _CalendarBuilderState extends State<CalendarBuilder> {
   int _calculateNumWeeks() {
     if (_daysInMonth + _startWeekday - 1 >= 35 && _startWeekday != 7) {
       return 6;
-    } else if (_daysInMonth + _startWeekday - 1 > 28) {
+    } else if (_daysInMonth + _startWeekday - 1 >= 28) {
       return 5;
     } else {
       return 4;
