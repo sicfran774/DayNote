@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'components/calendar_builder.dart';
 
+var date = DateFormat.yMMMM().format(DateTime.now()).toString();
+
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
 
@@ -10,10 +12,20 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
+  int year = DateTime.now().year;
+  int month = DateTime.now().month;
+
+  void changeDate(int m) {
+    setState(() {
+      month = m;
+      date = DateFormat.yMMMM()
+          .format(DateTime.utc(year, month, DateTime.now().day))
+          .toString();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    var date = DateFormat.yMMMM().format(DateTime.now()).toString();
-
     return Scaffold(
         body: Container(
       padding: const EdgeInsets.all(20),
@@ -22,13 +34,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Icon(Icons.chevron_left),
+              GestureDetector(
+                  onTap: () => changeDate(month - 1),
+                  child: const Icon(Icons.chevron_left)),
               Text(date),
-              Icon(Icons.chevron_right)
+              GestureDetector(
+                  onTap: () => changeDate(month + 1),
+                  child: const Icon(Icons.chevron_right))
             ],
           ),
           const SizedBox(height: 10),
-          const CalendarBuilder(),
+          CalendarBuilder(year: year, month: month),
         ],
       ),
     ));
