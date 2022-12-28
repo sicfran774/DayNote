@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:outfit_tracker/screens/components/calendar_cell.dart';
+import 'package:outfit_tracker/spec/textStyles.dart';
 
 class CalendarBuilder extends StatefulWidget {
   final int month;
@@ -39,22 +40,30 @@ class _CalendarBuilderState extends State<CalendarBuilder> {
             children: List.generate(
                 7,
                 (index) =>
-                    CalendarCell(day: _currentDay, visible: isVisible()))));
+                    CalendarCell(day: _currentDay, visible: _isVisible()))));
   }
 
   TableRow _generateDayNameRow(BuildContext context) {
-    return const TableRow(children: [
-      Text("Sun"),
-      Text("Mon"),
-      Text("Tue"),
-      Text("Wed"),
-      Text("Thur"),
-      Text("Fri"),
-      Text("Sat")
+    return TableRow(children: [
+      _dayText("Sun"),
+      _dayText("Mon"),
+      _dayText("Tue"),
+      _dayText("Wed"),
+      _dayText("Thur"),
+      _dayText("Fri"),
+      _dayText("Sat")
     ]);
   }
 
-  bool isVisible() {
+  Text _dayText(String day) {
+    return Text(
+      day,
+      textAlign: TextAlign.center,
+      style: dayStyle,
+    );
+  }
+
+  bool _isVisible() {
     if (_startWeekday > 0 && _startWeekday != 7) {
       _startWeekday--;
       return false;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:outfit_tracker/spec/textStyles.dart';
 import 'components/calendar_builder.dart';
 
 var date = DateFormat.yMMMM().format(DateTime.now()).toString();
@@ -31,13 +32,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               GestureDetector(
                   onTap: () => changeDate(month - 1),
                   child: const Icon(Icons.chevron_left)),
-              Text(date),
+              Text(date, style: headerMedium),
               GestureDetector(
                   onTap: () => changeDate(month + 1),
                   child: const Icon(Icons.chevron_right))

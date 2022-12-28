@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-const double width = 50;
-const double height = 75;
+const double width = 10;
+const double height = 100;
 
 class CalendarCell extends StatelessWidget {
   final int day;
@@ -15,6 +15,10 @@ class CalendarCell extends StatelessWidget {
           width: width,
           height: height,
           decoration: BoxDecoration(
+            image: const DecorationImage(
+              image: AssetImage('assets/images/saul.jpg'),
+              fit: BoxFit.fill,
+            ),
             border: Border.all(),
             borderRadius: BorderRadius.circular(8),
           ),

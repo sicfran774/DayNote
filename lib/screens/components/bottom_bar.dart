@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:outfit_tracker/screens/calendar.dart';
+import 'package:outfit_tracker/screens/stats.dart';
 
 import '../home.dart';
 
@@ -15,7 +16,8 @@ class _BottomBarState extends State<BottomBar> {
 
   static final List<Widget> _screens = <Widget>[
     const HomeScreen(),
-    const CalendarScreen()
+    const CalendarScreen(),
+    const StatsScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -41,6 +43,10 @@ class _BottomBarState extends State<BottomBar> {
                 icon: Icon(Icons.calendar_month_outlined),
                 label: "Calendar",
                 activeIcon: Icon(Icons.calendar_month)),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.stacked_line_chart_outlined),
+                label: "Stats",
+                activeIcon: Icon(Icons.stacked_line_chart)),
           ],
         ));
   }
