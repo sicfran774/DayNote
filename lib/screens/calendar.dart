@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:outfit_tracker/func/import_images.dart';
 import 'package:outfit_tracker/spec/textStyles.dart';
 import 'components/calendar_builder.dart';
 
@@ -28,27 +29,32 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              GestureDetector(
-                  onTap: () => changeDate(month - 1),
-                  child: const Icon(Icons.chevron_left)),
-              Text(date, style: headerMedium),
-              GestureDetector(
-                  onTap: () => changeDate(month + 1),
-                  child: const Icon(Icons.chevron_right))
-            ],
-          ),
-          const SizedBox(height: 10),
-          CalendarBuilder(year: year, month: month),
-        ],
+      body: Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                GestureDetector(
+                    onTap: () => changeDate(month - 1),
+                    child: const Icon(Icons.chevron_left)),
+                Text(date, style: headerMedium),
+                GestureDetector(
+                    onTap: () => changeDate(month + 1),
+                    child: const Icon(Icons.chevron_right))
+              ],
+            ),
+            const SizedBox(height: 10),
+            CalendarBuilder(year: year, month: month),
+          ],
+        ),
       ),
-    ));
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.camera_alt),
+        onPressed: () => ImportImages.test(),
+      ),
+    );
   }
 }
