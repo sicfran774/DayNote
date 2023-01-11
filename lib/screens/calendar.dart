@@ -52,8 +52,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.camera_alt),
-        onPressed: () => ImportImages.test(),
+        child: const Icon(Icons.photo),
+        onPressed: () => ImportImages.openGallery(),
       ),
     );
   }
