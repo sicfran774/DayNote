@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../func/import_images.dart';
+
 class PhotoDisplay extends StatelessWidget {
   final AssetImage assetImage;
   const PhotoDisplay({super.key, required this.assetImage});
@@ -20,16 +22,9 @@ class PhotoDisplay extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             FloatingActionButton(
-              child: const Icon(Icons.cancel),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              heroTag: "left",
+              child: const Icon(Icons.photo),
+              onPressed: () => ImportImages.openGallery(),
             ),
-            FloatingActionButton(
-                child: const Icon(Icons.check),
-                onPressed: () {},
-                heroTag: "right"),
           ],
         ),
       ),
