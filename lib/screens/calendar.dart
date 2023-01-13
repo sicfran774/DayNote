@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:outfit_tracker/func/import_images.dart';
 import 'package:outfit_tracker/spec/textStyles.dart';
 import 'components/calendar_builder.dart';
 
