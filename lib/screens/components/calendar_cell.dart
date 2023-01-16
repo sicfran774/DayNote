@@ -35,8 +35,7 @@ class CalendarCell extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(" ${day.toString()}")),
-      openBuilder: (context, action) =>
-          PhotoDisplay(assetImage: assetImage, path: ""),
+      openBuilder: (context, action) => PhotoDisplay(assetImage: assetImage),
     );
   }
 }

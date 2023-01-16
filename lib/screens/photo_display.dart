@@ -4,8 +4,7 @@ import '../func/import_images.dart';
 
 class PhotoDisplay extends StatefulWidget {
   final AssetImage assetImage;
-  final String path;
-  const PhotoDisplay({super.key, required this.assetImage, required this.path});
+  const PhotoDisplay({super.key, required this.assetImage});
 
   @override
   State<PhotoDisplay> createState() => _PhotoDisplayState();
@@ -13,7 +12,7 @@ class PhotoDisplay extends StatefulWidget {
 
 class _PhotoDisplayState extends State<PhotoDisplay> {
   late AssetImage assetImage = widget.assetImage;
-  late String _path = widget.path;
+  late String _path = "";
 
   void changePhoto() {
     setState(() {
