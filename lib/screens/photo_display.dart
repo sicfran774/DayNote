@@ -17,7 +17,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   void changePhoto() {
     setState(() {
       ImportImages.openGallery().then((newPath) {
-        _path = newPath!;
+        _path = newPath;
       });
     });
   }

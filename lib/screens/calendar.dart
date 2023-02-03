@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:outfit_tracker/spec/textStyles.dart';
+import 'package:outfit_tracker/spec/text_styles.dart';
 import 'components/calendar_builder.dart';
 
 var date = DateFormat.yMMMM().format(DateTime.now()).toString();
@@ -32,7 +32,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            const SizedBox(height: 10),
+            const SizedBox(height: 40),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
