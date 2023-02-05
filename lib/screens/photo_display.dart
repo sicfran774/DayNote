@@ -38,17 +38,26 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   }
 
   Widget work() {
-    if (_path == "") {
-      print("null");
-      return Container(
-          decoration: BoxDecoration(
-              image: DecorationImage(
-        image: assetImage,
-        fit: BoxFit.contain,
-      )));
-    } else {
-      print("image");
-      return Container(child: Image.file(File(_path)));
-    }
+    return SafeArea(
+      child: FutureBuilder(builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                '${snapshot.error} has occurred',
+              ),
+            );
+          } else if (snapshot.hasData) {
+            return Image.file(File(_path));
+          }
+        }
+        return Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+          image: assetImage,
+          fit: BoxFit.contain,
+        )));
+      }),
+    );
   }
 }
