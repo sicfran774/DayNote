@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PhotoDisplay extends StatefulWidget {
-  final AssetImage assetImage;
+  final File? image;
   final String date;
-  const PhotoDisplay({super.key, required this.date, required this.assetImage});
+  const PhotoDisplay({super.key, required this.date, required this.image});
 
   @override
   State<PhotoDisplay> createState() => _PhotoDisplayState();
@@ -15,7 +15,7 @@ class PhotoDisplay extends StatefulWidget {
 class _PhotoDisplayState extends State<PhotoDisplay> {
   final storageRef = FirebaseStorage.instance.ref();
   final ImagePicker _picker = ImagePicker();
-  late AssetImage assetImage = widget.assetImage;
+  late File? image = widget.image;
   late String date = widget.date;
   XFile? displayImage;
 
@@ -39,18 +39,18 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
               child: const Icon(Icons.photo),
               onPressed: () => getPhoto(ImageSource.gallery),
             )),
-        body: imageWidget());
+        body: imageWidget(image));
   }
 
-  Widget imageWidget() {
+  Widget imageWidget(File? image) {
     if (displayImage != null) {
       uploadImage(displayImage);
       return Image.file(File(displayImage!.path));
     } else {
       return Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               image: DecorationImage(
-        image: assetImage,
+        image: AssetImage('assets/images/saul.jpg'),
         fit: BoxFit.contain,
       )));
     }

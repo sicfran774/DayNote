@@ -1,55 +1,98 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:day_note/screens/photo_display.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path_provider/path_provider.dart';
 
 const double width = 10;
 const double height = 100;
 
 final storageRef = FirebaseStorage.instance.ref();
 
-class CalendarCell extends StatelessWidget {
+class CalendarCell extends StatefulWidget {
   final int day, month, year;
   final bool visible;
 
-  CalendarCell(
+  const CalendarCell(
       {super.key,
       required this.day,
       required this.month,
       required this.year,
       required this.visible});
-  final AssetImage assetImage = AssetImage('assets/images/saul.jpg');
+
+  @override
+  State<CalendarCell> createState() => _CalendarCellState();
+}
+
+class _CalendarCellState extends State<CalendarCell> {
+  late final int _day = widget.day;
+  late final int _month = widget.day;
+  late final int _year = widget.day;
+  late final bool _visible = widget.visible;
 
   @override
   Widget build(BuildContext context) {
-    if (visible) {
-      return cellBuilder(assetImage);
+    String date = "${_year}_${_month}_$_day";
+    File? displayImage;
+
+    downloadImage(date);
+
+    void getPhoto() async {
+      Future<Uint8List?> imageInUnit8List = downloadImage(date);
+      final tempDir = await getTemporaryDirectory();
+      File file = await File('${tempDir.path}/image.png').create();
+      file.writeAsBytesSync(imageInUnit8List as List<int>);
+
+      setState(() {
+        displayImage = file;
+      });
+    }
+
+    if (_visible) {
+      return cellBuilder(date, displayImage);
     } else {
       return const SizedBox(width: width, height: height);
     }
   }
 
-  Widget cellBuilder(AssetImage assetImage) {
-    String date = "${year}_${month}_$day";
+  Widget cellBuilder(String date, File? displayImage) {
     return OpenContainer(
-      closedBuilder: (context, action) => cell(),
+      closedBuilder: (context, action) => cell(displayImage),
       openBuilder: (context, action) =>
-          PhotoDisplay(date: date, assetImage: assetImage),
+          PhotoDisplay(date: date, image: displayImage),
     );
   }
 
-  Widget cell() {
+  Widget cell(File? displayImage) {
     return Container(
         width: width,
         height: height,
         decoration: BoxDecoration(
-          image: DecorationImage(
-            image: assetImage,
-            fit: BoxFit.fill,
-          ),
+          image: imageWidget(displayImage),
           border: Border.all(),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Text(" ${day.toString()}"));
+        child: Text(" ${_day.toString()}"));
+  }
+
+  DecorationImage imageWidget(File? displayImage) {
+    if (displayImage != null) {
+      return DecorationImage(image: FileImage(displayImage), fit: BoxFit.fill);
+    } else {
+      return const DecorationImage(
+          image: AssetImage('assets/images/saul.jpg'), fit: BoxFit.fill);
+    }
+  }
+
+  Future<Uint8List?> downloadImage(String date) async {
+    final imageRef = storageRef.child(date);
+
+    try {
+      const oneMegabyte = 1024 * 1024;
+      return await imageRef.getData(oneMegabyte);
+    } on FirebaseException catch (e) {}
   }
 }
