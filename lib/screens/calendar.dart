@@ -29,25 +29,28 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GestureDetector(
-                    onTap: () => changeDate(month - 1),
-                    child: const Icon(Icons.chevron_left)),
-                Text(date, style: headerMedium),
-                GestureDetector(
-                    onTap: () => changeDate(month + 1),
-                    child: const Icon(Icons.chevron_right))
-              ],
-            ),
-            const SizedBox(height: 10),
-            CalendarBuilder(year: year, month: month),
-          ],
+        padding: const EdgeInsets.all(10),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  GestureDetector(
+                      onTap: () => changeDate(month - 1),
+                      child: const Icon(Icons.chevron_left)),
+                  Text(date, style: headerMedium),
+                  GestureDetector(
+                      onTap: () => changeDate(month + 1),
+                      child: const Icon(Icons.chevron_right))
+                ],
+              ),
+              const SizedBox(height: 10),
+              SingleChildScrollView(
+                  child: CalendarBuilder(year: year, month: month)),
+            ],
+          ),
         ),
       ),
     );

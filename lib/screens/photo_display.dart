@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -11,12 +12,15 @@ class PhotoDisplay extends StatefulWidget {
 }
 
 class _PhotoDisplayState extends State<PhotoDisplay> {
+  // Create a storage reference from our app
+  final storageRef = FirebaseStorage.instance.ref();
   final ImagePicker _picker = ImagePicker();
   late AssetImage assetImage = widget.assetImage;
   XFile? displayImage;
 
   Future getPhoto(ImageSource source) async {
     XFile? image = await _picker.pickImage(source: source);
+
     setState(() {
       displayImage = image;
     });
@@ -38,14 +42,23 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   }
 
   Widget imageWidget() {
-    return Container(
-        child: displayImage != null
-            ? Image.file(File(displayImage!.path))
-            : Container(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                image: assetImage,
-                fit: BoxFit.contain,
-              ))));
+    if (displayImage != null) {
+      uploadImage(displayImage);
+      return Image.file(File(displayImage!.path));
+    } else {
+      return Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+        image: assetImage,
+        fit: BoxFit.contain,
+      )));
+    }
+  }
+
+  void uploadImage(XFile? file) async {
+    Reference? imagesRef = storageRef.child("images");
+    try {
+      await imagesRef.putFile(File(file!.path));
+    } on FirebaseException catch (e) {}
   }
 }
