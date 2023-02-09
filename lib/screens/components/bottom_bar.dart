@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:outfit_tracker/screens/calendar.dart';
-import 'package:outfit_tracker/screens/stats.dart';
+import 'package:day_note/screens/calendar.dart';
+import 'package:day_note/screens/stats.dart';
 
 import '../home.dart';
 

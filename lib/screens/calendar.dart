@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:outfit_tracker/spec/text_styles.dart';
+import 'package:day_note/spec/text_styles.dart';
 import 'components/calendar_builder.dart';
 
 var date = DateFormat.yMMMM().format(DateTime.now()).toString();

@@ -50,20 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyC9Y6PLgVhekJO4U0wBUXXNQpWkSGR6_6c',
-    appId: '1:364643832792:android:4d63f75a99eda77c8b18ad',
-    messagingSenderId: '364643832792',
-    projectId: 'outfit-tracker-ce127',
-    storageBucket: 'outfit-tracker-ce127.appspot.com',
+    apiKey: 'AIzaSyBXMkkVO2OBlGnIP4BXZSbr-HC_6vW5zio',
+    appId: '1:123159663808:android:5656f054aa96c862668925',
+    messagingSenderId: '123159663808',
+    projectId: 'daynote-a0985',
+    storageBucket: 'daynote-a0985.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCmvqEeEELwSv9XTQYjCyjuq4QhsW8aMzA',
-    appId: '1:364643832792:ios:1a7b5ea1e06fc4318b18ad',
-    messagingSenderId: '364643832792',
-    projectId: 'outfit-tracker-ce127',
-    storageBucket: 'outfit-tracker-ce127.appspot.com',
-    iosClientId: '364643832792-n37cc22i1p41k3ehu08smro5np06a2p6.apps.googleusercontent.com',
-    iosBundleId: 'com.example.outfitTracker',
+    apiKey: 'AIzaSyAjmucWlh6jkvvhcmKWTiMm8-F92sTgnxc',
+    appId: '1:123159663808:ios:6328f60436bb8f55668925',
+    messagingSenderId: '123159663808',
+    projectId: 'daynote-a0985',
+    storageBucket: 'daynote-a0985.appspot.com',
+    iosClientId: '123159663808-d1fugdbthfb2363dois7d1mq148ma0vq.apps.googleusercontent.com',
+    iosBundleId: 'com.example.dayNote',
   );
 }

@@ -1,6 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:outfit_tracker/screens/photo_display.dart';
+import 'package:day_note/screens/photo_display.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 const double width = 10;

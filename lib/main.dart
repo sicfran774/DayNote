@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:outfit_tracker/screens/components/bottom_bar.dart';
+import 'package:day_note/screens/components/bottom_bar.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Outfit Tracker',
+      title: 'DayNote',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

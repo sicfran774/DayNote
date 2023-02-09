@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.outfit_tracker">
+    package="com.example.day_note">
    <application
-        android:label="outfit_tracker"
+        android:label="day_note"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

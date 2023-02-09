@@ -34,10 +34,10 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
               child: const Icon(Icons.photo),
               onPressed: () => getPhoto(ImageSource.gallery),
             )),
-        body: work());
+        body: imageWidget());
   }
 
-  Widget work() {
+  Widget imageWidget() {
     return Container(
         child: displayImage != null
             ? Image.file(File(displayImage!.path))
