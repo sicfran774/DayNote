@@ -39,8 +39,11 @@ class _CalendarBuilderState extends State<CalendarBuilder> {
         (index) => TableRow(
             children: List.generate(
                 7,
-                (index) =>
-                    CalendarCell(day: _currentDay, visible: _isVisible()))));
+                (index) => CalendarCell(
+                    day: _currentDay,
+                    month: _date.month,
+                    year: _date.year,
+                    visible: _isVisible()))));
   }
 
   TableRow _generateDayNameRow(BuildContext context) {

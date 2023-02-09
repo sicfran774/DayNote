@@ -5,17 +5,18 @@ import 'package:image_picker/image_picker.dart';
 
 class PhotoDisplay extends StatefulWidget {
   final AssetImage assetImage;
-  const PhotoDisplay({super.key, required this.assetImage});
+  final String date;
+  const PhotoDisplay({super.key, required this.date, required this.assetImage});
 
   @override
   State<PhotoDisplay> createState() => _PhotoDisplayState();
 }
 
 class _PhotoDisplayState extends State<PhotoDisplay> {
-  // Create a storage reference from our app
   final storageRef = FirebaseStorage.instance.ref();
   final ImagePicker _picker = ImagePicker();
   late AssetImage assetImage = widget.assetImage;
+  late String date = widget.date;
   XFile? displayImage;
 
   Future getPhoto(ImageSource source) async {
@@ -56,7 +57,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   }
 
   void uploadImage(XFile? file) async {
-    Reference? imagesRef = storageRef.child("images");
+    Reference? imagesRef = storageRef.child(date);
     try {
       await imagesRef.putFile(File(file!.path));
     } on FirebaseException catch (e) {}
