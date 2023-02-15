@@ -36,10 +36,31 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
         floatingActionButton: Container(
             padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
             child: FloatingActionButton(
-              child: const Icon(Icons.photo),
-              onPressed: () => getPhoto(ImageSource.gallery),
-            )),
+                child: const Icon(Icons.photo),
+                onPressed: () => chooseImageWidget(context))),
         body: imageWidget(image));
+  }
+
+  Future chooseImageWidget(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_camera),
+              title: const Text('Take a photo'),
+              onTap: () => getPhoto(ImageSource.camera),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo),
+              title: const Text('Choose from gallery'),
+              onTap: () => getPhoto(ImageSource.gallery),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget imageWidget(File? image) {
