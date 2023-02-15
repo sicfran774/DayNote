@@ -44,7 +44,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
 
   Widget imageWidget(File? image) {
     if (displayImage != null) {
-      uploadImage(displayImage);
+      //uploadImage(displayImage);
       return Image.file(File(displayImage!.path));
     } else {
       return Container(

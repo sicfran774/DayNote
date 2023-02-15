@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -38,20 +37,18 @@ class _CalendarCellState extends State<CalendarCell> {
     String date = "${_year}_${_month}_$_day";
     File? displayImage;
 
-    downloadImage(date);
-
-    void getPhoto() async {
-      Future<Uint8List?> imageInUnit8List = downloadImage(date);
+    /*void getPhoto() async {
       final tempDir = await getTemporaryDirectory();
       File file = await File('${tempDir.path}/image.png').create();
-      file.writeAsBytesSync(imageInUnit8List as List<int>);
+      file.writeAsBytesSync(await downloadImage("2023_2_1"));
 
       setState(() {
         displayImage = file;
       });
-    }
+    }*/
 
     if (_visible) {
+      //getPhoto();
       return cellBuilder(date, displayImage);
     } else {
       return const SizedBox(width: width, height: height);
@@ -87,12 +84,12 @@ class _CalendarCellState extends State<CalendarCell> {
     }
   }
 
-  Future<Uint8List?> downloadImage(String date) async {
+  /*Future downloadImage(String date) async {
     final imageRef = storageRef.child(date);
-
     try {
+      print("Downloading image...");
       const oneMegabyte = 1024 * 1024;
       return await imageRef.getData(oneMegabyte);
     } on FirebaseException catch (e) {}
-  }
+  }*/
 }
