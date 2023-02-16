@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class PhotoDisplay extends StatefulWidget {
   final File? image;
@@ -17,13 +18,15 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   final ImagePicker _picker = ImagePicker();
   late File? image = widget.image;
   late String date = widget.date;
-  XFile? displayImage;
 
   Future getPhoto(ImageSource source) async {
-    XFile? image = await _picker.pickImage(source: source);
+    XFile? tempImage = await _picker.pickImage(source: source);
+    String path = (await getApplicationDocumentsDirectory()).path;
+    File newImage = await File(tempImage!.path).copy('$path/$date.png');
+    print("Saved image to $path/$date.png");
 
     setState(() {
-      displayImage = image;
+      image = newImage;
     });
   }
 
@@ -64,9 +67,9 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   }
 
   Widget imageWidget(File? image) {
-    if (displayImage != null) {
+    if (image != null) {
       //uploadImage(displayImage);
-      return Image.file(File(displayImage!.path));
+      return Image.file(File(image.path));
     } else {
       return Container(
           decoration: const BoxDecoration(

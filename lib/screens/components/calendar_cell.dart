@@ -11,7 +11,7 @@ const double height = 100;
 
 final storageRef = FirebaseStorage.instance.ref();
 
-class CalendarCell extends StatefulWidget {
+class CalendarCell extends StatelessWidget {
   final int day, month, year;
   final bool visible;
 
@@ -23,19 +23,10 @@ class CalendarCell extends StatefulWidget {
       required this.visible});
 
   @override
-  State<CalendarCell> createState() => _CalendarCellState();
-}
-
-class _CalendarCellState extends State<CalendarCell> {
-  late final int _day = widget.day;
-  late final int _month = widget.day;
-  late final int _year = widget.day;
-  late final bool _visible = widget.visible;
-
-  @override
   Widget build(BuildContext context) {
-    String date = "${_year}_${_month}_$_day";
+    String date = "${year}_${month}_$day";
     File? displayImage;
+    //print('buillding $date');
 
     /*void getPhoto() async {
       final tempDir = await getTemporaryDirectory();
@@ -47,9 +38,28 @@ class _CalendarCellState extends State<CalendarCell> {
       });
     }*/
 
-    if (_visible) {
-      //getPhoto();
-      return cellBuilder(date, displayImage);
+    Future getPhoto() async {
+      final String appDir = (await getApplicationDocumentsDirectory()).path;
+      try {
+        File file = File('$appDir/$date.png');
+        return file;
+      } catch (e) {
+        print(e);
+      }
+
+      return null;
+    }
+
+    if (visible) {
+      return FutureBuilder(
+          future: getPhoto(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return cellBuilder(date, snapshot.data);
+            } else {
+              return const CircularProgressIndicator();
+            }
+          });
     } else {
       return const SizedBox(width: width, height: height);
     }
@@ -72,13 +82,17 @@ class _CalendarCellState extends State<CalendarCell> {
           border: Border.all(),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Text(" ${_day.toString()}"));
+        child: Text(
+          " ${day.toString()}",
+          style: TextStyle(color: Colors.white),
+        ));
   }
 
   DecorationImage imageWidget(File? displayImage) {
     if (displayImage != null) {
       return DecorationImage(image: FileImage(displayImage), fit: BoxFit.fill);
     } else {
+      print('image not found for $month $day');
       return const DecorationImage(
           image: AssetImage('assets/images/saul.jpg'), fit: BoxFit.fill);
     }

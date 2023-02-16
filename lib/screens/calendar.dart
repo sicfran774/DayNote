@@ -18,7 +18,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   void changeDate(int m) {
     setState(() {
-      month = m;
+      if (m < 0) {
+        month = 12;
+        year -= 1;
+      } else if (m > 12) {
+        month = 1;
+        year += 1;
+      } else {
+        month = m;
+      }
+
       date = DateFormat.yMMMM()
           .format(DateTime.utc(year, month, DateTime.now().day))
           .toString();
@@ -31,26 +40,23 @@ class _CalendarScreenState extends State<CalendarScreen> {
       body: Container(
         padding: const EdgeInsets.all(10),
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(height: 40),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  GestureDetector(
-                      onTap: () => changeDate(month - 1),
-                      child: const Icon(Icons.chevron_left)),
-                  Text(date, style: headerMedium),
-                  GestureDetector(
-                      onTap: () => changeDate(month + 1),
-                      child: const Icon(Icons.chevron_right))
-                ],
-              ),
-              const SizedBox(height: 10),
-              SingleChildScrollView(
-                  child: CalendarBuilder(year: year, month: month)),
-            ],
-          ),
+          child: Column(children: [
+            const SizedBox(height: 40),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                GestureDetector(
+                    onTap: () => changeDate(month - 1),
+                    child: const Icon(Icons.chevron_left)),
+                Text(date, style: headerMedium),
+                GestureDetector(
+                    onTap: () => changeDate(month + 1),
+                    child: const Icon(Icons.chevron_right))
+              ],
+            ),
+            const SizedBox(height: 10),
+            CalendarBuilder(year: year, month: month),
+          ]),
         ),
       ),
     );
