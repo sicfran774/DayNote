@@ -17,6 +17,10 @@ class _CalendarBuilderState extends State<CalendarBuilder> {
   late int _daysInMonth;
   late int _startWeekday;
 
+  /*void update() {
+    setState(() {});
+  }*/
+
   @override
   Widget build(BuildContext context) {
     _currentDay = 1;
@@ -40,10 +44,12 @@ class _CalendarBuilderState extends State<CalendarBuilder> {
             children: List.generate(
                 7,
                 (index) => CalendarCell(
-                    day: _currentDay,
-                    month: _date.month,
-                    year: _date.year,
-                    visible: _isVisible()))));
+                      day: _currentDay,
+                      month: _date.month,
+                      year: _date.year,
+                      visible: _isVisible(),
+                      //notifyParent: update,
+                    ))));
   }
 
   TableRow _generateDayNameRow(BuildContext context) {

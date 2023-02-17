@@ -5,9 +5,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 class PhotoDisplay extends StatefulWidget {
+  //final Function() notifyParent;
   final File? image;
   final String date;
-  const PhotoDisplay({super.key, required this.date, required this.image});
+  const PhotoDisplay({
+    super.key,
+    required this.date,
+    required this.image,
+  });
+  //required this.notifyParent});
 
   @override
   State<PhotoDisplay> createState() => _PhotoDisplayState();
@@ -22,6 +28,9 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   Future getPhoto(ImageSource source) async {
     XFile? tempImage = await _picker.pickImage(source: source);
     String path = (await getApplicationDocumentsDirectory()).path;
+    if (File('$path/$date.png').existsSync()) {
+      File('$path/$date.png').delete();
+    }
     File newImage = await File(tempImage!.path).copy('$path/$date.png');
     print("Saved image to $path/$date.png");
 

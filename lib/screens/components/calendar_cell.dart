@@ -12,21 +12,22 @@ const double height = 100;
 final storageRef = FirebaseStorage.instance.ref();
 
 class CalendarCell extends StatelessWidget {
+  //final Function() notifyParent;
   final int day, month, year;
   final bool visible;
 
-  const CalendarCell(
-      {super.key,
-      required this.day,
-      required this.month,
-      required this.year,
-      required this.visible});
+  const CalendarCell({
+    super.key,
+    required this.day,
+    required this.month,
+    required this.year,
+    required this.visible,
+  });
+  //required this.notifyParent});
 
   @override
   Widget build(BuildContext context) {
     String date = "${year}_${month}_$day";
-    File? displayImage;
-    //print('buillding $date');
 
     /*void getPhoto() async {
       final tempDir = await getTemporaryDirectory();
@@ -40,13 +41,10 @@ class CalendarCell extends StatelessWidget {
 
     Future getPhoto() async {
       final String appDir = (await getApplicationDocumentsDirectory()).path;
-      try {
+      if (File('$appDir/$date.png').existsSync()) {
         File file = File('$appDir/$date.png');
         return file;
-      } catch (e) {
-        print(e);
       }
-
       return null;
     }
 
@@ -68,8 +66,11 @@ class CalendarCell extends StatelessWidget {
   Widget cellBuilder(String date, File? displayImage) {
     return OpenContainer(
       closedBuilder: (context, action) => cell(displayImage),
-      openBuilder: (context, action) =>
-          PhotoDisplay(date: date, image: displayImage),
+      openBuilder: (context, action) => PhotoDisplay(
+        date: date,
+        image: displayImage,
+        //notifyParent: notifyParent(),
+      ),
     );
   }
 
@@ -84,7 +85,7 @@ class CalendarCell extends StatelessWidget {
         ),
         child: Text(
           " ${day.toString()}",
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ));
   }
 
@@ -92,7 +93,7 @@ class CalendarCell extends StatelessWidget {
     if (displayImage != null) {
       return DecorationImage(image: FileImage(displayImage), fit: BoxFit.fill);
     } else {
-      print('image not found for $month $day');
+      //print('image not found for $month $day');
       return const DecorationImage(
           image: AssetImage('assets/images/saul.jpg'), fit: BoxFit.fill);
     }
