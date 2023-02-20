@@ -29,7 +29,8 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     XFile? tempImage = await _picker.pickImage(source: source);
     String path = (await getApplicationDocumentsDirectory()).path;
     if (File('$path/$date.png').existsSync()) {
-      File('$path/$date.png').delete();
+      print('$date already exists, deleting');
+      await File('$path/$date.png').delete();
     }
     File newImage = await File(tempImage!.path).copy('$path/$date.png');
     print("Saved image to $path/$date.png");

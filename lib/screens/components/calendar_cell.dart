@@ -6,6 +6,8 @@ import 'package:day_note/screens/photo_display.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'cell_image.dart';
+
 const double width = 10;
 const double height = 100;
 
@@ -65,38 +67,14 @@ class CalendarCell extends StatelessWidget {
 
   Widget cellBuilder(String date, File? displayImage) {
     return OpenContainer(
-      closedBuilder: (context, action) => cell(displayImage),
+      closedBuilder: (context, action) =>
+          CellImage(day: day, image: displayImage),
       openBuilder: (context, action) => PhotoDisplay(
         date: date,
         image: displayImage,
         //notifyParent: notifyParent(),
       ),
     );
-  }
-
-  Widget cell(File? displayImage) {
-    return Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          image: imageWidget(displayImage),
-          border: Border.all(),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Text(
-          " ${day.toString()}",
-          style: const TextStyle(color: Colors.white),
-        ));
-  }
-
-  DecorationImage imageWidget(File? displayImage) {
-    if (displayImage != null) {
-      return DecorationImage(image: FileImage(displayImage), fit: BoxFit.fill);
-    } else {
-      //print('image not found for $month $day');
-      return const DecorationImage(
-          image: AssetImage('assets/images/saul.jpg'), fit: BoxFit.fill);
-    }
   }
 
   /*Future downloadImage(String date) async {
