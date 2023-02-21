@@ -1,8 +1,5 @@
 import 'dart:io';
-
-import 'package:day_note/screens/calendar.dart';
 import 'package:flutter/material.dart';
-
 import '../../spec/get_photo.dart';
 
 const double width = 10;
@@ -10,10 +7,8 @@ const double height = 100;
 
 class CellImage extends StatefulWidget {
   final int day;
-  final File? image;
   final String date;
-  const CellImage(
-      {super.key, required this.day, required this.date, required this.image});
+  const CellImage({super.key, required this.day, required this.date});
 
   @override
   State<CellImage> createState() => _CellImageState();
@@ -21,7 +16,7 @@ class CellImage extends StatefulWidget {
 
 class _CellImageState extends State<CellImage> {
   late int day = widget.day;
-  late File? image = widget.image;
+  late String date = widget.date;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +28,7 @@ class _CellImageState extends State<CellImage> {
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
-                  image: imageWidget(image),
+                  image: imageWidget(snapshot.data),
                   border: Border.all(),
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -52,7 +47,7 @@ class _CellImageState extends State<CellImage> {
     if (image != null) {
       return DecorationImage(image: FileImage(image), fit: BoxFit.fill);
     } else {
-      //print('image not found for $month $day');
+      //print('image not found for $day');
       return const DecorationImage(image: AssetImage('assets/images/plus.png'));
     }
   }

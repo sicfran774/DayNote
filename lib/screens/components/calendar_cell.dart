@@ -57,12 +57,10 @@ class CalendarCell extends StatelessWidget {
 
   Widget cellBuilder(String date, File? displayImage) {
     return OpenContainer(
-      closedBuilder: (context, action) =>
-          CellImage(day: day, date: date, image: displayImage),
+      closedBuilder: (context, action) => CellImage(day: day, date: date),
       openBuilder: (context, action) => PhotoDisplay(
         date: date,
         image: displayImage,
-        //notifyParent: notifyParent(),
       ),
     );
   }

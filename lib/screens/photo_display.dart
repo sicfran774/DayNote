@@ -28,9 +28,13 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   late File? image = widget.image;
   late String date = widget.date;
 
-  Future getPhoto(ImageSource source) async {
+  Future choosePhoto(ImageSource source) async {
     String path = (await getApplicationDocumentsDirectory()).path;
     XFile? tempImage = await _picker.pickImage(source: source);
+
+    if (tempImage == null) {
+      return null;
+    }
 
     if (await File('$path/$date.png').exists()) {
       print('$date already exists, deleting');
@@ -38,7 +42,8 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     } else {
       print('new image');
     }
-    File newImage = await File(tempImage!.path).copy('$path/$date.png');
+
+    File newImage = await File(tempImage.path).copy('$path/$date.png');
 
     setState(() {
       image = newImage;
@@ -64,7 +69,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
                     child: FloatingActionButton(
                         child: const Icon(Icons.photo),
                         onPressed: () => chooseImageWidget(context))),
-                body: imageWidget(image));
+                body: imageWidget(snapshot.data));
           } else {
             return const CircularProgressIndicator();
           }
@@ -80,12 +85,12 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
             ListTile(
               leading: const Icon(Icons.photo_camera),
               title: const Text('Take a photo'),
-              onTap: () => getPhoto(ImageSource.camera),
+              onTap: () => choosePhoto(ImageSource.camera),
             ),
             ListTile(
               leading: const Icon(Icons.photo),
               title: const Text('Choose from gallery'),
-              onTap: () => getPhoto(ImageSource.gallery),
+              onTap: () => choosePhoto(ImageSource.gallery),
             ),
           ],
         );
