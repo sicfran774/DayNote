@@ -36,27 +36,39 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.all(10),
-        child: SingleChildScrollView(
-          child: Column(children: [
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GestureDetector(
-                    onTap: () => changeDate(month - 1),
-                    child: const Icon(Icons.chevron_left)),
-                Text(date, style: headerMedium),
-                GestureDetector(
-                    onTap: () => changeDate(month + 1),
-                    child: const Icon(Icons.chevron_right))
-              ],
-            ),
-            const SizedBox(height: 10),
-            CalendarBuilder(year: year, month: month),
-          ]),
+    changeDate(month);
+    return GestureDetector(
+      onHorizontalDragEnd: (details) {
+        if (details.primaryVelocity! > 0) {
+          // Right Swipe
+          changeDate(month - 1);
+        } else if (details.primaryVelocity! < 0) {
+          //Left Swipe
+          changeDate(month + 1);
+        }
+      },
+      child: Scaffold(
+        body: Container(
+          padding: const EdgeInsets.all(10),
+          child: SingleChildScrollView(
+            child: Column(children: [
+              const SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  GestureDetector(
+                      onTap: () => changeDate(month - 1),
+                      child: const Icon(Icons.chevron_left)),
+                  Text(date, style: headerMedium),
+                  GestureDetector(
+                      onTap: () => changeDate(month + 1),
+                      child: const Icon(Icons.chevron_right))
+                ],
+              ),
+              const SizedBox(height: 10),
+              CalendarBuilder(year: year, month: month),
+            ]),
+          ),
         ),
       ),
     );
