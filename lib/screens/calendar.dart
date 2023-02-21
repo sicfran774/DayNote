@@ -18,7 +18,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   void changeDate(int m) {
     setState(() {
-      if (m < 0) {
+      if (m < 1) {
         month = 12;
         year -= 1;
       } else if (m > 12) {
