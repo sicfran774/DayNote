@@ -1,16 +1,12 @@
-# day_note
+# DayNote
 
-A new Flutter project.
+Editable journal-like calendar app
 
-## Getting Started
+## Features
+- Upload images to specific days on calendar
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Work in Progress
+- Add notes to each image
+- Add specific images to groups to see occurrences
+- See others' uploads for that day
+- Multiple calendars
