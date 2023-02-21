@@ -1,19 +1,22 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../spec/get_photo.dart';
+
 class PhotoDisplay extends StatefulWidget {
-  //final Function() notifyParent;
   final File? image;
   final String date;
+
   const PhotoDisplay({
     super.key,
     required this.date,
     required this.image,
   });
-  //required this.notifyParent});
 
   @override
   State<PhotoDisplay> createState() => _PhotoDisplayState();
@@ -26,32 +29,46 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   late String date = widget.date;
 
   Future getPhoto(ImageSource source) async {
-    XFile? tempImage = await _picker.pickImage(source: source);
     String path = (await getApplicationDocumentsDirectory()).path;
-    if (File('$path/$date.png').existsSync()) {
+    XFile? tempImage = await _picker.pickImage(source: source);
+
+    if (await File('$path/$date.png').exists()) {
       print('$date already exists, deleting');
       await File('$path/$date.png').delete();
+    } else {
+      print('new image');
     }
     File newImage = await File(tempImage!.path).copy('$path/$date.png');
-    print("Saved image to $path/$date.png");
 
     setState(() {
       image = newImage;
     });
+
+    print("Saved image to $path/$date.png");
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-        backgroundColor: Colors.black,
-        appBar: AppBar(title: const Text('Image Preview')),
-        floatingActionButton: Container(
-            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-            child: FloatingActionButton(
-                child: const Icon(Icons.photo),
-                onPressed: () => chooseImageWidget(context))),
-        body: imageWidget(image));
+    return FutureBuilder(
+        future: GetPhoto.getPhoto(date),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Scaffold(
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.endDocked,
+                backgroundColor: Colors.black,
+                appBar: AppBar(title: const Text('Image Preview')),
+                floatingActionButton: Container(
+                    padding:
+                        const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                    child: FloatingActionButton(
+                        child: const Icon(Icons.photo),
+                        onPressed: () => chooseImageWidget(context))),
+                body: imageWidget(image));
+          } else {
+            return const CircularProgressIndicator();
+          }
+        });
   }
 
   Future chooseImageWidget(BuildContext context) {

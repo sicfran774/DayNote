@@ -17,10 +17,6 @@ class _CalendarBuilderState extends State<CalendarBuilder> {
   late int _daysInMonth;
   late int _startWeekday;
 
-  /*void update() {
-    setState(() {});
-  }*/
-
   @override
   Widget build(BuildContext context) {
     _currentDay = 1;

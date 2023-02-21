@@ -1,10 +1,9 @@
-import 'dart:io';
-
 import 'package:animations/animations.dart';
+import 'package:day_note/spec/get_photo.dart';
 import 'package:flutter/material.dart';
 import 'package:day_note/screens/photo_display.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 import 'cell_image.dart';
 
@@ -41,18 +40,9 @@ class CalendarCell extends StatelessWidget {
       });
     }*/
 
-    Future getPhoto() async {
-      final String appDir = (await getApplicationDocumentsDirectory()).path;
-      if (File('$appDir/$date.png').existsSync()) {
-        File file = File('$appDir/$date.png');
-        return file;
-      }
-      return null;
-    }
-
     if (visible) {
       return FutureBuilder(
-          future: getPhoto(),
+          future: GetPhoto.getPhoto(date),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return cellBuilder(date, snapshot.data);
@@ -68,7 +58,7 @@ class CalendarCell extends StatelessWidget {
   Widget cellBuilder(String date, File? displayImage) {
     return OpenContainer(
       closedBuilder: (context, action) =>
-          CellImage(day: day, image: displayImage),
+          CellImage(day: day, date: date, image: displayImage),
       openBuilder: (context, action) => PhotoDisplay(
         date: date,
         image: displayImage,
