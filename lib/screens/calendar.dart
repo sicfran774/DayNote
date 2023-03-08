@@ -48,10 +48,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
         }
       },
       child: Container(
-        padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 30),
         child: Column(children: [
           Container(
-            height: 100,
+            height: 65,
             decoration: BoxDecoration(
                 color: Colors.blue, borderRadius: BorderRadius.circular(10)),
             child: Row(
@@ -69,14 +69,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
           ),
           const SizedBox(height: 10),
           _dayRow(),
-          SizedBox(
-            height: 500,
-            child: Column(children: [
-              Expanded(
-                  child: SingleChildScrollView(
-                      child: CalendarBuilder(year: year, month: month))),
-            ]),
-          )
+          Expanded(
+              child: SingleChildScrollView(
+                  child: CalendarBuilder(year: year, month: month))),
         ]),
       ),
     );
