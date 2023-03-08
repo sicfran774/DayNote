@@ -37,51 +37,37 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   Widget calendarPage(int oldIndex) {
     int index = oldIndex - 4000;
-    return Scaffold(
-      /*appBar: AppBar(
-          title: Text(DateFormat.yMMMM()
-              .format(DateTime.utc(year, month + index, DateTime.now().day))
-              .toString()),
-          centerTitle: true),*/
-      body: Container(
-        padding: const EdgeInsets.only(left: 10, right: 10, top: 30),
-        child: Column(children: [
-          Container(
-            height: 65,
-            decoration: BoxDecoration(
-                color: Colors.blueGrey,
-                borderRadius: BorderRadius.circular(10)),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                    onTap: () => changePage(oldIndex - 1),
-                    child: const SizedBox(
-                        width: 75,
-                        height: 50,
-                        child: Icon(Icons.chevron_left))),
-                Text(
-                    DateFormat.yMMMM()
-                        .format(DateTime.utc(
-                            year, month + index, DateTime.now().day))
-                        .toString(),
-                    style: headerMedium),
-                GestureDetector(
-                    onTap: () => changePage(oldIndex + 1),
-                    child: const SizedBox(
-                        width: 75,
-                        height: 20,
-                        child: Icon(Icons.chevron_right)))
-              ],
-            ),
+    return Container(
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 30),
+      child: Column(children: [
+        Container(
+          height: 50,
+          decoration: BoxDecoration(
+              color: Colors.blueGrey, borderRadius: BorderRadius.circular(10)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GestureDetector(
+                  //Todo: goto month display
+                  //onTap: () => changePage(oldIndex - 1),
+                  child: const SizedBox(
+                      width: 50, height: 50, child: Icon(Icons.chevron_left))),
+              Text(
+                  DateFormat.yMMMM()
+                      .format(
+                          DateTime.utc(year, month + index, DateTime.now().day))
+                      .toString(),
+                  style: headerMedium),
+              const SizedBox(width: 50, height: 20)
+            ],
           ),
-          const SizedBox(height: 10),
-          _dayRow(),
-          Expanded(
-              child: SingleChildScrollView(
-                  child: CalendarBuilder(year: year, month: month + index))),
-        ]),
-      ),
+        ),
+        const SizedBox(height: 10),
+        _dayRow(),
+        Expanded(
+            child: SingleChildScrollView(
+                child: CalendarBuilder(year: year, month: month + index))),
+      ]),
     );
   }
 
