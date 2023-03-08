@@ -47,7 +47,10 @@ class CalendarCell extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.done) {
               return cellBuilder(date, snapshot.data);
             } else {
-              return const CircularProgressIndicator();
+              return const SizedBox(
+                width: width,
+                height: height,
+              );
             }
           });
     } else {

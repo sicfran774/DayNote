@@ -38,7 +38,7 @@ class _CellImageState extends State<CellImage> {
                       color: Colors.black, fontWeight: FontWeight.bold),
                 ));
           } else {
-            return const CircularProgressIndicator();
+            return SizedBox(width: width, height: height);
           }
         });
   }

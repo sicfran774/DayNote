@@ -24,9 +24,7 @@ class _CalendarBuilderState extends State<CalendarBuilder> {
     _daysInMonth = DateTime.utc(_date.year, _date.month + 1, 0).day;
     _startWeekday = DateTime.utc(_date.year, _date.month, 1).weekday;
 
-    List<TableRow> dayNameRow =
-        List.generate(1, (index) => _generateDayNameRow(context));
-    List<TableRow> tableRows = [...dayNameRow, ..._generateDayRows()];
+    List<TableRow> tableRows = [..._generateDayRows()];
 
     return Table(
       children: tableRows,
@@ -46,26 +44,6 @@ class _CalendarBuilderState extends State<CalendarBuilder> {
                       visible: _isVisible(),
                       //notifyParent: update,
                     ))));
-  }
-
-  TableRow _generateDayNameRow(BuildContext context) {
-    return TableRow(children: [
-      _dayText("Sun"),
-      _dayText("Mon"),
-      _dayText("Tue"),
-      _dayText("Wed"),
-      _dayText("Thur"),
-      _dayText("Fri"),
-      _dayText("Sat")
-    ]);
-  }
-
-  Text _dayText(String day) {
-    return Text(
-      day,
-      textAlign: TextAlign.center,
-      style: dayStyle,
-    );
   }
 
   bool _isVisible() {
