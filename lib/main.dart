@@ -1,3 +1,4 @@
+import 'package:day_note/spec/color_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:day_note/screens/components/bottom_bar.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -19,8 +20,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'DayNote',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          primarySwatch: Colors.blueGrey,
+          primaryColorDark: gitHubBlack,
+          scaffoldBackgroundColor: gitHubBlack),
       home: const BottomBar(),
     );
   }

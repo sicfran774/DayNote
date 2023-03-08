@@ -30,7 +30,6 @@ class _CellImageState extends State<CellImage> {
                 decoration: BoxDecoration(
                   image: imageWidget(snapshot.data),
                   border: Border.all(),
-                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   " ${day.toString()}",
@@ -38,7 +37,7 @@ class _CellImageState extends State<CellImage> {
                       color: Colors.black, fontWeight: FontWeight.bold),
                 ));
           } else {
-            return SizedBox(width: width, height: height);
+            return const SizedBox(width: width, height: height);
           }
         });
   }

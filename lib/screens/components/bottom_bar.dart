@@ -1,3 +1,4 @@
+import 'package:day_note/spec/color_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:day_note/screens/calendar.dart';
 import 'package:day_note/screens/stats.dart';
@@ -31,9 +32,11 @@ class _BottomBarState extends State<BottomBar> {
     return Scaffold(
         body: _screens[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.blueGrey,
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
-          selectedItemColor: Colors.blue,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: gitHubBlack,
           items: const [
             BottomNavigationBarItem(
                 icon: Icon(Icons.home_outlined),

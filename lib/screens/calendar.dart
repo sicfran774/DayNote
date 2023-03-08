@@ -4,6 +4,8 @@ import 'package:day_note/spec/text_styles.dart';
 import 'components/calendar_builder.dart';
 
 var date = DateFormat.yMMMM().format(DateTime.now()).toString();
+final int year = DateTime.now().year;
+final int month = DateTime.now().month;
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -13,67 +15,60 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  int year = DateTime.now().year;
-  int month = DateTime.now().month;
+  final PageController controller = PageController(initialPage: 4000);
 
-  void changeDate(int m) {
-    setState(() {
-      if (m < 1) {
-        month = 12;
-        year -= 1;
-      } else if (m > 12) {
-        month = 1;
-        year += 1;
-      } else {
-        month = m;
-      }
-
-      date = DateFormat.yMMMM()
-          .format(DateTime.utc(year, month, DateTime.now().day))
-          .toString();
-    });
+  void changePage(int index) {
+    controller.animateToPage(index,
+        duration: Duration(milliseconds: 200), curve: Curves.decelerate);
   }
 
   @override
   Widget build(BuildContext context) {
-    changeDate(month);
-    return GestureDetector(
-      onHorizontalDragEnd: (details) {
-        if (details.primaryVelocity! > 0) {
-          // Right Swipe
-          changeDate(month - 1);
-        } else if (details.primaryVelocity! < 0) {
-          //Left Swipe
-          changeDate(month + 1);
-        }
+    //changeDate(month);
+
+    return PageView.builder(
+      controller: controller,
+      itemBuilder: (context, index) {
+        return calendarPage(index);
       },
-      child: Container(
-        padding: const EdgeInsets.only(left: 10, right: 10, top: 30),
-        child: Column(children: [
-          Container(
-            height: 65,
-            decoration: BoxDecoration(
-                color: Colors.blue, borderRadius: BorderRadius.circular(10)),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GestureDetector(
-                    onTap: () => changeDate(month - 1),
-                    child: const Icon(Icons.chevron_left)),
-                Text(date, style: headerMedium),
-                GestureDetector(
-                    onTap: () => changeDate(month + 1),
-                    child: const Icon(Icons.chevron_right))
-              ],
-            ),
+    );
+  }
+
+  Widget calendarPage(int oldIndex) {
+    int index = oldIndex - 4000;
+    return Container(
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 30),
+      child: Column(children: [
+        Container(
+          height: 65,
+          decoration: BoxDecoration(
+              color: Colors.blueGrey, borderRadius: BorderRadius.circular(10)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GestureDetector(
+                  onTap: () => changePage(oldIndex - 1),
+                  child: const SizedBox(
+                      width: 50, height: 20, child: Icon(Icons.chevron_left))),
+              Text(
+                  DateFormat.yMMMM()
+                      .format(
+                          DateTime.utc(year, month + index, DateTime.now().day))
+                      .toString(),
+                  style: headerMedium),
+              GestureDetector(
+                  onTap: () => changePage(oldIndex + 1),
+                  child: const SizedBox(
+                      width: 50, height: 20, child: Icon(Icons.chevron_right)))
+            ],
           ),
-          const SizedBox(height: 10),
-          _dayRow(),
-          Expanded(
-              child: SingleChildScrollView(
-                  child: CalendarBuilder(year: year, month: month))),
-        ]),
-      ),
+        ),
+        const SizedBox(height: 10),
+        _dayRow(),
+        Expanded(
+            child: SingleChildScrollView(
+                child: CalendarBuilder(year: year, month: month + index))),
+      ]),
     );
   }
 
