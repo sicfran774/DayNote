@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:day_note/spec/color_styles.dart';
 import 'package:flutter/material.dart';
 import '../../spec/get_photo.dart';
 
@@ -30,14 +31,19 @@ class _CellImageState extends State<CellImage> {
                 decoration: BoxDecoration(
                   image: imageWidget(snapshot.data),
                   border: Border.all(),
+                  color: cellColor,
                 ),
                 child: Text(
                   " ${day.toString()}",
                   style: const TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.bold),
+                      color: Colors.white, fontWeight: FontWeight.bold),
                 ));
           } else {
-            return const SizedBox(width: width, height: height);
+            return Container(
+              width: width,
+              height: height,
+              decoration: const BoxDecoration(color: cellColor),
+            );
           }
         });
   }

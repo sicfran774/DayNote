@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:day_note/spec/text_styles.dart';
+import 'components/calendar_bar.dart';
 import 'components/calendar_builder.dart';
 
 var date = DateFormat.yMMMM().format(DateTime.now()).toString();
@@ -16,6 +17,7 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen> {
   final PageController controller = PageController(initialPage: 4000);
+  final ValueNotifier<String> _notifier = ValueNotifier(date);
 
   void changePage(int index) {
     controller.animateToPage(index,
@@ -25,44 +27,39 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //changeDate(month);
-
-    return PageView.builder(
-      controller: controller,
-      itemBuilder: (context, index) {
-        return calendarPage(index);
-      },
+    return Scaffold(
+      body: Column(
+        children: [
+          const SizedBox(height: 30),
+          ValueListenableBuilder(
+              valueListenable: _notifier,
+              builder: (context, value, child) {
+                return CalendarBar(date: value);
+              }),
+          Expanded(
+            child: PageView.builder(
+              controller: controller,
+              onPageChanged: ((index) {
+                _notifier.value = DateFormat.yMMMM()
+                    .format(DateTime.utc(
+                        year, index - 4000 + month, DateTime.now().day))
+                    .toString();
+              }),
+              itemBuilder: (context, index) {
+                return calendarPage(index);
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget calendarPage(int oldIndex) {
     int index = oldIndex - 4000;
     return Container(
-      padding: const EdgeInsets.only(left: 10, right: 10, top: 30),
+      padding: const EdgeInsets.all(10),
       child: Column(children: [
-        Container(
-          height: 50,
-          decoration: BoxDecoration(
-              color: Colors.blueGrey, borderRadius: BorderRadius.circular(10)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              GestureDetector(
-                  //Todo: goto month display
-                  //onTap: () => changePage(oldIndex - 1),
-                  child: const SizedBox(
-                      width: 50, height: 50, child: Icon(Icons.chevron_left))),
-              Text(
-                  DateFormat.yMMMM()
-                      .format(
-                          DateTime.utc(year, month + index, DateTime.now().day))
-                      .toString(),
-                  style: headerMedium),
-              const SizedBox(width: 50, height: 20)
-            ],
-          ),
-        ),
-        const SizedBox(height: 10),
         _dayRow(),
         Expanded(
             child: SingleChildScrollView(
