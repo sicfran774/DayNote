@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:io';
+import 'package:day_note/screens/components/notes_section.dart';
 import 'package:day_note/spec/color_styles.dart';
 import 'package:day_note/spec/text_styles.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -73,22 +74,32 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
         future: GetPhoto.getPhoto(date),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return Scaffold(
-                floatingActionButtonLocation:
-                    FloatingActionButtonLocation.endDocked,
-                backgroundColor: Colors.black,
-                appBar: AppBar(title: Text(title!)),
-                floatingActionButton: Container(
-                    padding:
-                        const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                    child: FloatingActionButton(
-                        child: const Icon(Icons.photo),
-                        onPressed: () => chooseImageWidget(context))),
-                body: imageWidget(snapshot.data));
+            return screen(context, snapshot.data);
           } else {
             return Container(color: gitHubBlack);
           }
         });
+  }
+
+  Widget screen(BuildContext context, data) {
+    PageController pageController = PageController();
+    return Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        backgroundColor: Colors.black,
+        appBar: AppBar(title: Text(title!)),
+        floatingActionButton: Container(
+            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+            child: FloatingActionButton(
+                child: const Icon(Icons.photo),
+                onPressed: () => chooseImageWidget(context))),
+        body: PageView(
+          controller: pageController,
+          scrollDirection: Axis.vertical,
+          children: [
+            imageWidget(data),
+            NotesSection(),
+          ],
+        ));
   }
 
   Future chooseImageWidget(BuildContext context) {
@@ -146,13 +157,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       return Center(child: Image.file(File(image.path)));
     } else {
       return const Center(
-        child: SizedBox(
-          child: Text("Nothing found...", style: headerMedium),
-          // decoration: const BoxDecoration(
-          // image: DecorationImage(
-          // image: AssetImage('assets/images/saul.jpg'),
-          // fit: BoxFit.contain,
-        ),
+        child: SizedBox(child: Text("Nothing found...", style: headerMedium)),
       ); //));
     }
   }
