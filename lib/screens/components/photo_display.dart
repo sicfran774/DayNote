@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../spec/get_photo.dart';
+import '../../spec/get_photo.dart';
 
 class PhotoDisplay extends StatefulWidget {
   final File? image;
@@ -141,6 +141,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
 
   Widget imageWidget(File? image) {
     if (image != null) {
+      this.image = image;
       //uploadImage(displayImage);
       return Center(child: Image.file(File(image.path)));
     } else {

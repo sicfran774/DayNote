@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:day_note/spec/color_styles.dart';
 import 'package:flutter/material.dart';
-import '../../spec/get_photo.dart';
+import 'package:day_note/spec/get_photo.dart';
 
 const double width = 10;
 const double height = 100;

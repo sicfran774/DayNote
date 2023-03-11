@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:day_note/spec/text_styles.dart';
-import 'components/calendar_bar.dart';
-import 'components/calendar_builder.dart';
+
+import 'components/calendar/calendar_bar.dart';
+import 'components/calendar/calendar_builder.dart';
 
 var date = DateFormat.yMMMM().format(DateTime.now()).toString();
 final int year = DateTime.now().year;
