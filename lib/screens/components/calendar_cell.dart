@@ -1,8 +1,10 @@
 import 'package:animations/animations.dart';
+import 'package:day_note/spec/color_styles.dart';
 import 'package:day_note/spec/get_photo.dart';
 import 'package:flutter/material.dart';
 import 'package:day_note/screens/photo_display.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:intl/intl.dart';
 import 'dart:io';
 
 import 'cell_image.dart';
@@ -47,9 +49,10 @@ class CalendarCell extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.done) {
               return cellBuilder(date, snapshot.data);
             } else {
-              return const SizedBox(
+              return Container(
                 width: width,
                 height: height,
+                color: cellColor,
               );
             }
           });
@@ -64,6 +67,9 @@ class CalendarCell extends StatelessWidget {
       openBuilder: (context, action) => PhotoDisplay(
         date: date,
         image: displayImage,
+        title: DateFormat.yMMMMd()
+            .format(DateTime.utc(year, month, day))
+            .toString(),
       ),
     );
   }

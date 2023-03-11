@@ -1,6 +1,8 @@
 // ignore_for_file: avoid_print
 
 import 'dart:io';
+import 'package:day_note/spec/color_styles.dart';
+import 'package:day_note/spec/text_styles.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,11 +13,13 @@ import '../spec/get_photo.dart';
 class PhotoDisplay extends StatefulWidget {
   final File? image;
   final String date;
+  final String? title;
 
   const PhotoDisplay({
     super.key,
     required this.date,
     required this.image,
+    required this.title,
   });
 
   @override
@@ -27,8 +31,10 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   final ImagePicker _picker = ImagePicker();
   late File? image = widget.image;
   late String date = widget.date;
+  late String? title = widget.title;
 
   Future choosePhoto(ImageSource source) async {
+    Navigator.pop(context);
     String path = (await getApplicationDocumentsDirectory()).path;
     XFile? tempImage = await _picker.pickImage(source: source);
 
@@ -52,6 +58,15 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     print("Saved image to $path/$date.png");
   }
 
+  void deletePhoto() async {
+    Navigator.pop(context);
+    String path = (await getApplicationDocumentsDirectory()).path;
+    File('$path/$date.png').delete();
+    setState(() {
+      image = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -62,7 +77,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.endDocked,
                 backgroundColor: Colors.black,
-                appBar: AppBar(title: const Text('Image Preview')),
+                appBar: AppBar(title: Text(title!)),
                 floatingActionButton: Container(
                     padding:
                         const EdgeInsets.only(left: 10, right: 10, bottom: 10),
@@ -71,7 +86,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
                         onPressed: () => chooseImageWidget(context))),
                 body: imageWidget(snapshot.data));
           } else {
-            return const CircularProgressIndicator();
+            return Container(color: gitHubBlack);
           }
         });
   }
@@ -80,35 +95,64 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     return showModalBottomSheet(
       context: context,
       builder: (context) {
-        return Wrap(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.photo_camera),
-              title: const Text('Take a photo'),
-              onTap: () => choosePhoto(ImageSource.camera),
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo),
-              title: const Text('Choose from gallery'),
-              onTap: () => choosePhoto(ImageSource.gallery),
-            ),
-          ],
-        );
+        return optionsWidget();
       },
     );
+  }
+
+  Wrap optionsWidget() {
+    if (image != null) {
+      return Wrap(
+        children: [
+          ListTile(
+            leading: const Icon(Icons.photo_camera),
+            title: const Text('Take a photo'),
+            onTap: () => choosePhoto(ImageSource.camera),
+          ),
+          ListTile(
+            leading: const Icon(Icons.photo),
+            title: const Text('Choose from gallery'),
+            onTap: () => choosePhoto(ImageSource.gallery),
+          ),
+          ListTile(
+            leading: const Icon(Icons.delete_forever),
+            title: const Text('Delete this image'),
+            onTap: () => deletePhoto(),
+          ),
+        ],
+      );
+    } else {
+      return Wrap(
+        children: [
+          ListTile(
+            leading: const Icon(Icons.photo_camera),
+            title: const Text('Take a photo'),
+            onTap: () => choosePhoto(ImageSource.camera),
+          ),
+          ListTile(
+            leading: const Icon(Icons.photo),
+            title: const Text('Choose from gallery'),
+            onTap: () => choosePhoto(ImageSource.gallery),
+          ),
+        ],
+      );
+    }
   }
 
   Widget imageWidget(File? image) {
     if (image != null) {
       //uploadImage(displayImage);
-      return Image.file(File(image.path));
+      return Center(child: Image.file(File(image.path)));
     } else {
-      return Container(
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-        image: AssetImage('assets/images/saul.jpg'),
-        fit: BoxFit.contain,
-      )));
+      return const Center(
+        child: SizedBox(
+          child: Text("Nothing found...", style: headerMedium),
+          // decoration: const BoxDecoration(
+          // image: DecorationImage(
+          // image: AssetImage('assets/images/saul.jpg'),
+          // fit: BoxFit.contain,
+        ),
+      ); //));
     }
   }
 
