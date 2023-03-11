@@ -11,6 +11,8 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../spec/get_photo.dart';
 
+String photoPath = '${GetPhoto.appDir}/photos';
+
 class PhotoDisplay extends StatefulWidget {
   final File? image;
   final String date;
@@ -36,40 +38,45 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
 
   Future choosePhoto(ImageSource source) async {
     Navigator.pop(context);
-    String path = (await getApplicationDocumentsDirectory()).path;
     XFile? tempImage = await _picker.pickImage(source: source);
 
     if (tempImage == null) {
       return null;
     }
 
-    if (await File('$path/$date.png').exists()) {
+    if (await File('$photoPath/$date.png').exists()) {
       print('$date already exists, deleting');
-      await File('$path/$date.png').delete();
+      await File('$photoPath/$date.png').delete();
     } else {
       print('new image');
     }
 
-    File newImage = await File(tempImage.path).copy('$path/$date.png');
+    File newImage = await File(tempImage.path).copy('$photoPath/$date.png');
 
     setState(() {
       image = newImage;
     });
 
-    print("Saved image to $path/$date.png");
+    print("Saved image to $photoPath/$date.png");
   }
 
   void deletePhoto() async {
     Navigator.pop(context);
-    String path = (await getApplicationDocumentsDirectory()).path;
-    File('$path/$date.png').delete();
+    try {
+      File('$photoPath/$date.png').delete();
+    } catch (e) {}
     setState(() {
       image = null;
     });
   }
 
+  void updatePath() async {
+    photoPath = '${(await getApplicationDocumentsDirectory()).path}/photos';
+  }
+
   @override
   Widget build(BuildContext context) {
+    updatePath();
     return FutureBuilder(
         future: GetPhoto.getPhoto(date),
         builder: (context, snapshot) {
@@ -92,12 +99,18 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
             child: FloatingActionButton(
                 child: const Icon(Icons.photo),
                 onPressed: () => chooseImageWidget(context))),
-        body: PageView(
+        body: ListView(
           controller: pageController,
           scrollDirection: Axis.vertical,
           children: [
             imageWidget(data),
-            NotesSection(),
+            Container(
+                decoration: const BoxDecoration(
+                    border: Border(
+                  top: BorderSide(width: 3, color: gitHubBlack),
+                )),
+                height: 500,
+                child: NotesSection()),
           ],
         ));
   }
@@ -154,11 +167,12 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     if (image != null) {
       this.image = image;
       //uploadImage(displayImage);
-      return Center(child: Image.file(File(image.path)));
+      return Image(image: FileImage(image));
     } else {
-      return const Center(
-        child: SizedBox(child: Text("Nothing found...", style: headerMedium)),
-      ); //));
+      return const SizedBox(
+        height: 500,
+        child: Center(child: Text("No image found :(", style: headerMedium)),
+      );
     }
   }
 
