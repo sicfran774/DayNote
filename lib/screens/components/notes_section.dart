@@ -19,7 +19,7 @@ class NotesSection extends StatefulWidget {
 }
 
 class _NotesSectionState extends State<NotesSection> {
-  late String date = widget.date;
+  late final String _date = widget.date;
   QuillController controller = QuillController.basic();
   ScrollController scrollController = ScrollController();
   FocusNode focusNode = FocusNode();
@@ -27,24 +27,24 @@ class _NotesSectionState extends State<NotesSection> {
   void saveNote(BuildContext context) {
     var json = jsonEncode(controller.document.toDelta().toJson());
 
-    if (GetFile.exists(date, 'note')) {
-      File(GetFile.path(date, 'note')).delete();
+    if (GetFile.exists(_date, 'note')) {
+      File(GetFile.path(_date, 'note')).delete();
     }
-    File file = File(GetFile.path(date, 'note'));
+    File file = File(GetFile.path(_date, 'note'));
     file.writeAsString(json);
-    print("Saved note to ${GetFile.path(date, 'note')}");
-    // closeKeyboard(context);
-  }
+    print("Saved note to ${GetFile.path(_date, 'note')}");
 
-  void closeKeyboard(context) {
-    Navigator.pop(context);
+    //close keyboard
+    setState(() {
+      focusNode.unfocus();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (GetFile.exists(date, 'note')) {
+    if (GetFile.exists(_date, 'note')) {
       var myJson =
-          json.decode(File(GetFile.path(date, 'note')).readAsStringSync());
+          json.decode(File(GetFile.path(_date, 'note')).readAsStringSync());
       controller = QuillController(
           document: Document.fromJson(myJson),
           selection: const TextSelection.collapsed(offset: 0));
