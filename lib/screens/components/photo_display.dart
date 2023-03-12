@@ -34,8 +34,9 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   late File? image = widget.image;
   late String date = widget.date;
   late String? title = widget.title;
+  late List<Widget> dayNotes;
 
-  Future choosePhoto(ImageSource source) async {
+  Future choosePhoto(ImageSource source, int index) async {
     Navigator.pop(context);
     XFile? tempImage = await _picker.pickImage(source: source);
 
@@ -43,14 +44,15 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       return null;
     }
 
-    if (GetFile.exists(date, 'photo')) {
+    if (GetFile.exists(date, 'photo', index: index)) {
       print('$date already exists, deleting');
-      await File('$photoPath/$date.png').delete();
+      await File('$photoPath/$date/$index.png').delete();
     } else {
       print('new image');
     }
 
-    File newImage = await File(tempImage.path).copy('$photoPath/$date.png');
+    File newImage =
+        await File(tempImage.path).copy('$photoPath/$date/$index.png');
 
     setState(() {
       image = newImage;
@@ -59,107 +61,68 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     print("Saved image to $photoPath/$date.png");
   }
 
-  void deleteDayNote() async {
-    Navigator.pop(context);
+  void deleteDayNote(int index) async {
     if (GetFile.exists(date, 'photo')) {
-      File('$photoPath/$date.png').delete();
+      File('$photoPath/$date/$index.png').delete();
     }
     if (GetFile.exists(date, 'note')) {
-      File('$notePath/$date.json').delete();
+      File('$notePath/$date/$index.json').delete();
     }
     setState(() {
       image = null;
     });
   }
 
+  void getDayNotes() {}
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: GetFile.getFile(date, 'photo'),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            image = snapshot.data;
-            return screen(context, snapshot.data);
-          } else {
-            return Container(color: gitHubBlack);
-          }
-        });
-  }
-
-  Widget screen(BuildContext context, data) {
-    PageController pageController = PageController();
+    PageController horizontalController = PageController();
+    GetFile.generateNewDay(date);
     return Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         backgroundColor: Colors.black,
         appBar: AppBar(title: Text(title!)),
-        body: PageView(
-          controller: pageController,
-          scrollDirection: Axis.vertical,
-          children: [
-            if (image == null) ...[
-              photoSection(data),
-            ] else ...[
-              photoSection(data),
-              NotesSection(date: date),
-            ]
-          ],
+        body: PageView.builder(
+          controller: horizontalController,
+          itemBuilder: (context, index) {
+            return FutureBuilder(
+                future: GetFile.getFile(date, 'photo', index: index),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    image = snapshot.data;
+                    return individualDayNote(snapshot.data, index);
+                  } else {
+                    return Container(color: gitHubBlack);
+                  }
+                });
+          },
+          itemCount: 2,
         ));
   }
 
-  Scaffold photoSection(data) {
-    return Scaffold(
-        body: Center(child: imageWidget(data)),
-        floatingActionButton: FloatingActionButton(
-            child: const Icon(Icons.photo),
-            onPressed: () => chooseImageWidget(context)));
-  }
-
-  Future chooseImageWidget(BuildContext context) {
-    return showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return optionsWidget();
-      },
+  PageView individualDayNote(data, int index) {
+    PageController verticalController = PageController();
+    return PageView(
+      controller: verticalController,
+      scrollDirection: Axis.vertical,
+      children: [
+        if (image == null) ...[
+          photoSection(data, index),
+        ] else ...[
+          photoSection(data, index),
+          NotesSection(date: date),
+        ]
+      ],
     );
   }
 
-  Wrap optionsWidget() {
-    if (image != null) {
-      return Wrap(
-        children: [
-          ListTile(
-            leading: const Icon(Icons.photo_camera),
-            title: const Text('Take a photo'),
-            onTap: () => choosePhoto(ImageSource.camera),
-          ),
-          ListTile(
-            leading: const Icon(Icons.photo),
-            title: const Text('Choose from gallery'),
-            onTap: () => choosePhoto(ImageSource.gallery),
-          ),
-          ListTile(
-            leading: const Icon(Icons.delete_forever),
-            title: const Text('Delete this day note'),
-            onTap: () => deleteDayNote(),
-          ),
-        ],
-      );
-    } else {
-      return Wrap(
-        children: [
-          ListTile(
-            leading: const Icon(Icons.photo_camera),
-            title: const Text('Take a photo'),
-            onTap: () => choosePhoto(ImageSource.camera),
-          ),
-          ListTile(
-            leading: const Icon(Icons.photo),
-            title: const Text('Choose from gallery'),
-            onTap: () => choosePhoto(ImageSource.gallery),
-          ),
-        ],
-      );
-    }
+  Scaffold photoSection(data, index) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.photo),
+          onPressed: () => chooseImageWidget(context, index)),
+      body: Center(child: imageWidget(data)),
+    );
   }
 
   Widget imageWidget(File? image) {
@@ -173,6 +136,63 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       );
     }
   }
+
+  Future chooseImageWidget(BuildContext context, int index) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return optionsWidget(index);
+      },
+    );
+  }
+
+  Wrap optionsWidget(int index) {
+    return Wrap(
+      children: [
+        ListTile(
+          leading: const Icon(Icons.photo_camera),
+          title: const Text('Take a photo'),
+          onTap: () => choosePhoto(ImageSource.camera, index),
+        ),
+        ListTile(
+          leading: const Icon(Icons.photo),
+          title: const Text('Choose from gallery'),
+          onTap: () => choosePhoto(ImageSource.gallery, index),
+        ),
+        if (image != null) ...[
+          ListTile(
+            leading: const Icon(Icons.delete_forever),
+            title: const Text('Delete this day note'),
+            onTap: () => confirmDelete(context, index),
+          ),
+        ]
+      ],
+    );
+  }
+
+  confirmDelete(BuildContext context, int index) {
+    Widget cancel = TextButton(
+        onPressed: () => Navigator.pop(context), child: const Text("Cancel"));
+    Widget confirm = TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+          Navigator.pop(context);
+          deleteDayNote(index);
+        },
+        child: const Text("Yes"));
+
+    AlertDialog confirmation = AlertDialog(
+      title: const Text("Delete Day Note"),
+      content:
+          const Text("Are you sure you want to delete this photo and note?"),
+      actions: [cancel, confirm],
+    );
+
+    showDialog(
+        context: context, builder: (BuildContext context) => confirmation);
+  }
+
+  /* Firebase */
 
   void uploadImage(XFile? file) async {
     Reference? imagesRef = storageRef.child(date);

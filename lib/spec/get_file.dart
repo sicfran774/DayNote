@@ -5,23 +5,23 @@ import 'package:flutter/services.dart' show rootBundle;
 class GetFile {
   static String appDir = "";
   static String defaultString = "";
-  static Future getFile(String date, String type) async {
+  static Future getFile(String date, String type, {int index = 0}) async {
     String extension = (type == 'photo') ? 'png' : 'json';
-    if (exists(date, type)) {
-      File file = File('$appDir/${type}s/$date.$extension');
+    if (exists(date, type, index: index)) {
+      File file = File('$appDir/${type}s/$date/$index.$extension');
       return file;
     }
     return null;
   }
 
-  static bool exists(String date, String type) {
+  static bool exists(String date, String type, {int index = 0}) {
     String extension = (type == 'photo') ? 'png' : 'json';
-    return File('$appDir/${type}s/$date.$extension').existsSync();
+    return File('$appDir/${type}s/$date/$index.$extension').existsSync();
   }
 
-  static String path(String date, String type) {
+  static String path(String date, String type, {int index = 0}) {
     String extension = (type == 'photo') ? 'png' : 'json';
-    return '$appDir/${type}s/$date.$extension';
+    return '$appDir/${type}s/$date/$index.$extension';
   }
 
   static Future generateDirectories() async {
@@ -33,5 +33,12 @@ class GetFile {
       Directory('$appDir/notes').create();
     }
     defaultString = await rootBundle.loadString("assets/json/default.json");
+  }
+
+  static Future generateNewDay(String date) async {
+    if (!await File('$appDir/photos/$date').exists()) {
+      Directory('$appDir/photos/$date').create();
+      Directory('$appDir/notes/$date').create();
+    }
   }
 }

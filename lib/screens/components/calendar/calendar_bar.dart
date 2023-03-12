@@ -1,3 +1,4 @@
+import 'package:day_note/spec/color_styles.dart';
 import 'package:day_note/spec/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -13,8 +14,22 @@ class CalendarBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 50,
+      width: 375,
       decoration: BoxDecoration(
-          color: Colors.blueGrey, borderRadius: BorderRadius.circular(10)),
+        color: Colors.blueGrey,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: const [
+          BoxShadow(
+            color: Color.fromARGB(118, 158, 158, 158),
+            offset: Offset(
+              0,
+              2.0,
+            ),
+            blurRadius: 5,
+            spreadRadius: 1.0,
+          ),
+        ],
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

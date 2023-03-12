@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'calendar_cell.dart';
-import 'package:day_note/spec/text_styles.dart';
 
 class CalendarBuilder extends StatefulWidget {
   final int month;
