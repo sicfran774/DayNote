@@ -23,6 +23,15 @@ class _NotesSectionState extends State<NotesSection> {
   QuillController controller = QuillController.basic();
   ScrollController scrollController = ScrollController();
   FocusNode focusNode = FocusNode();
+  bool _newNote = true;
+
+  @override
+  void initState() {
+    super.initState();
+    focusNode.addListener(() {
+      if (_newNote) controller.clear();
+    });
+  }
 
   void saveNote(BuildContext context) {
     var json = jsonEncode(controller.document.toDelta().toJson());
@@ -42,13 +51,18 @@ class _NotesSectionState extends State<NotesSection> {
 
   @override
   Widget build(BuildContext context) {
+    List<dynamic> defaultNote;
     if (GetFile.exists(_date, 'note')) {
-      var myJson =
+      _newNote = false;
+      defaultNote =
           json.decode(File(GetFile.path(_date, 'note')).readAsStringSync());
-      controller = QuillController(
-          document: Document.fromJson(myJson),
-          selection: const TextSelection.collapsed(offset: 0));
+    } else {
+      defaultNote = json.decode(GetFile.defaultString);
     }
+    controller = QuillController(
+        document: Document.fromJson(defaultNote),
+        selection: const TextSelection.collapsed(offset: 0));
+
     return Scaffold(
         body: Container(
             decoration: const BoxDecoration(
@@ -68,7 +82,7 @@ class _NotesSectionState extends State<NotesSection> {
       scrollController: scrollController,
       scrollable: true,
       padding: const EdgeInsets.all(10),
-      autoFocus: true,
+      autoFocus: false,
       focusNode: focusNode,
       readOnly: false,
       expands: true,

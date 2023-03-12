@@ -10,7 +10,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  GetFile.generateDirectories();
+  await GetFile.generateDirectories();
   runApp(const MyApp());
 }
 

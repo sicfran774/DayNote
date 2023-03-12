@@ -1,11 +1,13 @@
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'package:flutter/services.dart' show rootBundle;
 
 class GetFile {
   static String appDir = "";
+  static String defaultString = "";
   static Future getFile(String date, String type) async {
     String extension = (type == 'photo') ? 'png' : 'json';
-    if (await exists(date, type)) {
+    if (exists(date, type)) {
       File file = File('$appDir/${type}s/$date.$extension');
       return file;
     }
@@ -30,5 +32,6 @@ class GetFile {
     if (!await File('$appDir/notes').exists()) {
       Directory('$appDir/notes').create();
     }
+    defaultString = await rootBundle.loadString("assets/json/default.json");
   }
 }
