@@ -16,5 +16,8 @@ class GetPhoto {
     if (!await File('$appDir/photos').exists()) {
       Directory('$appDir/photos').create();
     }
+    if (!await File('$appDir/notes').exists()) {
+      Directory('$appDir/notes').create();
+    }
   }
 }

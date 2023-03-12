@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.day_note">
+    package="com.sicfran.day_note">
    <application
-        android:label="day_note"
+        android:label="DayNote"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

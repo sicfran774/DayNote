@@ -11,11 +11,11 @@ class NotesSection extends StatefulWidget {
 }
 
 class _NotesSectionState extends State<NotesSection> {
+  QuillController controller = QuillController.basic();
+  ScrollController scrollController = ScrollController();
+  FocusNode focusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
-    QuillController controller = QuillController.basic();
-    ScrollController scrollController = ScrollController();
-    FocusNode focusNode = FocusNode();
     return QuillEditor(
       controller: controller,
       scrollController: scrollController,
