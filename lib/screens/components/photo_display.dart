@@ -43,7 +43,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       return null;
     }
 
-    if (await GetFile.exists(date, 'photo')) {
+    if (GetFile.exists(date, 'photo')) {
       print('$date already exists, deleting');
       await File('$photoPath/$date.png').delete();
     } else {
@@ -59,11 +59,14 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     print("Saved image to $photoPath/$date.png");
   }
 
-  void deletePhoto() async {
+  void deleteDayNote() async {
     Navigator.pop(context);
-    try {
+    if (GetFile.exists(date, 'photo')) {
       File('$photoPath/$date.png').delete();
-    } catch (e) {}
+    }
+    if (GetFile.exists(date, 'note')) {
+      File('$notePath/$date.json').delete();
+    }
     setState(() {
       image = null;
     });
@@ -93,14 +96,22 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
           controller: pageController,
           scrollDirection: Axis.vertical,
           children: [
-            Scaffold(
-                body: Center(child: imageWidget(data)),
-                floatingActionButton: FloatingActionButton(
-                    child: const Icon(Icons.photo),
-                    onPressed: () => chooseImageWidget(context))),
-            NotesSection(date: date),
+            if (image == null) ...[
+              photoSection(data),
+            ] else ...[
+              photoSection(data),
+              NotesSection(date: date),
+            ]
           ],
         ));
+  }
+
+  Scaffold photoSection(data) {
+    return Scaffold(
+        body: Center(child: imageWidget(data)),
+        floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.photo),
+            onPressed: () => chooseImageWidget(context)));
   }
 
   Future chooseImageWidget(BuildContext context) {
@@ -128,8 +139,8 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
           ),
           ListTile(
             leading: const Icon(Icons.delete_forever),
-            title: const Text('Delete this image'),
-            onTap: () => deletePhoto(),
+            title: const Text('Delete this day note'),
+            onTap: () => deleteDayNote(),
           ),
         ],
       );
