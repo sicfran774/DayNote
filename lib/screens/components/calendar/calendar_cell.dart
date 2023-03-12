@@ -1,6 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:day_note/spec/color_styles.dart';
-import 'package:day_note/spec/get_photo.dart';
+import 'package:day_note/spec/get_file.dart';
 import 'package:flutter/material.dart';
 import 'package:day_note/screens/components/photo_display.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -44,7 +44,7 @@ class CalendarCell extends StatelessWidget {
 
     if (visible) {
       return FutureBuilder(
-          future: GetPhoto.getPhoto(date),
+          future: GetFile.getFile(date, 'photo'),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return cellBuilder(date, snapshot.data);

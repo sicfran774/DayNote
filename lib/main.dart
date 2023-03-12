@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:day_note/screens/components/bottom_bar.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'spec/get_photo.dart';
+import 'spec/get_file.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  GetPhoto.generateDirectories();
+  GetFile.generateDirectories();
   runApp(const MyApp());
 }
 

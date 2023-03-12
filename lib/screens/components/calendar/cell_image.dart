@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:day_note/spec/color_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:day_note/spec/get_photo.dart';
+import 'package:day_note/spec/get_file.dart';
 
 const double width = 10;
 const double height = 100;
@@ -22,7 +22,7 @@ class _CellImageState extends State<CellImage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: GetPhoto.getPhoto(date),
+        future: GetFile.getFile(date, 'photo'),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return Container(

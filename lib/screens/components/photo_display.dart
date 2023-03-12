@@ -7,11 +7,10 @@ import 'package:day_note/spec/text_styles.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
+import '../../spec/get_file.dart';
 
-import '../../spec/get_photo.dart';
-
-String photoPath = '${GetPhoto.appDir}/photos';
+String photoPath = '${GetFile.appDir}/photos';
+String notePath = '${GetFile.appDir}/notes';
 
 class PhotoDisplay extends StatefulWidget {
   final File? image;
@@ -44,7 +43,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       return null;
     }
 
-    if (await File('$photoPath/$date.png').exists()) {
+    if (await GetFile.exists(date, 'photo')) {
       print('$date already exists, deleting');
       await File('$photoPath/$date.png').delete();
     } else {
@@ -70,17 +69,13 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     });
   }
 
-  void updatePath() async {
-    photoPath = '${(await getApplicationDocumentsDirectory()).path}/photos';
-  }
-
   @override
   Widget build(BuildContext context) {
-    updatePath();
     return FutureBuilder(
-        future: GetPhoto.getPhoto(date),
+        future: GetFile.getFile(date, 'photo'),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
+            image = snapshot.data;
             return screen(context, snapshot.data);
           } else {
             return Container(color: gitHubBlack);
@@ -94,23 +89,16 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         backgroundColor: Colors.black,
         appBar: AppBar(title: Text(title!)),
-        floatingActionButton: Container(
-            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-            child: FloatingActionButton(
-                child: const Icon(Icons.photo),
-                onPressed: () => chooseImageWidget(context))),
-        body: ListView(
+        body: PageView(
           controller: pageController,
           scrollDirection: Axis.vertical,
           children: [
-            imageWidget(data),
-            Container(
-                decoration: const BoxDecoration(
-                    border: Border(
-                  top: BorderSide(width: 3, color: gitHubBlack),
-                )),
-                height: 500,
-                child: NotesSection()),
+            Scaffold(
+                body: Center(child: imageWidget(data)),
+                floatingActionButton: FloatingActionButton(
+                    child: const Icon(Icons.photo),
+                    onPressed: () => chooseImageWidget(context))),
+            NotesSection(date: date),
           ],
         ));
   }
@@ -165,7 +153,6 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
 
   Widget imageWidget(File? image) {
     if (image != null) {
-      this.image = image;
       //uploadImage(displayImage);
       return Image(image: FileImage(image));
     } else {
