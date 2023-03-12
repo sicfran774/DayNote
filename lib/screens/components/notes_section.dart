@@ -12,7 +12,8 @@ import '../../spec/get_file.dart';
 
 class NotesSection extends StatefulWidget {
   final String date;
-  const NotesSection({super.key, required this.date});
+  final int index;
+  const NotesSection({super.key, required this.date, required this.index});
 
   @override
   State<NotesSection> createState() => _NotesSectionState();
@@ -20,6 +21,7 @@ class NotesSection extends StatefulWidget {
 
 class _NotesSectionState extends State<NotesSection> {
   late final String _date = widget.date;
+  late final _index = widget.index;
   QuillController controller = QuillController.basic();
   ScrollController scrollController = ScrollController();
   FocusNode focusNode = FocusNode();
@@ -36,12 +38,12 @@ class _NotesSectionState extends State<NotesSection> {
   void saveNote(BuildContext context) {
     var json = jsonEncode(controller.document.toDelta().toJson());
 
-    if (GetFile.exists(_date, 'note')) {
-      File(GetFile.path(_date, 'note')).delete();
+    if (GetFile.exists(_date, 'note', index: _index)) {
+      File(GetFile.path(_date, 'note', index: _index)).delete();
     }
-    File file = File(GetFile.path(_date, 'note'));
+    File file = File(GetFile.path(_date, 'note', index: _index));
     file.writeAsString(json);
-    print("Saved note to ${GetFile.path(_date, 'note')}");
+    print("Saved note to ${GetFile.path(_date, 'note', index: _index)}");
 
     //close keyboard
     setState(() {
@@ -52,10 +54,10 @@ class _NotesSectionState extends State<NotesSection> {
   @override
   Widget build(BuildContext context) {
     List<dynamic> defaultNote;
-    if (GetFile.exists(_date, 'note')) {
+    if (GetFile.exists(_date, 'note', index: _index)) {
       _newNote = false;
-      defaultNote =
-          json.decode(File(GetFile.path(_date, 'note')).readAsStringSync());
+      defaultNote = json.decode(
+          File(GetFile.path(_date, 'note', index: _index)).readAsStringSync());
     } else {
       defaultNote = json.decode(GetFile.defaultString);
     }

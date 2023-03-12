@@ -58,7 +58,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       image = newImage;
     });
 
-    print("Saved image to $photoPath/$date.png");
+    print("Saved image to $photoPath/$date/$index.png");
   }
 
   void deleteDayNote(int index) async {
@@ -110,7 +110,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
           photoSection(data, index),
         ] else ...[
           photoSection(data, index),
-          NotesSection(date: date),
+          NotesSection(date: date, index: index),
         ]
       ],
     );
