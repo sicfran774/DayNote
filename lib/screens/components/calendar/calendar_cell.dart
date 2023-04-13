@@ -2,7 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:day_note/spec/color_styles.dart';
 import 'package:day_note/spec/get_file.dart';
 import 'package:flutter/material.dart';
-import 'package:day_note/screens/components/photo_display.dart';
+import 'package:day_note/screens/components/daynote/photo_display.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
@@ -15,7 +15,6 @@ const double height = 100;
 final storageRef = FirebaseStorage.instance.ref();
 
 class CalendarCell extends StatelessWidget {
-  //final Function() notifyParent;
   final int day, month, year;
   final bool visible;
 
@@ -66,7 +65,6 @@ class CalendarCell extends StatelessWidget {
       closedBuilder: (context, action) => CellImage(day: day, date: date),
       openBuilder: (context, action) => PhotoDisplay(
         date: date,
-        image: displayImage,
         title: DateFormat.yMMMMd()
             .format(DateTime.utc(year, month, day))
             .toString(),

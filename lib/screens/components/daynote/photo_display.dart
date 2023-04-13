@@ -1,26 +1,24 @@
 // ignore_for_file: avoid_print
 
 import 'dart:io';
-import 'package:day_note/screens/components/notes_section.dart';
+import 'package:day_note/screens/components/daynote/notes_section.dart';
 import 'package:day_note/spec/color_styles.dart';
 import 'package:day_note/spec/text_styles.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../spec/get_file.dart';
+import '../../../spec/get_file.dart';
 
 String photoPath = '${GetFile.appDir}/photos';
 String notePath = '${GetFile.appDir}/notes';
 
 class PhotoDisplay extends StatefulWidget {
-  final File? image;
   final String date;
   final String? title;
 
   const PhotoDisplay({
     super.key,
     required this.date,
-    required this.image,
     required this.title,
   });
 
@@ -31,7 +29,6 @@ class PhotoDisplay extends StatefulWidget {
 class _PhotoDisplayState extends State<PhotoDisplay> {
   final storageRef = FirebaseStorage.instance.ref();
   final ImagePicker _picker = ImagePicker();
-  late File? image = widget.image;
   late String date = widget.date;
   late String? title = widget.title;
 
@@ -58,17 +55,19 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       return 1;
     }
 
-    print(photos);
     return photos.length + 1;
   }
 
-  Future renameDayNotes() async {
+  void renameDayNotes() async {
     List<FileSystemEntity> photos = await directories(0); //get photo array
     List<FileSystemEntity> notes = await directories(1); //get note array
+
     int index = 0;
     for (var photo in photos) {
       try {
-        photo.renameSync(GetFile.path(date, 'photo', index: index));
+        print(
+            'renaming $photo to ${GetFile.path(date, 'photo', index: index)}');
+        photo.rename(GetFile.path(date, 'photo', index: index));
         ++index;
       } catch (e) {
         continue;
@@ -79,15 +78,28 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     if (notes.isNotEmpty) {
       for (var note in notes) {
         try {
-          note.renameSync(GetFile.path(date, 'note', index: index));
+          note.rename(GetFile.path(date, 'note', index: index));
           ++index;
         } catch (e) {
           continue;
         }
       }
     }
+  }
 
-    setState(() {});
+  void deleteDayNote(int index) async {
+    File('$photoPath/$date/$index.png').delete();
+
+    if (GetFile.exists(date, 'note', index: index)) {
+      File('$notePath/$date/$index.json').delete();
+    }
+
+    setState(() {
+      page = 0;
+    });
+
+    imageCache.clear(); //BRUH
+    renameDayNotes();
   }
 
   Future choosePhoto(ImageSource source, int index) async {
@@ -103,30 +115,13 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       await File('$photoPath/$date/$index.png').delete();
     }
 
-    File newImage =
-        await File(tempImage.path).copy('$photoPath/$date/$index.png');
+    File(tempImage.path).copy('$photoPath/$date/$index.png');
 
     setState(() {
-      image = newImage;
       page = index;
     });
 
     print("Saved image to $photoPath/$date/$index.png");
-  }
-
-  void deleteDayNote(int index) {
-    File('$photoPath/$date/$index.png').deleteSync();
-
-    if (GetFile.exists(date, 'note', index: index)) {
-      File('$notePath/$date/$index.json').deleteSync();
-    }
-
-    renameDayNotes();
-
-    setState(() {
-      image = null;
-      page = 0;
-    });
   }
 
   @override
@@ -148,7 +143,6 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.done) {
-                            image = snapshot.data;
                             return individualDayNote(snapshot.data, index);
                           } else {
                             return Container(color: gitHubBlack);
@@ -164,13 +158,12 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   }
 
   PageView individualDayNote(data, int index) {
-    print(index);
     PageController verticalController = PageController();
     return PageView(
       controller: verticalController,
       scrollDirection: Axis.vertical,
       children: [
-        if (image == null) ...[
+        if (data == null) ...[
           photoSection(data, index),
         ] else ...[
           photoSection(data, index),
@@ -189,14 +182,14 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     );
   }
 
-  Widget imageWidget(File? image) {
-    if (image != null) {
+  Widget imageWidget(data) {
+    if (data != null) {
       //uploadImage(displayImage);
-      return Image(image: FileImage(image));
+      return Image(image: FileImage(data));
     } else {
       return const SizedBox(
         height: 500,
-        child: Center(child: Text("No image found :(", style: headerMedium)),
+        child: Center(child: Text("Add an image!", style: headerMedium)),
       );
     }
   }
@@ -223,7 +216,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
           title: const Text('Choose from gallery'),
           onTap: () => choosePhoto(ImageSource.gallery, index),
         ),
-        if (image != null) ...[
+        if (GetFile.exists(date, "photo", index: index)) ...[
           ListTile(
             leading: const Icon(Icons.delete_forever),
             title: const Text('Delete this day note'),
