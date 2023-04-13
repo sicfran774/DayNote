@@ -47,14 +47,29 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       return 1;
     }
 
-    int index = 0;
+    if (photos.isEmpty) {
+      return 1;
+    }
+
     for (var photo in photos) {
-      photo.renameSync('${GetFile.path(date, 'photo')}/$index.png');
+      try {
+        photo.renameSync(GetFile.path(date, 'photo'));
+      } catch (e) {
+        continue;
+      }
     }
-    index = 0;
-    for (var note in notes) {
-      note.renameSync('${GetFile.path(date, 'note')}/$index.png');
+
+    if (notes.isNotEmpty) {
+      for (var note in notes) {
+        try {
+          note.renameSync(GetFile.path(date, 'note'));
+        } catch (e) {
+          continue;
+        }
+      }
     }
+
+    print(photos);
     return photos.length + 1;
   }
 
