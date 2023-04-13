@@ -29,29 +29,30 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          const SizedBox(height: 30),
-          ValueListenableBuilder(
-              valueListenable: _notifier,
-              builder: (context, value, child) {
-                return CalendarBar(date: value);
-              }),
-          Expanded(
-            child: PageView.builder(
-              controller: controller,
-              onPageChanged: ((index) {
-                _notifier.value = DateFormat.yMMMM()
-                    .format(DateTime.utc(
-                        year, index - 4000 + month, DateTime.now().day))
-                    .toString();
-              }),
-              itemBuilder: (context, index) {
-                return calendarPage(index);
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            ValueListenableBuilder(
+                valueListenable: _notifier,
+                builder: (context, value, child) {
+                  return CalendarBar(date: value);
+                }),
+            Expanded(
+              child: PageView.builder(
+                controller: controller,
+                onPageChanged: ((index) {
+                  _notifier.value = DateFormat.yMMMM()
+                      .format(DateTime.utc(
+                          year, index - 4000 + month, DateTime.now().day))
+                      .toString();
+                }),
+                itemBuilder: (context, index) {
+                  return calendarPage(index);
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

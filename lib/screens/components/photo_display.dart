@@ -34,7 +34,31 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   late File? image = widget.image;
   late String date = widget.date;
   late String? title = widget.title;
-  late List<Widget> dayNotes;
+
+  Future amountOfDayNotes() async {
+    final photoDir = Directory('${GetFile.appDir}/photos/$date');
+    final noteDir = Directory('${GetFile.appDir}/notes/$date');
+    List<FileSystemEntity> photos;
+    List<FileSystemEntity> notes;
+    try {
+      photos = await photoDir.list().toList();
+      notes = await noteDir.list().toList();
+    } catch (e) {
+      return 1;
+    }
+
+    int index = 0;
+    for (var photo in photos) {
+      photo.renameSync('${GetFile.path(date, 'photo')}/$index.png');
+    }
+    index = 0;
+    for (var note in notes) {
+      note.renameSync('${GetFile.path(date, 'note')}/$index.png');
+    }
+    return photos.length + 1;
+  }
+
+  void renameDayNotes() {}
 
   Future choosePhoto(ImageSource source, int index) async {
     Navigator.pop(context);
@@ -47,8 +71,6 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     if (GetFile.exists(date, 'photo', index: index)) {
       print('$date already exists, deleting');
       await File('$photoPath/$date/$index.png').delete();
-    } else {
-      print('new image');
     }
 
     File newImage =
@@ -73,31 +95,38 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     });
   }
 
-  void getDayNotes() {}
-
   @override
   Widget build(BuildContext context) {
     PageController horizontalController = PageController();
     GetFile.generateNewDay(date);
-    return Scaffold(
-        backgroundColor: Colors.black,
-        appBar: AppBar(title: Text(title!)),
-        body: PageView.builder(
-          controller: horizontalController,
-          itemBuilder: (context, index) {
-            return FutureBuilder(
-                future: GetFile.getFile(date, 'photo', index: index),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    image = snapshot.data;
-                    return individualDayNote(snapshot.data, index);
-                  } else {
-                    return Container(color: gitHubBlack);
-                  }
-                });
-          },
-          itemCount: 2,
-        ));
+    return FutureBuilder(
+        future: amountOfDayNotes(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Scaffold(
+                backgroundColor: Colors.black,
+                appBar: AppBar(title: Text(title!)),
+                body: PageView.builder(
+                  controller: horizontalController,
+                  itemBuilder: (context, index) {
+                    return FutureBuilder(
+                        future: GetFile.getFile(date, 'photo', index: index),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            image = snapshot.data;
+                            return individualDayNote(snapshot.data, index);
+                          } else {
+                            return Container(color: gitHubBlack);
+                          }
+                        });
+                  },
+                  itemCount: snapshot.data,
+                ));
+          } else {
+            return Container();
+          }
+        });
   }
 
   PageView individualDayNote(data, int index) {
