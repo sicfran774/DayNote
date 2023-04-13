@@ -35,7 +35,9 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   late String date = widget.date;
   late String? title = widget.title;
 
-  Future amountOfDayNotes() async {
+  int page = 0;
+
+  Future directories(int index) async {
     final photoDir = Directory('${GetFile.appDir}/photos/$date');
     final noteDir = Directory('${GetFile.appDir}/notes/$date');
     List<FileSystemEntity> photos;
@@ -44,36 +46,49 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       photos = await photoDir.list().toList();
       notes = await noteDir.list().toList();
     } catch (e) {
-      return 1;
+      return [];
     }
+    return (index == 0) ? photos : notes;
+  }
+
+  Future amountOfDayNotes() async {
+    List<FileSystemEntity> photos = await directories(0); //get photo array
 
     if (photos.isEmpty) {
       return 1;
-    }
-
-    for (var photo in photos) {
-      try {
-        photo.renameSync(GetFile.path(date, 'photo'));
-      } catch (e) {
-        continue;
-      }
-    }
-
-    if (notes.isNotEmpty) {
-      for (var note in notes) {
-        try {
-          note.renameSync(GetFile.path(date, 'note'));
-        } catch (e) {
-          continue;
-        }
-      }
     }
 
     print(photos);
     return photos.length + 1;
   }
 
-  void renameDayNotes() {}
+  Future renameDayNotes() async {
+    List<FileSystemEntity> photos = await directories(0); //get photo array
+    List<FileSystemEntity> notes = await directories(1); //get note array
+    int index = 0;
+    for (var photo in photos) {
+      try {
+        photo.renameSync(GetFile.path(date, 'photo', index: index));
+        ++index;
+      } catch (e) {
+        continue;
+      }
+    }
+
+    index = 0;
+    if (notes.isNotEmpty) {
+      for (var note in notes) {
+        try {
+          note.renameSync(GetFile.path(date, 'note', index: index));
+          ++index;
+        } catch (e) {
+          continue;
+        }
+      }
+    }
+
+    setState(() {});
+  }
 
   Future choosePhoto(ImageSource source, int index) async {
     Navigator.pop(context);
@@ -93,26 +108,30 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
 
     setState(() {
       image = newImage;
+      page = index;
     });
 
     print("Saved image to $photoPath/$date/$index.png");
   }
 
-  void deleteDayNote(int index) async {
-    if (GetFile.exists(date, 'photo')) {
-      File('$photoPath/$date/$index.png').delete();
+  void deleteDayNote(int index) {
+    File('$photoPath/$date/$index.png').deleteSync();
+
+    if (GetFile.exists(date, 'note', index: index)) {
+      File('$notePath/$date/$index.json').deleteSync();
     }
-    if (GetFile.exists(date, 'note')) {
-      File('$notePath/$date/$index.json').delete();
-    }
+
+    renameDayNotes();
+
     setState(() {
       image = null;
+      page = 0;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    PageController horizontalController = PageController();
+    PageController horizontalController = PageController(initialPage: page);
     GetFile.generateNewDay(date);
     return FutureBuilder(
         future: amountOfDayNotes(),
@@ -145,6 +164,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   }
 
   PageView individualDayNote(data, int index) {
+    print(index);
     PageController verticalController = PageController();
     return PageView(
       controller: verticalController,
@@ -219,9 +239,9 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
         onPressed: () => Navigator.pop(context), child: const Text("Cancel"));
     Widget confirm = TextButton(
         onPressed: () {
-          Navigator.pop(context);
-          Navigator.pop(context);
           deleteDayNote(index);
+          Navigator.pop(context);
+          Navigator.pop(context);
         },
         child: const Text("Yes"));
 
