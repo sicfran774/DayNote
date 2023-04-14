@@ -22,6 +22,7 @@ class NotesSection extends StatefulWidget {
 class _NotesSectionState extends State<NotesSection> {
   late final String _date = widget.date;
   late final _index = widget.index;
+  late List<dynamic> defaultNote;
   QuillController controller = QuillController.basic();
   ScrollController scrollController = ScrollController();
   FocusNode focusNode = FocusNode();
@@ -36,24 +37,24 @@ class _NotesSectionState extends State<NotesSection> {
   }
 
   void saveNote(BuildContext context) {
-    var json = jsonEncode(controller.document.toDelta().toJson());
+    var jsonString = jsonEncode(controller.document.toDelta().toJson());
 
     if (GetFile.exists(_date, 'note', index: _index)) {
       File(GetFile.path(_date, 'note', index: _index)).delete();
     }
     File file = File(GetFile.path(_date, 'note', index: _index));
-    file.writeAsString(json);
+    file.writeAsString(jsonString);
     print("Saved note to ${GetFile.path(_date, 'note', index: _index)}");
 
     //close keyboard
-    setState(() {
-      focusNode.unfocus();
-    });
+    focusNode.unfocus();
+
+    //rebuild to maintain text
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    List<dynamic> defaultNote;
     if (GetFile.exists(_date, 'note', index: _index)) {
       _newNote = false;
       defaultNote = json.decode(
