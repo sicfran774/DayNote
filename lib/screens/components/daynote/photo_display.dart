@@ -202,7 +202,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
               (data == null) ? const Icon(Icons.add) : const Icon(Icons.photo),
           onPressed: () => chooseImageWidget(context, index)),
       body: Stack(children: [
-        Center(child: imageWidget(data)),
+        Center(child: InteractiveViewer(child: imageWidget(data))),
         if (index == 0) ...[
           Container(
             padding: const EdgeInsets.all(10),
