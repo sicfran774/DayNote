@@ -49,7 +49,12 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   }
 
   Future amountOfDayNotes() async {
-    List<FileSystemEntity> photos = await directories(0); //get photo array
+    List<FileSystemEntity> photos;
+    try {
+      photos = await directories(0); //get photo array
+    } catch (e) {
+      return 1;
+    }
 
     if (photos.isEmpty) {
       return 1;
