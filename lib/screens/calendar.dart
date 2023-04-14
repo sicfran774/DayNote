@@ -111,7 +111,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
             .toString();
         // '{ $currentYear';
         monthPageNotifier.value = false;
-        monthPageController.jumpToPage(tempPage);
+        monthPageController.animateToPage(tempPage,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.fastOutSlowIn);
       },
       child: Center(
         child: Text(month, style: dayStyle),

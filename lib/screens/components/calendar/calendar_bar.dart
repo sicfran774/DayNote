@@ -48,7 +48,12 @@ class CalendarBar extends StatelessWidget {
                 if (!monthPageNotifier.value) ...[
                   IconButton(
                       onPressed: () {
-                        dayPageController.jumpToPage(4000);
+                        int tempPage = 4000 +
+                            (int.parse(dateNotifier.value.split(' ')[1]) -
+                                DateTime.now().year);
+                        dayPageController.animateToPage(tempPage,
+                            duration: const Duration(milliseconds: 200),
+                            curve: Curves.fastOutSlowIn);
                         monthPageNotifier.value = true;
                         dateNotifier.value =
                             DateFormat.y().format(DateTime.now()).toString();
