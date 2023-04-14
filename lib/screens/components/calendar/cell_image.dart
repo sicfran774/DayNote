@@ -9,7 +9,9 @@ const double height = 100;
 class CellImage extends StatefulWidget {
   final int day;
   final String date;
-  const CellImage({super.key, required this.day, required this.date});
+  final bool today;
+  const CellImage(
+      {super.key, required this.day, required this.date, this.today = false});
 
   @override
   State<CellImage> createState() => _CellImageState();
@@ -18,6 +20,7 @@ class CellImage extends StatefulWidget {
 class _CellImageState extends State<CellImage> {
   late int day = widget.day;
   late String date = widget.date;
+  late bool today = widget.today;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,9 @@ class _CellImageState extends State<CellImage> {
                 height: height,
                 decoration: BoxDecoration(
                   image: imageWidget(snapshot.data),
-                  border: Border.all(),
+                  border: (today)
+                      ? Border.all(color: highlightCellColor)
+                      : Border.all(),
                   color: cellColor,
                 ),
                 child: Text(

@@ -6,14 +6,13 @@ import '../spec/color_styles.dart';
 import 'components/calendar/calendar_bar.dart';
 import 'components/calendar/calendar_builder.dart';
 
-var date = DateFormat.y().format(DateTime.now()).toString();
-bool monthPage = true;
+var date = DateFormat.yMMMM().format(DateTime.now()).toString();
+bool monthPage = false;
 final int year = DateTime.now().year;
 final int month = DateTime.now().month;
 
 class CalendarScreen extends StatefulWidget {
-  final int defaultIndex;
-  const CalendarScreen({super.key, this.defaultIndex = 0});
+  const CalendarScreen({super.key});
 
   @override
   State<CalendarScreen> createState() => _CalendarScreenState();
@@ -22,7 +21,7 @@ class CalendarScreen extends StatefulWidget {
 class _CalendarScreenState extends State<CalendarScreen> {
   late int currentYear = DateTime.now().year,
       currentMonth = DateTime.now().month;
-  late int defaultIndex = widget.defaultIndex;
+  bool today = false;
   final PageController dayPageController = PageController(initialPage: 4000);
   final PageController monthPageController = PageController(initialPage: 4000);
   final ValueNotifier<String> dateNotifier = ValueNotifier(date);
@@ -70,6 +69,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
       controller: monthPageController,
       onPageChanged: ((index) {
         currentYear = DateTime.utc(index - 4000 + year, month, 1).year;
+        setState(() {
+          today = (currentYear == DateTime.now().year);
+        });
         // print('current year: $currentYear');
         dateNotifier.value = currentYear.toString();
       }),
@@ -77,7 +79,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         padding: const EdgeInsets.all(10),
         child: GridView.count(
           crossAxisCount: 4,
-          childAspectRatio: 3 / 2,
+          childAspectRatio: 2 / 2,
           crossAxisSpacing: 2,
           mainAxisSpacing: 2,
           children: [
@@ -100,6 +102,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget monthCell(String month, int monthIndex) {
+    today = (DateTime.now().year == currentYear &&
+        DateTime.now().month == monthIndex);
     return ElevatedButton(
       onPressed: () {
         int tempPage = 4000 +
@@ -116,7 +120,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             curve: Curves.fastOutSlowIn);
       },
       child: Center(
-        child: Text(month, style: dayStyle),
+        child: Text(month, style: (today) ? headerMediumColor : headerMedium),
       ),
     );
   }

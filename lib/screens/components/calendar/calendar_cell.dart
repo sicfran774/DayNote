@@ -61,8 +61,15 @@ class CalendarCell extends StatelessWidget {
   }
 
   Widget cellBuilder(String date, File? displayImage) {
+    bool today = (DateTime.now().day == day &&
+        DateTime.now().month == month &&
+        DateTime.now().year == year);
     return OpenContainer(
-      closedBuilder: (context, action) => CellImage(day: day, date: date),
+      closedBuilder: (context, action) => CellImage(
+        day: day,
+        date: date,
+        today: today,
+      ),
       openBuilder: (context, action) => PhotoDisplay(
         date: date,
         title: DateFormat.yMMMMd()
