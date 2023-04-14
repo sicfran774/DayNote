@@ -127,7 +127,6 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   void setAsDisplayDayNote(int index) async {
     switchDayNotes(index, 'photo');
     switchDayNotes(index, 'note');
-    Navigator.pop(context);
     setState(() {
       page = 0;
     });
@@ -202,20 +201,23 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
               (data == null) ? const Icon(Icons.add) : const Icon(Icons.photo),
           onPressed: () => chooseImageWidget(context, index)),
       body: Stack(children: [
-        Center(
-          child: Row(children: [
-            Expanded(child: InteractiveViewer(child: imageWidget(data)))
-          ]),
-        ),
-        if (index == 0) ...[
+        Center(child: imageWidget(data)),
+        if (GetFile.exists(date, "photo", index: index)) ...[
           Container(
-            padding: const EdgeInsets.all(10),
-            child: const Icon(
-              Icons.star,
-              color: Colors.blueGrey,
-              size: 40,
-            ),
-          )
+              alignment: Alignment.topRight,
+              padding: (index == 0)
+                  ? const EdgeInsets.all(15)
+                  : const EdgeInsets.only(right: 15, top: 7),
+              child: (index == 0)
+                  ? const Icon(
+                      Icons.star,
+                      color: starColor,
+                      size: 40,
+                    )
+                  : IconButton(
+                      onPressed: () => setAsDisplayDayNote(index),
+                      icon: const Icon(Icons.star_border_outlined,
+                          color: starColor, size: 40)))
         ],
       ]),
     );
@@ -224,7 +226,12 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   Widget imageWidget(data) {
     if (data != null) {
       //uploadImage(displayImage);
-      return Image(image: FileImage(data));
+      return Row(
+        children: [
+          Expanded(
+              child: InteractiveViewer(child: Image(image: FileImage(data)))),
+        ],
+      );
     } else {
       return const SizedBox(
         height: 500,
@@ -249,7 +256,10 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
           ListTile(
             leading: const Icon(Icons.star),
             title: const Text('Set as display DayNote'),
-            onTap: () => setAsDisplayDayNote(index),
+            onTap: () {
+              setAsDisplayDayNote(index);
+              Navigator.pop(context);
+            },
           ),
         ],
         ListTile(
