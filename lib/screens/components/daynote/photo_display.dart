@@ -55,6 +55,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       return 1;
     }
 
+    imageCache.clear(); //BRUH you have to clear the cache
     return photos.length + 1;
   }
 
@@ -65,8 +66,8 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     int index = 0;
     for (var photo in photos) {
       try {
-        print(
-            'renaming $photo to ${GetFile.path(date, 'photo', index: index)}');
+        /*print(
+            'renaming $photo to ${GetFile.path(date, 'photo', index: index)}');*/
         photo.rename(GetFile.path(date, 'photo', index: index));
         ++index;
       } catch (e) {
@@ -98,7 +99,6 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       page = 0;
     });
 
-    imageCache.clear(); //BRUH
     renameDayNotes();
   }
 
@@ -122,6 +122,28 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     });
 
     print("Saved image to $photoPath/$date/$index.png");
+  }
+
+  void setAsDisplayDayNote(int index) async {
+    switchDayNotes(index, 'photo');
+    switchDayNotes(index, 'note');
+    Navigator.pop(context);
+    setState(() {
+      page = 0;
+    });
+  }
+
+  void switchDayNotes(int index, String type) {
+    try {
+      File(GetFile.path(date, type))
+          .renameSync(GetFile.path(date, type, index: 9999));
+      File(GetFile.path(date, type, index: index))
+          .renameSync(GetFile.path(date, type, index: 0));
+      File(GetFile.path(date, type, index: 9999))
+          .renameSync(GetFile.path(date, type, index: index));
+    } catch (e) {
+      return;
+    }
   }
 
   @override
@@ -176,9 +198,22 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   Scaffold photoSection(data, index) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.photo),
+          child:
+              (data == null) ? const Icon(Icons.add) : const Icon(Icons.photo),
           onPressed: () => chooseImageWidget(context, index)),
-      body: Center(child: imageWidget(data)),
+      body: Stack(children: [
+        Center(child: imageWidget(data)),
+        if (index == 0) ...[
+          Container(
+            padding: const EdgeInsets.all(10),
+            child: const Icon(
+              Icons.star,
+              color: Colors.blueGrey,
+              size: 40,
+            ),
+          )
+        ],
+      ]),
     );
   }
 
@@ -206,6 +241,13 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   Wrap optionsWidget(int index) {
     return Wrap(
       children: [
+        if (index != 0 && GetFile.exists(date, "photo", index: index)) ...[
+          ListTile(
+            leading: const Icon(Icons.star),
+            title: const Text('Set as display DayNote'),
+            onTap: () => setAsDisplayDayNote(index),
+          ),
+        ],
         ListTile(
           leading: const Icon(Icons.photo_camera),
           title: const Text('Take a photo'),
@@ -219,7 +261,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
         if (GetFile.exists(date, "photo", index: index)) ...[
           ListTile(
             leading: const Icon(Icons.delete_forever),
-            title: const Text('Delete this day note'),
+            title: const Text('Delete this DayNote'),
             onTap: () => confirmDelete(context, index),
           ),
         ]
@@ -227,7 +269,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     );
   }
 
-  confirmDelete(BuildContext context, int index) {
+  void confirmDelete(BuildContext context, int index) {
     Widget cancel = TextButton(
         onPressed: () => Navigator.pop(context), child: const Text("Cancel"));
     Widget confirm = TextButton(

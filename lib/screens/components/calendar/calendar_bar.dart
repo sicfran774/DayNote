@@ -33,13 +33,12 @@ class CalendarBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          GestureDetector(
-              //Todo: goto month display
-              //onTap: () => changePage(oldIndex - 1),
-              child: const SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: Icon(Icons.chevron_left, color: Colors.white))),
+          IconButton(
+              onPressed: () {
+                Navigator.pop;
+              },
+              icon: const Icon(Icons.chevron_left_rounded),
+              color: Colors.white),
           Text(date, style: headerMedium),
           const SizedBox(width: 50, height: 20)
         ],

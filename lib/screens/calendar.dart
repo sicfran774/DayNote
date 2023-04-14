@@ -20,11 +20,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
   final PageController controller = PageController(initialPage: 4000);
   final ValueNotifier<String> _notifier = ValueNotifier(date);
 
-  void changePage(int index) {
+  /*void changePage(int index) {
     controller.animateToPage(index,
         duration: const Duration(milliseconds: 200),
         curve: Curves.fastOutSlowIn);
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
