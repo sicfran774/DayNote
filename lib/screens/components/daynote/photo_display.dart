@@ -68,28 +68,24 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     List<FileSystemEntity> photos = await directories(0); //get photo array
     List<FileSystemEntity> notes = await directories(1); //get note array
 
-    int index = 0;
+    int index = 0, noteIndex = 0;
     for (var photo in photos) {
-      try {
-        /*print(
+      /*print(
             'renaming $photo to ${GetFile.path(date, 'photo', index: index)}');*/
-        photo.rename(GetFile.path(date, 'photo', index: index));
-        ++index;
-      } catch (e) {
-        continue;
-      }
-    }
+      photo.rename(GetFile.path(date, 'photo', index: index));
+      try {
+        var name = notes[noteIndex]
+            .toString()
+            .split('/')[8] //get index.json
+            .split('.')[0]; //get index number
 
-    index = 0;
-    if (notes.isNotEmpty) {
-      for (var note in notes) {
-        try {
-          note.rename(GetFile.path(date, 'note', index: index));
-          ++index;
-        } catch (e) {
-          continue;
+        if (int.parse(name) == index + 1) {
+          //+1 because a day note has been deleted so photo indexes off by 1
+          notes[noteIndex].rename(GetFile.path(date, 'note', index: index));
+          ++noteIndex;
         }
-      }
+      } catch (e) {}
+      ++index;
     }
   }
 
@@ -100,6 +96,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       File('$notePath/$date/$index.json').delete();
     }
 
+    imageCache.clear();
     setState(() {
       page = 0;
     });
@@ -124,6 +121,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
 
     setState(() {
       page = index;
+      imageCache.clear();
     });
 
     print("Saved image to $photoPath/$date/$index.png");
