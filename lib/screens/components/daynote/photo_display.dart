@@ -135,7 +135,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     print("Saved image to $photoPath/$date/$index.png");
   }
 
-  void setAsDisplayDayNote(int index) async {
+  void setAsDisplayDayNote(int index) {
     switchDayNotes(index, 'photo');
     switchDayNotes(index, 'note');
     setState(() {
@@ -152,6 +152,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       File(GetFile.path(date, type, index: 9999))
           .renameSync(GetFile.path(date, type, index: index));
     } catch (e) {
+      print("!!!!!!!rename error has occured!!!!!!!");
       return;
     }
   }
