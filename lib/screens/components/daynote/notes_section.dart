@@ -63,6 +63,7 @@ class _NotesSectionState extends State<NotesSection> {
                 .readAsStringSync());
       } catch (e) {
         print('Caught $e when trying to save note');
+        defaultNote = json.decode(GetFile.errorString);
       }
     }
     controller = QuillController(

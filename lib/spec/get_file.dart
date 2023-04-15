@@ -5,6 +5,7 @@ import 'package:flutter/services.dart' show rootBundle;
 class GetFile {
   static String appDir = "";
   static String defaultString = "";
+  static String errorString = "";
   static Future getFile(String date, String type, {int index = 0}) async {
     String extension = (type == 'photo') ? 'png' : 'json';
     if (exists(date, type, index: index)) {
@@ -33,6 +34,7 @@ class GetFile {
       Directory('$appDir/notes').create();
     }
     defaultString = await rootBundle.loadString("assets/json/default.json");
+    errorString = await rootBundle.loadString("assets/json/error.json");
   }
 
   static Future generateNewDay(String date) async {
