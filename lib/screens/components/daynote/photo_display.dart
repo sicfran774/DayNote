@@ -64,33 +64,41 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     return photos.length + 1;
   }
 
-  void renameDayNotes() async {
+  void renameDayNotes(List<bool> hasNote) async {
     List<FileSystemEntity> photos = await directories(0); //get photo array
     List<FileSystemEntity> notes = await directories(1); //get note array
 
+    print(hasNote);
     int index = 0, noteIndex = 0;
     for (var photo in photos) {
       /*print(
             'renaming $photo to ${GetFile.path(date, 'photo', index: index)}');*/
-      photo.rename(GetFile.path(date, 'photo', index: index));
-      try {
-        var name = notes[noteIndex]
-            .toString()
-            .split('/')[8] //get index.json
-            .split('.')[0]; //get index number
-
-        if (int.parse(name) == index + 1) {
-          //+1 because a day note has been deleted so photo indexes off by 1
-          notes[noteIndex].rename(GetFile.path(date, 'note', index: index));
-          ++noteIndex;
-        }
-      } catch (e) {}
+      photo.renameSync(GetFile.path(date, 'photo', index: index));
+      if (hasNote[index]) {
+        notes[noteIndex].renameSync(GetFile.path(date, 'note', index: index));
+        ++noteIndex;
+      }
       ++index;
     }
+    setState(() {
+      imageCache.clear();
+    });
   }
 
   void deleteDayNote(int index) async {
+    List<FileSystemEntity> photos = await directories(0); //get photo array
+    List<bool> hasNote = [];
+
+    for (int i = 0; i < photos.length; i++) {
+      if (GetFile.exists(date, 'note', index: i)) {
+        hasNote.add(true);
+      } else {
+        hasNote.add(false);
+      }
+    }
+
     File('$photoPath/$date/$index.png').delete();
+    hasNote.removeAt(index);
 
     if (GetFile.exists(date, 'note', index: index)) {
       File('$notePath/$date/$index.json').delete();
@@ -101,7 +109,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       page = 0;
     });
 
-    renameDayNotes();
+    renameDayNotes(hasNote);
   }
 
   Future choosePhoto(ImageSource source, int index) async {
@@ -157,6 +165,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return Scaffold(
+                endDrawer: Drawer(),
                 backgroundColor: Colors.black,
                 appBar: AppBar(title: Text(title!)),
                 body: PageView.builder(
@@ -219,6 +228,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
                     )
                   : IconButton(
                       onPressed: () => setAsDisplayDayNote(index),
+                      tooltip: "Set as cover photo",
                       icon: const Icon(Icons.star_border_outlined,
                           color: starColor, size: 40)))
         ],

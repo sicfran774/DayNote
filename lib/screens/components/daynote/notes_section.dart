@@ -22,7 +22,7 @@ class NotesSection extends StatefulWidget {
 class _NotesSectionState extends State<NotesSection> {
   late final String _date = widget.date;
   late final _index = widget.index;
-  late List<dynamic> defaultNote;
+  late List<dynamic> defaultNote = json.decode(GetFile.defaultString);
   QuillController controller = QuillController.basic();
   ScrollController scrollController = ScrollController();
   FocusNode focusNode = FocusNode();
@@ -57,10 +57,11 @@ class _NotesSectionState extends State<NotesSection> {
   Widget build(BuildContext context) {
     if (GetFile.exists(_date, 'note', index: _index)) {
       _newNote = false;
-      defaultNote = json.decode(
-          File(GetFile.path(_date, 'note', index: _index)).readAsStringSync());
-    } else {
-      defaultNote = json.decode(GetFile.defaultString);
+      try {
+        defaultNote = json.decode(
+            File(GetFile.path(_date, 'note', index: _index))
+                .readAsStringSync());
+      } catch (e) {}
     }
     controller = QuillController(
         document: Document.fromJson(defaultNote),
