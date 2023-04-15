@@ -1,7 +1,7 @@
 import 'package:day_note/spec/color_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:day_note/screens/calendar.dart';
-import 'package:day_note/screens/stats.dart';
+import 'package:day_note/screens/album.dart';
 
 import '../home.dart';
 
@@ -18,7 +18,7 @@ class _BottomBarState extends State<BottomBar> {
   static final List<Widget> _screens = <Widget>[
     const HomeScreen(),
     const CalendarScreen(),
-    const StatsScreen(),
+    const AlbumScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -47,9 +47,9 @@ class _BottomBarState extends State<BottomBar> {
                 label: "Calendar",
                 activeIcon: Icon(Icons.calendar_month)),
             BottomNavigationBarItem(
-                icon: Icon(Icons.stacked_line_chart_outlined),
-                label: "Stats",
-                activeIcon: Icon(Icons.stacked_line_chart)),
+                icon: Icon(Icons.photo_camera_back_outlined),
+                label: "Albums",
+                activeIcon: Icon(Icons.photo_camera_back_rounded)),
           ],
         ));
   }

@@ -87,12 +87,14 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
 
     imageCache.clear();
     renameDayNotes(hasNote);
+
+    showSnackBarAlert("Deleted DayNote");
   }
 
   void renameDayNotes(List<bool> hasNote) async {
     List<FileSystemEntity> photos = await directories(0); //get photo array
 
-    int index = 0, noteIndex = 0;
+    int index = 0;
     for (var photo in photos) {
       String photoIndex = photo.toString().split('/')[8].split('.')[0];
       photo.renameSync(GetFile.path(date, 'photo', index: index));
@@ -125,6 +127,15 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     setState(() {
       page = 0;
     });
+
+    showSnackBarAlert("Deleted all DayNotes");
+  }
+
+  void showSnackBarAlert(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(msg),
+      duration: const Duration(seconds: 1),
+    ));
   }
 
   Future choosePhoto(ImageSource source, int index) async {
