@@ -138,22 +138,25 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   void setAsDisplayDayNote(int index) {
     switchDayNotes(index, 'photo');
     switchDayNotes(index, 'note');
+
     setState(() {
       page = 0;
     });
   }
 
   void switchDayNotes(int index, String type) {
-    try {
+    if (GetFile.exists(date, type)) {
       File(GetFile.path(date, type))
           .renameSync(GetFile.path(date, type, index: 9999));
+    }
+    if (GetFile.exists(date, type, index: index)) {
       File(GetFile.path(date, type, index: index))
           .renameSync(GetFile.path(date, type, index: 0));
+    }
+
+    if (GetFile.exists(date, type, index: 9999)) {
       File(GetFile.path(date, type, index: 9999))
           .renameSync(GetFile.path(date, type, index: index));
-    } catch (e) {
-      print("!!!!!!!rename error has occured!!!!!!!");
-      return;
     }
   }
 
