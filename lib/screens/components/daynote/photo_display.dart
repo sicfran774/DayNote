@@ -112,6 +112,22 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     renameDayNotes(hasNote);
   }
 
+  void deleteAllDayNotes() async {
+    List<FileSystemEntity> photos = await directories(0); //get photo array
+    List<FileSystemEntity> notes = await directories(1); //get note array
+
+    for (var photo in photos) {
+      photo.delete();
+    }
+    for (var note in notes) {
+      note.delete();
+    }
+
+    setState(() {
+      page = 0;
+    });
+  }
+
   Future choosePhoto(ImageSource source, int index) async {
     Navigator.pop(context);
     XFile? tempImage = await _picker.pickImage(source: source);
@@ -169,7 +185,49 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return Scaffold(
-                endDrawer: Drawer(),
+                endDrawer: Drawer(
+                    backgroundColor: gitHubBlack,
+                    shadowColor: Colors.blueGrey,
+                    child: ListView(
+                      children: [
+                        const DrawerHeader(
+                            margin: EdgeInsets.only(bottom: 0),
+                            child: Center(
+                              child: Text(
+                                "DayNote Options",
+                                style: headerLarge,
+                              ),
+                            )),
+                        ListTile(
+                          tileColor: primaryAppColor,
+                          leading: const Icon(
+                            Icons.ios_share_rounded,
+                            color: white,
+                          ),
+                          title: const Text('Upload this DayNote',
+                              style: headerMedium),
+                          onTap: () {},
+                        ),
+                        ListTile(
+                          tileColor: primaryAppColor,
+                          leading: const Icon(
+                            Icons.delete_forever_outlined,
+                            color: white,
+                          ),
+                          title: const Text('Delete all DayNotes',
+                              style: headerMedium),
+                          onTap: () {
+                            confirmDelete(context, "Delete All DayNotes",
+                                "Are you sure you want to clear all DayNotes for this day?",
+                                () {
+                              deleteAllDayNotes();
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            });
+                          },
+                        ),
+                      ],
+                    )),
                 backgroundColor: Colors.black,
                 appBar: AppBar(title: Text(title!)),
                 body: PageView.builder(
@@ -291,30 +349,30 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
         ),
         if (GetFile.exists(date, "photo", index: index)) ...[
           ListTile(
-            leading: const Icon(Icons.delete_forever),
-            title: const Text('Delete this DayNote'),
-            onTap: () => confirmDelete(context, index),
-          ),
+              leading: const Icon(Icons.delete_forever),
+              title: const Text('Delete this DayNote'),
+              onTap: () => confirmDelete(context, "Delete Day Note",
+                      "Are you sure you want to delete this photo and note?",
+                      () {
+                    deleteDayNote(index);
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  })),
         ]
       ],
     );
   }
 
-  void confirmDelete(BuildContext context, int index) {
+  void confirmDelete(
+      BuildContext context, String msg1, String msg2, Function func) {
     Widget cancel = TextButton(
         onPressed: () => Navigator.pop(context), child: const Text("Cancel"));
-    Widget confirm = TextButton(
-        onPressed: () {
-          deleteDayNote(index);
-          Navigator.pop(context);
-          Navigator.pop(context);
-        },
-        child: const Text("Yes"));
+    Widget confirm =
+        TextButton(onPressed: () => func(), child: const Text("Yes"));
 
     AlertDialog confirmation = AlertDialog(
-      title: const Text("Delete Day Note"),
-      content:
-          const Text("Are you sure you want to delete this photo and note?"),
+      title: Text(msg1),
+      content: Text(msg2),
       actions: [cancel, confirm],
     );
 
