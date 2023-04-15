@@ -68,7 +68,6 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     List<FileSystemEntity> photos = await directories(0); //get photo array
     List<FileSystemEntity> notes = await directories(1); //get note array
 
-    print(hasNote);
     int index = 0, noteIndex = 0;
     for (var photo in photos) {
       /*print(
@@ -97,18 +96,14 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       }
     }
 
-    File('$photoPath/$date/$index.png').delete();
+    File('$photoPath/$date/$index.png').deleteSync();
     hasNote.removeAt(index);
 
     if (GetFile.exists(date, 'note', index: index)) {
-      File('$notePath/$date/$index.json').delete();
+      File('$notePath/$date/$index.json').deleteSync();
     }
 
     imageCache.clear();
-    setState(() {
-      page = 0;
-    });
-
     renameDayNotes(hasNote);
   }
 
