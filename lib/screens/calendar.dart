@@ -119,8 +119,20 @@ class _CalendarScreenState extends State<CalendarScreen> {
             duration: const Duration(milliseconds: 200),
             curve: Curves.fastOutSlowIn);
       },
+      style: (!today)
+          ? ButtonStyle(
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0))),
+            )
+          : ButtonStyle(
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: const BorderSide(color: white))),
+            ),
       child: Center(
-        child: Text(month, style: (today) ? headerMediumColor : headerMedium),
+        child: Text(month, style: (!today) ? headerMedium : headerMediumColor),
       ),
     );
   }

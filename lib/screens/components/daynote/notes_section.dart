@@ -61,7 +61,9 @@ class _NotesSectionState extends State<NotesSection> {
         defaultNote = json.decode(
             File(GetFile.path(_date, 'note', index: _index))
                 .readAsStringSync());
-      } catch (e) {}
+      } catch (e) {
+        print('Caught $e when trying to save note');
+      }
     }
     controller = QuillController(
         document: Document.fromJson(defaultNote),
