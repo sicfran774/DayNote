@@ -64,33 +64,6 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     return photos.length + 1;
   }
 
-  void renameDayNotes(List<bool> hasNote) async {
-    List<FileSystemEntity> photos = await directories(0); //get photo array
-    List<FileSystemEntity> notes = await directories(1); //get note array
-
-    int index = 0, noteIndex = 0;
-    for (var photo in photos) {
-      String photoIndex = photo.toString().split('/')[8].split('.')[0];
-      photo.renameSync(GetFile.path(date, 'photo', index: index));
-      if (hasNote[index]) {
-        for (var note in notes) {
-          String tempIndex = note.toString().split('/')[8].split('.')[0];
-          if (tempIndex == photoIndex) {
-            notes[noteIndex]
-                .renameSync(GetFile.path(date, 'note', index: index));
-            ++noteIndex;
-          } else {
-            continue;
-          }
-        }
-      }
-      ++index;
-    }
-    setState(() {
-      imageCache.clear();
-    });
-  }
-
   void deleteDayNote(int index) async {
     List<FileSystemEntity> photos = await directories(0); //get photo array
     List<bool> hasNote = [];
@@ -104,14 +77,38 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     }
 
     File('$photoPath/$date/$index.png').deleteSync();
+    print('photo deleted $index');
     hasNote.removeAt(index);
 
     if (GetFile.exists(date, 'note', index: index)) {
       File('$notePath/$date/$index.json').deleteSync();
+      print('note deleted $index');
     }
 
     imageCache.clear();
     renameDayNotes(hasNote);
+  }
+
+  void renameDayNotes(List<bool> hasNote) async {
+    List<FileSystemEntity> photos = await directories(0); //get photo array
+
+    int index = 0, noteIndex = 0;
+    for (var photo in photos) {
+      String photoIndex = photo.toString().split('/')[8].split('.')[0];
+      photo.renameSync(GetFile.path(date, 'photo', index: index));
+      print('photo: renaming $photoIndex to $index');
+
+      if (GetFile.exists(date, 'note', index: int.parse(photoIndex))) {
+        print('note: renaming $photoIndex to $index');
+        File(GetFile.path(date, 'note', index: int.parse(photoIndex)))
+            .renameSync(GetFile.path(date, 'note', index: index));
+      }
+
+      ++index;
+    }
+    setState(() {
+      imageCache.clear();
+    });
   }
 
   void deleteAllDayNotes() async {
@@ -139,7 +136,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     }
 
     if (GetFile.exists(date, 'photo', index: index)) {
-      print('$date already exists, deleting');
+      print('$date./$index.png already exists, deleting');
       await File('$photoPath/$date/$index.png').delete();
     }
 

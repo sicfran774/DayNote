@@ -62,7 +62,7 @@ class _NotesSectionState extends State<NotesSection> {
             File(GetFile.path(_date, 'note', index: _index))
                 .readAsStringSync());
       } catch (e) {
-        print('Caught $e when trying to save note');
+        print('Caught $e when trying to retrieve note');
         defaultNote = json.decode(GetFile.errorString);
       }
     }
