@@ -70,12 +70,19 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
 
     int index = 0, noteIndex = 0;
     for (var photo in photos) {
-      /*print(
-            'renaming $photo to ${GetFile.path(date, 'photo', index: index)}');*/
+      String photoIndex = photo.toString().split('/')[8].split('.')[0];
       photo.renameSync(GetFile.path(date, 'photo', index: index));
       if (hasNote[index]) {
-        notes[noteIndex].renameSync(GetFile.path(date, 'note', index: index));
-        ++noteIndex;
+        for (var note in notes) {
+          String tempIndex = note.toString().split('/')[8].split('.')[0];
+          if (tempIndex == photoIndex) {
+            notes[noteIndex]
+                .renameSync(GetFile.path(date, 'note', index: index));
+            ++noteIndex;
+          } else {
+            continue;
+          }
+        }
       }
       ++index;
     }
