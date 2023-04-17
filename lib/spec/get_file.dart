@@ -50,4 +50,11 @@ class GetFile {
       Directory('$appDir/notes/$date').create();
     }
   }
+
+  static void deleteAllData() {
+    File('$appDir/photos').delete(recursive: true);
+    File('$appDir/notes').delete(recursive: true);
+    File('$appDir/album.json').delete(recursive: true);
+    generateDirectories();
+  }
 }

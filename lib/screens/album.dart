@@ -19,8 +19,11 @@ class _AlbumScreenState extends State<AlbumScreen> {
 
   void readAlbumJson() {
     try {
+      //Get JSON file and decode it into string
       var json = jsonDecode(albumJsonFile!.readAsStringSync());
-      albums = List<Album>.from(json.map((x) => Album.fromJson(x)));
+      //Separate each object, put it as an array
+      albums = List<Album>.from(json.map((x) => Album.fromJson(
+          x))); //Album.fromJson is an automatic json parser defined in the Album class
     } catch (e) {
       print('Caught $e, album.json is empty.');
       albums = [];
@@ -102,9 +105,12 @@ class _AlbumScreenState extends State<AlbumScreen> {
   }
 
   Widget albumCell(Album album) {
-    return Container(
-      decoration: BoxDecoration(border: Border.all(), color: primaryAppColor),
-      child: Text(album.albumName),
+    return ElevatedButton(
+      onPressed: () {},
+      child: Container(
+        decoration: BoxDecoration(color: primaryAppColor),
+        child: Text(album.albumName),
+      ),
     );
   }
 }
