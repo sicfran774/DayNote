@@ -62,6 +62,11 @@ class _AlbumScreenState extends State<AlbumScreen> {
     setState(() {
       albums.add(Album(albumName: albumName, dayNotes: []));
     });
+    saveAlbumJson();
+  }
+
+  void saveAlbumJson() {
+    albumJsonFile?.writeAsString(jsonEncode(albums));
   }
 
   @override
@@ -107,4 +112,11 @@ class Album {
 
   String albumName;
   List<String> dayNotes;
+
+  Map<String, dynamic> toJson() {
+    return {
+      "albumName": albumName,
+      "dayNotes": dayNotes,
+    };
+  }
 }
