@@ -21,8 +21,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: const Text("Delete"));
 
     AlertDialog confirmation = AlertDialog(
-      title: Text("Delete all data?"),
-      content: Text("This cannot be undone."),
+      title: const Text("Are you sure you want to delete all data?"),
+      content: const Text("This cannot be undone."),
       actions: [cancel, confirm],
     );
 

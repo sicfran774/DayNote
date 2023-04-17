@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -14,19 +16,24 @@ class AlbumScreen extends StatefulWidget {
 }
 
 class _AlbumScreenState extends State<AlbumScreen> {
-  final File? albumJsonFile = GetFile.loadAlbums();
+  late File? albumJsonFile;
   late List<Album> albums = [];
 
-  void readAlbumJson() {
+  void readAlbumJson() async {
     try {
+      if (!GetFile.albumJsonExists()) {
+        return;
+      }
+      albumJsonFile = GetFile.loadAlbums();
       //Get JSON file and decode it into string
       var json = jsonDecode(albumJsonFile!.readAsStringSync());
       //Separate each object, put it as an array
       albums = List<Album>.from(json.map((x) => Album.fromJson(
           x))); //Album.fromJson is an automatic json parser defined in the Album class
     } catch (e) {
-      print('Caught $e, album.json is empty.');
-      albums = [];
+      print('Caught $e');
+      await Future.delayed(const Duration(milliseconds: 500));
+      readAlbumJson();
     }
   }
 
@@ -70,6 +77,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
   }
 
   void saveAlbumJson() {
+    albumJsonFile = GetFile.loadAlbums();
     albumJsonFile?.writeAsString(jsonEncode(albums));
   }
 
@@ -77,31 +85,32 @@ class _AlbumScreenState extends State<AlbumScreen> {
   Widget build(BuildContext context) {
     readAlbumJson();
     return Scaffold(
-        body: CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          floating: true,
-          title: const Text("Albums"),
-          actions: [
-            IconButton(
-                tooltip: "Create a new album",
-                onPressed: () => createAlbumDialog(),
-                icon: const Icon(Icons.add))
-          ],
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.all(10),
-          sliver: SliverGrid.count(
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            crossAxisCount: 2,
-            children: [
-              for (var album in albums) ...[albumCell(album)]
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            floating: true,
+            title: const Text("Albums"),
+            actions: [
+              IconButton(
+                  tooltip: "Create a new album",
+                  onPressed: () => createAlbumDialog(),
+                  icon: const Icon(Icons.add))
             ],
           ),
-        ),
-      ],
-    ));
+          SliverPadding(
+            padding: const EdgeInsets.all(10),
+            sliver: SliverGrid.count(
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              crossAxisCount: 2,
+              children: [
+                for (var album in albums) ...[albumCell(album)]
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget albumCell(Album album) {

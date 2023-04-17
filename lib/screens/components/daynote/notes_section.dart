@@ -53,18 +53,7 @@ class _NotesSectionState extends State<NotesSection> {
     setState(() {});
   }
 
-  Future refresh() {
-    return Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        defaultNote = json.decode(
-            File(GetFile.path(_date, 'note', index: _index))
-                .readAsStringSync());
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Future readNote() async {
     if (GetFile.exists(_date, 'note', index: _index)) {
       _newNote = false;
       try {
@@ -74,9 +63,15 @@ class _NotesSectionState extends State<NotesSection> {
       } catch (e) {
         print('Caught $e when trying to retrieve note');
         defaultNote = json.decode(GetFile.errorString);
-        refresh();
+        readNote();
       }
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    readNote();
+
     controller = QuillController(
         document: Document.fromJson(defaultNote),
         selection: const TextSelection.collapsed(offset: 0));

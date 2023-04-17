@@ -33,14 +33,18 @@ class GetFile {
     if (!await File('$appDir/notes').exists()) {
       Directory('$appDir/notes').create();
     }
-    if (!await File('$appDir/album.json').exists()) {
-      File('$appDir/album.json').create();
-    }
     defaultString = await rootBundle.loadString("assets/json/default.json");
     errorString = await rootBundle.loadString("assets/json/error.json");
   }
 
-  static File? loadAlbums() {
+  static bool albumJsonExists() {
+    return File('$appDir/album.json').existsSync();
+  }
+
+  static File loadAlbums() {
+    if (albumJsonExists()) {
+      File('$appDir/album.json').create();
+    }
     return File('$appDir/album.json');
   }
 
