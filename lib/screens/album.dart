@@ -19,7 +19,8 @@ class _AlbumScreenState extends State<AlbumScreen> {
 
   void readAlbumJson() {
     try {
-      albums = json.decode(albumJsonFile!.readAsStringSync());
+      var json = jsonDecode(albumJsonFile!.readAsStringSync());
+      albums = List<Album>.from(json.map((x) => Album.fromJson(x)));
     } catch (e) {
       print('Caught $e, album.json is empty.');
       albums = [];
@@ -71,6 +72,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
 
   @override
   Widget build(BuildContext context) {
+    readAlbumJson();
     return Scaffold(
         body: CustomScrollView(
       slivers: [
@@ -101,8 +103,8 @@ class _AlbumScreenState extends State<AlbumScreen> {
 
   Widget albumCell(Album album) {
     return Container(
-      child: Text(album.albumName),
       decoration: BoxDecoration(border: Border.all(), color: primaryAppColor),
+      child: Text(album.albumName),
     );
   }
 }
@@ -111,7 +113,11 @@ class Album {
   Album({required this.albumName, required this.dayNotes});
 
   String albumName;
-  List<String> dayNotes;
+  List<String> dayNotes = [];
+
+  Album.fromJson(Map<String, dynamic> json)
+      : albumName = json['albumName'],
+        dayNotes = List.from(json['dayNotes']);
 
   Map<String, dynamic> toJson() {
     return {
