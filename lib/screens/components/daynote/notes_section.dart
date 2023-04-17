@@ -57,9 +57,11 @@ class _NotesSectionState extends State<NotesSection> {
     if (GetFile.exists(_date, 'note', index: _index)) {
       _newNote = false;
       try {
-        defaultNote = json.decode(
-            File(GetFile.path(_date, 'note', index: _index))
-                .readAsStringSync());
+        setState(() {
+          defaultNote = json.decode(
+              File(GetFile.path(_date, 'note', index: _index))
+                  .readAsStringSync());
+        });
       } catch (e) {
         print('Caught $e when trying to retrieve note');
         defaultNote = json.decode(GetFile.errorString);
