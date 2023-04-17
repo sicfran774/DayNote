@@ -281,6 +281,9 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   Scaffold photoSection(data, index) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
+          tooltip: (GetFile.exists(date, 'photo', index: index))
+              ? "DayNote options"
+              : "Add a new photo",
           child:
               (data == null) ? const Icon(Icons.add) : const Icon(Icons.photo),
           onPressed: () => chooseImageWidget(context, index)),

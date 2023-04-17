@@ -33,8 +33,15 @@ class GetFile {
     if (!await File('$appDir/notes').exists()) {
       Directory('$appDir/notes').create();
     }
+    if (!await File('$appDir/album.json').exists()) {
+      File('$appDir/album.json').create();
+    }
     defaultString = await rootBundle.loadString("assets/json/default.json");
     errorString = await rootBundle.loadString("assets/json/error.json");
+  }
+
+  static File? loadAlbums() {
+    return File('$appDir/album.json');
   }
 
   static Future generateNewDay(String date) async {
