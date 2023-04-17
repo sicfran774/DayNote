@@ -58,7 +58,9 @@ class GetFile {
   static void deleteAllData() {
     File('$appDir/photos').delete(recursive: true);
     File('$appDir/notes').delete(recursive: true);
-    File('$appDir/album.json').delete(recursive: true);
+    if (File('$appDir/album.json').existsSync()) {
+      File('$appDir/album.json').delete(recursive: true);
+    }
     generateDirectories();
   }
 }

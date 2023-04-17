@@ -53,7 +53,7 @@ class _NotesSectionState extends State<NotesSection> {
     setState(() {});
   }
 
-  Future readNote() async {
+  void readNote() async {
     if (GetFile.exists(_date, 'note', index: _index)) {
       _newNote = false;
       try {
@@ -63,6 +63,7 @@ class _NotesSectionState extends State<NotesSection> {
       } catch (e) {
         print('Caught $e when trying to retrieve note');
         defaultNote = json.decode(GetFile.errorString);
+        await Future.delayed(const Duration(milliseconds: 500));
         readNote();
       }
     }
