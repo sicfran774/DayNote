@@ -1,6 +1,8 @@
 // ignore_for_file: avoid_print
 
 import 'dart:io';
+import 'package:day_note/screens/components/album/album.dart';
+import 'package:day_note/screens/components/album/album_daynote.dart';
 import 'package:day_note/screens/components/daynote/notes_section.dart';
 import 'package:day_note/spec/color_styles.dart';
 import 'package:day_note/spec/text_styles.dart';
@@ -362,6 +364,11 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
         ),
         if (GetFile.exists(date, "photo", index: index)) ...[
           ListTile(
+            leading: const Icon(Icons.photo_camera_back_rounded),
+            title: const Text("Add this DayNote to a gallery"),
+            onTap: () => addToAlbum(index),
+          ),
+          ListTile(
               leading: const Icon(Icons.delete_forever),
               title: const Text('Delete this DayNote'),
               onTap: () => confirmDelete(context, "Delete Day Note",
@@ -374,6 +381,16 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
         ]
       ],
     );
+  }
+
+  void addToAlbum(int index) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AlbumScreen(
+                  addingNote: true,
+                  dayNoteDate: '$date/$index',
+                )));
   }
 
   void confirmDelete(

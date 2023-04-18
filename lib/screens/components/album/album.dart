@@ -9,7 +9,10 @@ import 'package:flutter/material.dart';
 import '../../../spec/get_file.dart';
 
 class AlbumScreen extends StatefulWidget {
-  const AlbumScreen({super.key});
+  const AlbumScreen(
+      {super.key, this.addingNote = false, this.dayNoteDate = ""});
+  final bool addingNote;
+  final String dayNoteDate;
 
   @override
   State<AlbumScreen> createState() => _AlbumScreenState();
@@ -18,6 +21,8 @@ class AlbumScreen extends StatefulWidget {
 class _AlbumScreenState extends State<AlbumScreen> {
   late File? albumJsonFile;
   late List<Album> albums = [];
+  late bool addingNote = widget.addingNote;
+  late String dayNoteDate = widget.dayNoteDate;
 
   void readAlbumJson() async {
     try {
@@ -79,6 +84,9 @@ class _AlbumScreenState extends State<AlbumScreen> {
   void saveAlbumJson() {
     albumJsonFile = GetFile.loadAlbums();
     albumJsonFile?.writeAsString(jsonEncode(albums));
+    for (var album in albums) {
+      print('${album.albumName}: ${album.dayNotes}');
+    }
   }
 
   @override
@@ -115,7 +123,13 @@ class _AlbumScreenState extends State<AlbumScreen> {
 
   Widget albumCell(Album album) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        if (addingNote) {
+          album.dayNotes.add(dayNoteDate);
+          Navigator.pop(context);
+          saveAlbumJson();
+        }
+      },
       child: Container(
         decoration: BoxDecoration(color: primaryAppColor),
         child: Text(album.albumName),
