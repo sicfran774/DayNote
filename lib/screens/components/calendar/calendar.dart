@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:day_note/spec/text_styles.dart';
 
-import '../spec/color_styles.dart';
-import 'components/calendar/calendar_bar.dart';
-import 'components/calendar/calendar_builder.dart';
+import '../../../spec/color_styles.dart';
+import 'calendar_bar.dart';
+import 'calendar_builder.dart';
 
 var date = DateFormat.yMMMM().format(DateTime.now()).toString();
 bool monthPage = false;

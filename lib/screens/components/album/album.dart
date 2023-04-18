@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:day_note/spec/color_styles.dart';
 import 'package:flutter/material.dart';
 
-import '../spec/get_file.dart';
+import '../../../spec/get_file.dart';
 
 class AlbumScreen extends StatefulWidget {
   const AlbumScreen({super.key});

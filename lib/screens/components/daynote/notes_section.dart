@@ -36,7 +36,7 @@ class _NotesSectionState extends State<NotesSection> {
     });
   }
 
-  void saveNote(BuildContext context) {
+  void saveNote(BuildContext context, bool button) {
     var jsonString = jsonEncode(controller.document.toDelta().toJson());
 
     if (GetFile.exists(_date, 'note', index: _index)) {
@@ -46,11 +46,13 @@ class _NotesSectionState extends State<NotesSection> {
     file.writeAsString(jsonString);
     print("Saved note to ${GetFile.path(_date, 'note', index: _index)}");
 
-    //close keyboard
-    focusNode.unfocus();
+    if (button) {
+      //close keyboard
+      focusNode.unfocus();
 
-    //rebuild to maintain text
-    setState(() {});
+      //rebuild to maintain text
+      setState(() {});
+    }
   }
 
   void readNote() async {
@@ -79,6 +81,10 @@ class _NotesSectionState extends State<NotesSection> {
         document: Document.fromJson(defaultNote),
         selection: const TextSelection.collapsed(offset: 0));
 
+    controller.document.changes.listen((event) {
+      saveNote(context, false);
+    });
+
     return Scaffold(
         body: Container(
             decoration: const BoxDecoration(
@@ -89,7 +95,7 @@ class _NotesSectionState extends State<NotesSection> {
             child: quillEditor()),
         floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.check),
-            onPressed: () => saveNote(context)));
+            onPressed: () => saveNote(context, true)));
   }
 
   QuillEditor quillEditor() {
