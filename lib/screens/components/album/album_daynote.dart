@@ -9,9 +9,24 @@ class AlbumDayNote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    PageController horizontalController = PageController();
+    String date = "";
+    //TODO: Make this better this code sucks
+    try {
+      date = dayNoteList[0];
+    } catch (e) {}
+
+    final PageController horizontalController = PageController();
+    final ValueNotifier<String> dateNotifier = ValueNotifier(date);
+
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: ValueListenableBuilder(
+            valueListenable: dateNotifier,
+            builder: (context, value, child) {
+              return Text(value);
+            },
+          ),
+        ),
         body: PageView(
           controller: horizontalController,
           children: [
@@ -20,6 +35,9 @@ class AlbumDayNote extends StatelessWidget {
                   dayNote.split('/')[0], int.parse(dayNote.split('/')[1]))
             ]
           ],
+          onPageChanged: (index) {
+            dateNotifier.value = dayNoteList[index];
+          },
         ));
   }
 

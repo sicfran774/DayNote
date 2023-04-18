@@ -3,6 +3,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:day_note/screens/components/album/album_daynote.dart';
+import 'package:day_note/screens/components/calendar/calendar.dart';
 import 'package:day_note/spec/color_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -84,9 +86,9 @@ class _AlbumScreenState extends State<AlbumScreen> {
   void saveAlbumJson() {
     albumJsonFile = GetFile.loadAlbums();
     albumJsonFile?.writeAsString(jsonEncode(albums));
-    for (var album in albums) {
+    /*Debug: for (var album in albums) {
       print('${album.albumName}: ${album.dayNotes}');
-    }
+    }*/
   }
 
   @override
@@ -122,19 +124,51 @@ class _AlbumScreenState extends State<AlbumScreen> {
   }
 
   Widget albumCell(Album album) {
+    bool hasDayNote = (album.dayNotes.isNotEmpty);
+    String date;
+    int index;
+
+    if (hasDayNote) {
+      date = album.dayNotes[0].split('/')[0];
+      index = int.parse(album.dayNotes[0].split('/')[1]);
+    } else {
+      date = "";
+      index = 0;
+    }
+
     return ElevatedButton(
-      onPressed: () {
-        if (addingNote) {
-          album.dayNotes.add(dayNoteDate);
-          Navigator.pop(context);
-          saveAlbumJson();
-        }
-      },
-      child: Container(
-        decoration: BoxDecoration(color: primaryAppColor),
-        child: Text(album.albumName),
-      ),
-    );
+        onPressed: () {
+          if (addingNote) {
+            album.dayNotes.add(dayNoteDate);
+            Navigator.pop(context);
+            saveAlbumJson();
+          } else {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        AlbumDayNote(dayNoteList: album.dayNotes)));
+          }
+        },
+        child: Stack(
+          children: [
+            if (hasDayNote) ...[
+              Container(
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: FileImage(
+                            File(GetFile.path(date, "photo", index: index)))),
+                    color: primaryAppColor),
+              ),
+            ],
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Center(child: Text(album.albumName)),
+              ],
+            ),
+          ],
+        ));
   }
 }
 

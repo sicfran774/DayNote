@@ -365,7 +365,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
         if (GetFile.exists(date, "photo", index: index)) ...[
           ListTile(
             leading: const Icon(Icons.photo_camera_back_rounded),
-            title: const Text("Add this DayNote to a gallery"),
+            title: const Text("Add this DayNote to an album"),
             onTap: () => addToAlbum(index),
           ),
           ListTile(
