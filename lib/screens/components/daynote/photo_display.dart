@@ -410,7 +410,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
         context: context, builder: (BuildContext context) => confirmation);
   }
 
-  //TODO: If at any point that a DayNote is renamed,
+  //TODO: If at any point that a DayNote is renamed/deleted,
   //you must check all the albums if that DayNote is within any of them
 
   /* Firebase */
