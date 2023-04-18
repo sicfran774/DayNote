@@ -42,8 +42,8 @@ class GetFile {
   }
 
   static File loadAlbums() {
-    if (albumJsonExists()) {
-      File('$appDir/album.json').create();
+    if (!albumJsonExists()) {
+      File('$appDir/album.json').createSync();
     }
     return File('$appDir/album.json');
   }

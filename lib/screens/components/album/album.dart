@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:day_note/screens/components/album/album_daynote.dart';
-import 'package:day_note/screens/components/calendar/calendar.dart';
 import 'package:day_note/spec/color_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -39,7 +38,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
           x))); //Album.fromJson is an automatic json parser defined in the Album class
     } catch (e) {
       print('Caught $e');
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 100));
       readAlbumJson();
     }
   }
@@ -76,23 +75,22 @@ class _AlbumScreenState extends State<AlbumScreen> {
         context: context, builder: (BuildContext context) => confirmation);
   }
 
-  void createAlbum(String albumName) {
-    setState(() {
-      albums.add(Album(albumName: albumName, dayNotes: []));
-    });
+  Album createAlbum(String albumName) {
+    Album newAlbum = Album(albumName: albumName, dayNotes: []);
+    albums.add(newAlbum);
     saveAlbumJson();
+    return newAlbum;
   }
 
   void saveAlbumJson() {
     albumJsonFile = GetFile.loadAlbums();
     albumJsonFile?.writeAsString(jsonEncode(albums));
-    /*Debug: for (var album in albums) {
-      print('${album.albumName}: ${album.dayNotes}');
-    }*/
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    int albumIndex = 0;
     readAlbumJson();
     return Scaffold(
       body: CustomScrollView(
@@ -114,7 +112,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
               crossAxisSpacing: 10,
               crossAxisCount: 2,
               children: [
-                for (var album in albums) ...[albumCell(album)]
+                for (Album album in albums) ...[albumCell(album, albumIndex++)]
               ],
             ),
           ),
@@ -123,7 +121,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
     );
   }
 
-  Widget albumCell(Album album) {
+  Widget albumCell(Album album, int albumIndex) {
     bool hasDayNote = (album.dayNotes.isNotEmpty);
     String date;
     int index;
@@ -139,9 +137,9 @@ class _AlbumScreenState extends State<AlbumScreen> {
     return ElevatedButton(
         onPressed: () {
           if (addingNote) {
-            album.dayNotes.add(dayNoteDate);
-            Navigator.pop(context);
+            albums[albumIndex].dayNotes.add(dayNoteDate);
             saveAlbumJson();
+            Navigator.pop(context);
           } else {
             Navigator.push(
                 context,
@@ -176,7 +174,7 @@ class Album {
   Album({required this.albumName, required this.dayNotes});
 
   String albumName;
-  List<String> dayNotes = [];
+  List<String> dayNotes;
 
   Album.fromJson(Map<String, dynamic> json)
       : albumName = json['albumName'],
