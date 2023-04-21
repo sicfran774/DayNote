@@ -65,6 +65,8 @@ class CalendarCell extends StatelessWidget {
         DateTime.now().month == month &&
         DateTime.now().year == year);
     return OpenContainer(
+      closedColor: gitHubBlack,
+      openColor: gitHubBlack,
       closedBuilder: (context, action) => CellImage(
         day: day,
         date: date,

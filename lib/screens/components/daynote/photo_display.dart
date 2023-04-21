@@ -240,7 +240,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
                         ),
                       ],
                     )),
-                backgroundColor: Colors.black,
+                backgroundColor: gitHubBlack,
                 appBar: AppBar(title: Text(title!)),
                 body: PageView.builder(
                   controller: horizontalController,
@@ -259,7 +259,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
                   itemCount: snapshot.data,
                 ));
           } else {
-            return Container();
+            return Container(color: gitHubBlack);
           }
         });
   }
