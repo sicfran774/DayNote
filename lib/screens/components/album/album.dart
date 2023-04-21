@@ -112,7 +112,9 @@ class _AlbumScreenState extends State<AlbumScreen> {
               ),
             );
           } else {
-            return const CircularProgressIndicator();
+            return Scaffold(
+              appBar: AppBar(title: const Text("Albums")),
+            );
           }
         });
   }
@@ -120,14 +122,14 @@ class _AlbumScreenState extends State<AlbumScreen> {
   Widget albumCell(Album album, int albumIndex) {
     bool hasDayNote = (album.dayNotes.isNotEmpty);
     String date;
-    int index;
+    int photoIndex;
 
     if (hasDayNote) {
       date = album.dayNotes[0].split('/')[0];
-      index = int.parse(album.dayNotes[0].split('/')[1]);
+      photoIndex = int.parse(album.dayNotes[0].split('/')[1]);
     } else {
       date = "";
-      index = 0;
+      photoIndex = 0;
     }
 
     return ElevatedButton(
@@ -140,8 +142,8 @@ class _AlbumScreenState extends State<AlbumScreen> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        AlbumDayNote(dayNoteList: album.dayNotes)));
+                    builder: (context) => AlbumDayNote(
+                        dayNoteList: album.dayNotes, albumIndex: albumIndex)));
           }
         },
         child: Stack(
@@ -150,8 +152,8 @@ class _AlbumScreenState extends State<AlbumScreen> {
               Container(
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: FileImage(
-                            File(GetFile.path(date, "photo", index: index)))),
+                        image: FileImage(File(
+                            GetFile.path(date, "photo", index: photoIndex)))),
                     color: primaryAppColor),
               ),
             ],

@@ -1,26 +1,38 @@
+// ignore_for_file: avoid_print
+
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:day_note/screens/components/calendar/calendar.dart';
 import 'package:day_note/spec/get_file.dart';
+import 'package:day_note/spec/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class AlbumDayNote extends StatefulWidget {
-  const AlbumDayNote({super.key, required this.dayNoteList});
+  const AlbumDayNote(
+      {super.key, required this.dayNoteList, required this.albumIndex});
   final List<String> dayNoteList;
+  final int albumIndex;
 
   @override
   State<AlbumDayNote> createState() => _AlbumDayNoteState();
 }
 
 class _AlbumDayNoteState extends State<AlbumDayNote> {
+  late List<String> dayNoteList = widget.dayNoteList;
+  late int albumIndex = widget.albumIndex;
   int currentPage = 0;
 
-  void removeFromAlbum() {
+  void removeFromAlbum() async {
+    dayNoteList.removeAt(currentPage);
+    var albums = await GetFile.readAlbumJson();
+    albums[albumIndex].dayNotes = dayNoteList;
+    GetFile.loadAlbums().writeAsString(jsonEncode(albums));
     setState(() {
-      dayNoteList.removeAt(currentPage);
+      print("removed page $currentPage");
     });
   }
 
-  late List<String> dayNoteList = widget.dayNoteList;
   @override
   Widget build(BuildContext context) {
     String date = "";
@@ -48,6 +60,14 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
           for (String dayNote in dayNoteList) ...[
             individualDayNote(
                 dayNote.split('/')[0], int.parse(dayNote.split('/')[1]))
+          ],
+          if (dayNoteList.isEmpty) ...[
+            const Center(
+              child: Text(
+                "No DayNotes found :(\nAdd one from the calendar!",
+                style: headerMedium,
+              ),
+            )
           ]
         ],
         onPageChanged: (index) {
@@ -55,10 +75,12 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
           dateNotifier.value = dayNoteList[index];
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => optionsWidget(currentPage),
-        child: const Icon(Icons.settings),
-      ),
+      floatingActionButton: (dayNoteList.isNotEmpty)
+          ? FloatingActionButton(
+              onPressed: () => optionsWidget(currentPage),
+              child: const Icon(Icons.settings),
+            )
+          : Container(),
     );
   }
 
@@ -88,8 +110,10 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
           ListTile(
               leading: const Icon(Icons.delete_forever),
               title: const Text('Remove this DayNote from this album'),
-              onTap: () => {} //TODO: confirmDelete()
-              ),
+              onTap: () {
+                removeFromAlbum();
+                Navigator.pop(context);
+              }),
         ],
       ),
     );
