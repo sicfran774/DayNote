@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
+
+import '../screens/components/album/album_class.dart';
 
 class GetFile {
   static String appDir = "";
@@ -46,6 +50,25 @@ class GetFile {
       File('$appDir/album.json').createSync();
     }
     return File('$appDir/album.json');
+  }
+
+  static Future readAlbumJson() async {
+    try {
+      if (!GetFile.albumJsonExists()) {
+        return;
+      }
+      File albumJsonFile = GetFile.loadAlbums();
+      //Get JSON file and decode it into string
+      var json = jsonDecode(albumJsonFile.readAsStringSync());
+      //Separate each object, put it as an array
+      var albums = List<Album>.from(json.map((x) => Album.fromJson(
+          x))); //Album.fromJson is an automatic json parser defined in the Album class
+      return albums;
+    } catch (e) {
+      print('Caught $e');
+      await Future.delayed(const Duration(milliseconds: 100));
+      readAlbumJson();
+    }
   }
 
   static Future generateNewDay(String date) async {

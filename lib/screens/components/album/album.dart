@@ -8,6 +8,7 @@ import 'package:day_note/spec/color_styles.dart';
 import 'package:flutter/material.dart';
 
 import '../../../spec/get_file.dart';
+import 'album_class.dart';
 
 class AlbumScreen extends StatefulWidget {
   const AlbumScreen(
@@ -25,22 +26,8 @@ class _AlbumScreenState extends State<AlbumScreen> {
   late bool addingNote = widget.addingNote;
   late String dayNoteDate = widget.dayNoteDate;
 
-  void readAlbumJson() async {
-    try {
-      if (!GetFile.albumJsonExists()) {
-        return;
-      }
-      albumJsonFile = GetFile.loadAlbums();
-      //Get JSON file and decode it into string
-      var json = jsonDecode(albumJsonFile!.readAsStringSync());
-      //Separate each object, put it as an array
-      albums = List<Album>.from(json.map((x) => Album.fromJson(
-          x))); //Album.fromJson is an automatic json parser defined in the Album class
-    } catch (e) {
-      print('Caught $e');
-      await Future.delayed(const Duration(milliseconds: 100));
-      readAlbumJson();
-    }
+  Future updateAlbumList() async {
+    albums = await GetFile.readAlbumJson();
   }
 
   void createAlbumDialog() {
@@ -91,34 +78,43 @@ class _AlbumScreenState extends State<AlbumScreen> {
   @override
   Widget build(BuildContext context) {
     int albumIndex = 0;
-    readAlbumJson();
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            floating: true,
-            title: const Text("Albums"),
-            actions: [
-              IconButton(
-                  tooltip: "Create a new album",
-                  onPressed: () => createAlbumDialog(),
-                  icon: const Icon(Icons.add))
-            ],
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.all(10),
-            sliver: SliverGrid.count(
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              crossAxisCount: 2,
-              children: [
-                for (Album album in albums) ...[albumCell(album, albumIndex++)]
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+    return FutureBuilder(
+        future: updateAlbumList(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Scaffold(
+              body: CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    floating: true,
+                    title: const Text("Albums"),
+                    actions: [
+                      IconButton(
+                          tooltip: "Create a new album",
+                          onPressed: () => createAlbumDialog(),
+                          icon: const Icon(Icons.add))
+                    ],
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.all(10),
+                    sliver: SliverGrid.count(
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                      crossAxisCount: 2,
+                      children: [
+                        for (Album album in albums) ...[
+                          albumCell(album, albumIndex++)
+                        ]
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return const CircularProgressIndicator();
+          }
+        });
   }
 
   Widget albumCell(Album album, int albumIndex) {
@@ -167,23 +163,5 @@ class _AlbumScreenState extends State<AlbumScreen> {
             ),
           ],
         ));
-  }
-}
-
-class Album {
-  Album({required this.albumName, required this.dayNotes});
-
-  String albumName;
-  List<String> dayNotes;
-
-  Album.fromJson(Map<String, dynamic> json)
-      : albumName = json['albumName'],
-        dayNotes = List.from(json['dayNotes']);
-
-  Map<String, dynamic> toJson() {
-    return {
-      "albumName": albumName,
-      "dayNotes": dayNotes,
-    };
   }
 }

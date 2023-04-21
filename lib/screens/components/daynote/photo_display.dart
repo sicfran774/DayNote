@@ -412,6 +412,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
 
   //TODO: If at any point that a DayNote is renamed/deleted,
   //you must check all the albums if that DayNote is within any of them
+  void verifyAlbums(String oldFileName, String newFileName) {}
 
   /* Firebase */
 
