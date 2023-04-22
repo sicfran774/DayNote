@@ -80,7 +80,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     }
 
     File('$photoPath/$date/$index.png').deleteSync();
-    verifyAlbums('$date/$index', delete: true); //remove from albums
+    await verifyAlbums('$date/$index', delete: true); //remove from albums
     print('photo deleted $index');
     hasNote.removeAt(index);
 
@@ -105,7 +105,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
 
       photo.renameSync(GetFile.path(date, 'photo', index: index));
       print('photo: renaming $photoIndex to $index');
-      verifyAlbums("$photoString/$photoIndex",
+      await verifyAlbums("$photoString/$photoIndex",
           newFileName: "${photoString.split('/')[0]}/$index");
 
       if (GetFile.exists(date, 'note', index: int.parse(photoIndex))) {
@@ -128,7 +128,8 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     for (var photo in photos) {
       String photoString = photo.toString().split('/')[7].split('/')[0];
       String photoIndex = photo.toString().split('/')[8].split('.')[0];
-      verifyAlbums("$photoString/$photoIndex", delete: true);
+      await verifyAlbums("$photoString/$photoIndex", delete: true);
+      print("deleting $photoString/$photoIndex from albums");
       photo.delete();
     }
     for (var note in notes) {
@@ -206,49 +207,52 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return Scaffold(
-                endDrawer: Drawer(
-                    backgroundColor: gitHubBlack,
-                    shadowColor: Colors.blueGrey,
-                    child: ListView(
-                      children: [
-                        const DrawerHeader(
-                            margin: EdgeInsets.only(bottom: 0),
-                            child: Center(
-                              child: Text(
-                                "DayNote Options",
-                                style: headerLarge,
-                              ),
-                            )),
-                        ListTile(
-                          tileColor: primaryAppColor,
-                          leading: const Icon(
-                            Icons.ios_share_rounded,
-                            color: white,
+                endDrawer: SizedBox(
+                  width: 250,
+                  child: Drawer(
+                      backgroundColor: gitHubBlack,
+                      shadowColor: Colors.blueGrey,
+                      child: ListView(
+                        children: [
+                          const DrawerHeader(
+                              margin: EdgeInsets.only(bottom: 0),
+                              child: Center(
+                                child: Text(
+                                  "DayNote Options",
+                                  style: headerLarge,
+                                ),
+                              )),
+                          ListTile(
+                            tileColor: primaryAppColor,
+                            leading: const Icon(
+                              Icons.ios_share_rounded,
+                              color: white,
+                            ),
+                            title: const Text('Upload this DayNote',
+                                style: headerMedium),
+                            onTap: () {},
                           ),
-                          title: const Text('Upload this DayNote',
-                              style: headerMedium),
-                          onTap: () {},
-                        ),
-                        ListTile(
-                          tileColor: primaryAppColor,
-                          leading: const Icon(
-                            Icons.delete_forever_outlined,
-                            color: white,
+                          ListTile(
+                            tileColor: primaryAppColor,
+                            leading: const Icon(
+                              Icons.delete_forever_outlined,
+                              color: white,
+                            ),
+                            title: const Text('Delete all DayNotes',
+                                style: headerMedium),
+                            onTap: () {
+                              confirmDelete(context, "Delete All DayNotes",
+                                  "Are you sure you want to clear all DayNotes for this day?",
+                                  () {
+                                deleteAllDayNotes();
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              });
+                            },
                           ),
-                          title: const Text('Delete all DayNotes',
-                              style: headerMedium),
-                          onTap: () {
-                            confirmDelete(context, "Delete All DayNotes",
-                                "Are you sure you want to clear all DayNotes for this day?",
-                                () {
-                              deleteAllDayNotes();
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            });
-                          },
-                        ),
-                      ],
-                    )),
+                        ],
+                      )),
+                ),
                 backgroundColor: gitHubBlack,
                 appBar: AppBar(title: Text(title!)),
                 body: PageView.builder(
@@ -409,6 +413,8 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
         context: context, builder: (BuildContext context) => confirmation);
   }
 
+  /* Album Functions */
+
   void addToAlbum(int index) {
     Navigator.push(
         context,
@@ -419,11 +425,9 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
                 )));
   }
 
-  /* Album Functions */
-
   //If at any point that a DayNote is renamed/deleted,
   //you must check all the albums if that DayNote is within any of them
-  void verifyAlbums(String oldFileName,
+  Future verifyAlbums(String oldFileName,
       {bool delete = false, String newFileName = ""}) async {
     List<Album> albums = await GetFile.readAlbumJson();
     for (Album album in albums) {

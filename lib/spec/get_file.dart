@@ -75,6 +75,15 @@ class GetFile {
     GetFile.loadAlbums().writeAsString(jsonEncode(albums));
   }
 
+  static void cleanAlbumList(List<Album> albums) {
+    for (Album album in albums) {
+      album.dayNotes.removeWhere((dayNote) => !exists(
+          dayNote.split('/')[0], "photo",
+          index: int.parse(dayNote.split('/')[1])));
+    }
+    saveAlbumJson(albums);
+  }
+
   static Future generateNewDay(String date) async {
     if (!await File('$appDir/photos/$date').exists()) {
       Directory('$appDir/photos/$date').create();

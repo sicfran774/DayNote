@@ -11,6 +11,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await GetFile.generateDirectories();
+  GetFile.cleanAlbumList(await GetFile.readAlbumJson());
   runApp(const MyApp());
 }
 

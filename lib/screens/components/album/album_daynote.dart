@@ -60,6 +60,9 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
                 : const Text("");
           },
         ),
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.settings))
+        ],
       ),
       body: PageView(
         controller: horizontalController,
