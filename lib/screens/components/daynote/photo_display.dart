@@ -10,6 +10,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../spec/get_file.dart';
+import '../album/album_class.dart';
 
 String photoPath = '${GetFile.appDir}/photos';
 String notePath = '${GetFile.appDir}/notes';
@@ -79,6 +80,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     }
 
     File('$photoPath/$date/$index.png').deleteSync();
+    verifyAlbums('$date/$index', delete: true); //remove from albums
     print('photo deleted $index');
     hasNote.removeAt(index);
 
@@ -98,9 +100,13 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
 
     int index = 0;
     for (var photo in photos) {
+      String photoString = photo.toString().split('/')[7].split('/')[0];
       String photoIndex = photo.toString().split('/')[8].split('.')[0];
+
       photo.renameSync(GetFile.path(date, 'photo', index: index));
       print('photo: renaming $photoIndex to $index');
+      verifyAlbums("$photoString/$photoIndex",
+          newFileName: "${photoString.split('/')[0]}/$index");
 
       if (GetFile.exists(date, 'note', index: int.parse(photoIndex))) {
         print('note: renaming $photoIndex to $index');
@@ -120,6 +126,9 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     List<FileSystemEntity> notes = await directories(1); //get note array
 
     for (var photo in photos) {
+      String photoString = photo.toString().split('/')[7].split('/')[0];
+      String photoIndex = photo.toString().split('/')[8].split('.')[0];
+      verifyAlbums("$photoString/$photoIndex", delete: true);
       photo.delete();
     }
     for (var note in notes) {
@@ -383,16 +392,6 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     );
   }
 
-  void addToAlbum(int index) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => AlbumScreen(
-                  addingNote: true,
-                  dayNoteDate: '$date/$index',
-                )));
-  }
-
   void confirmDelete(
       BuildContext context, String msg1, String msg2, Function func) {
     Widget cancel = TextButton(
@@ -410,9 +409,39 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
         context: context, builder: (BuildContext context) => confirmation);
   }
 
-  //TODO: If at any point that a DayNote is renamed/deleted,
+  void addToAlbum(int index) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AlbumScreen(
+                  addingNote: true,
+                  dayNoteDate: '$date/$index',
+                )));
+  }
+
+  /* Album Functions */
+
+  //If at any point that a DayNote is renamed/deleted,
   //you must check all the albums if that DayNote is within any of them
-  void verifyAlbums(String oldFileName, String newFileName) {}
+  void verifyAlbums(String oldFileName,
+      {bool delete = false, String newFileName = ""}) async {
+    List<Album> albums = await GetFile.readAlbumJson();
+    for (Album album in albums) {
+      if (delete) {
+        album.dayNotes.removeWhere((dayNote) => dayNote == oldFileName);
+      } else {
+        for (int i = 0; i < album.dayNotes.length; i++) {
+          if (album.dayNotes[i] == oldFileName) {
+            print("renaming ${album.dayNotes[i]} to $newFileName");
+            album.dayNotes[i] = newFileName;
+          }
+        }
+      }
+    }
+    GetFile.saveAlbumJson(albums);
+  }
+
+  /* Album Functions End */
 
   /* Firebase */
 

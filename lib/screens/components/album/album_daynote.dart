@@ -55,7 +55,9 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
           valueListenable: dateNotifier,
           builder: (context, value, child) {
             List<String> tempDate = value.split('_');
-            return Text(convertToUTC(tempDate[0], tempDate[1], tempDate[2]));
+            return (tempDate.length == 3)
+                ? Text(convertToUTC(tempDate[0], tempDate[1], tempDate[2]))
+                : const Text("");
           },
         ),
       ),

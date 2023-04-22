@@ -65,14 +65,10 @@ class _AlbumScreenState extends State<AlbumScreen> {
   Album createAlbum(String albumName) {
     Album newAlbum = Album(albumName: albumName, dayNotes: []);
     albums.add(newAlbum);
-    saveAlbumJson();
+    setState(() {
+      GetFile.saveAlbumJson(albums);
+    });
     return newAlbum;
-  }
-
-  void saveAlbumJson() {
-    albumJsonFile = GetFile.loadAlbums();
-    albumJsonFile?.writeAsString(jsonEncode(albums));
-    setState(() {});
   }
 
   @override
@@ -136,7 +132,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
         onPressed: () {
           if (addingNote) {
             albums[albumIndex].dayNotes.add(dayNoteDate);
-            saveAlbumJson();
+            GetFile.saveAlbumJson(albums);
             Navigator.pop(context);
           } else {
             Navigator.push(

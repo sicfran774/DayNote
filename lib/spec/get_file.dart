@@ -71,6 +71,10 @@ class GetFile {
     }
   }
 
+  static void saveAlbumJson(List<Album> albums) {
+    GetFile.loadAlbums().writeAsString(jsonEncode(albums));
+  }
+
   static Future generateNewDay(String date) async {
     if (!await File('$appDir/photos/$date').exists()) {
       Directory('$appDir/photos/$date').create();
