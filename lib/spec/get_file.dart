@@ -54,10 +54,10 @@ class GetFile {
 
   static Future<List<Album>> readAlbumJson() async {
     try {
-      if (!GetFile.albumJsonExists()) {
+      if (!albumJsonExists()) {
         return [];
       }
-      File albumJsonFile = GetFile.loadAlbums();
+      File albumJsonFile = loadAlbums();
       //Get JSON file and decode it into string
       var json = jsonDecode(albumJsonFile.readAsStringSync());
       //Separate each object, put it as an array
@@ -72,7 +72,7 @@ class GetFile {
   }
 
   static void saveAlbumJson(List<Album> albums) {
-    GetFile.loadAlbums().writeAsString(jsonEncode(albums));
+    loadAlbums().writeAsString(jsonEncode(albums));
   }
 
   static void cleanAlbumList(List<Album> albums) {
@@ -81,6 +81,18 @@ class GetFile {
           dayNote.split('/')[0], "photo",
           index: int.parse(dayNote.split('/')[1])));
     }
+    saveAlbumJson(albums);
+  }
+
+  static void deleteAlbum(int albumIndex) async {
+    var albums = await readAlbumJson();
+    albums.removeAt(albumIndex);
+    saveAlbumJson(albums);
+  }
+
+  static void renameAlbum(int albumIndex, String newName) async {
+    var albums = await readAlbumJson();
+    albums[albumIndex].albumName = newName;
     saveAlbumJson(albums);
   }
 

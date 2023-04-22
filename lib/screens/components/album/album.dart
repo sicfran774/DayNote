@@ -6,7 +6,8 @@ import 'package:day_note/screens/components/album/album_daynote.dart';
 import 'package:day_note/spec/color_styles.dart';
 import 'package:flutter/material.dart';
 
-import '../../../spec/get_file.dart';
+import 'package:day_note/spec/get_file.dart';
+import 'package:day_note/spec/edit.dart';
 import 'album_class.dart';
 
 class AlbumScreen extends StatefulWidget {
@@ -144,6 +145,14 @@ class _AlbumScreenState extends State<AlbumScreen> {
                           update: () => setState(() {}),
                         )));
           }
+        },
+        onLongPress: () {
+          Edit.albumOptionsWidget(
+              context, albumIndex, albums[albumIndex].albumName, () {
+            Navigator.pop(context);
+            Navigator.pop(context);
+            setState(() {});
+          });
         },
         child: Stack(
           children: [

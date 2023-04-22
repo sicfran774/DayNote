@@ -5,7 +5,7 @@ import 'dart:io';
 
 import 'package:day_note/spec/get_file.dart';
 import 'package:day_note/spec/text_styles.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:day_note/spec/edit.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -31,30 +31,15 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
   late String albumName = widget.albumName;
   int currentPage = 0;
 
-  void confirmDelete(
-      BuildContext context, String msg1, String msg2, Function func) {
-    Widget cancel = TextButton(
-        onPressed: () => Navigator.pop(context), child: const Text("Cancel"));
-    Widget confirm =
-        TextButton(onPressed: () => func(), child: const Text("Yes"));
-
-    AlertDialog confirmation = AlertDialog(
-      title: Text(msg1),
-      content: Text(msg2),
-      actions: [cancel, confirm],
-    );
-
-    showDialog(
-        context: context, builder: (BuildContext context) => confirmation);
-  }
+  void renameDialog() {}
 
   void removeFromAlbum() async {
     dayNoteList.removeAt(currentPage);
     var albums = await GetFile.readAlbumJson();
     albums[albumIndex].dayNotes = dayNoteList;
-    GetFile.loadAlbums().writeAsString(jsonEncode(albums));
+    GetFile.saveAlbumJson(albums);
     setState(() {
-      print("removed page $currentPage");
+      print("Removed page $currentPage from $albumName");
     });
   }
 
@@ -108,12 +93,13 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
           dateNotifier.value = dayNoteList[index].split('/')[0];
         },
       ),
-      floatingActionButton: (dayNoteList.isNotEmpty)
-          ? FloatingActionButton(
-              onPressed: () => photoOptionsWidget(currentPage),
-              child: const Icon(Icons.settings),
-            )
-          : Container(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => (dayNoteList.isNotEmpty)
+            ? photoOptionsWidget(currentPage)
+            : Edit.albumOptionsWidget(
+                context, albumIndex, albumName, () => onDelete()),
+        child: const Icon(Icons.settings),
+      ),
     );
   }
 
@@ -144,7 +130,7 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
               leading: const Icon(Icons.delete_forever),
               title: const Text('Remove this DayNote from this album'),
               onTap: () {
-                confirmDelete(context, "Delete DayNote",
+                Edit.confirmDelete(context, "Delete DayNote",
                     "Are you sure you want to remove this DayNote from $albumName? This will not remove it from the calendar.",
                     () {
                   removeFromAlbum();
@@ -158,7 +144,8 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
             title: const Text('Album options'),
             onTap: () {
               Navigator.pop(context);
-              albumOptionsWidget();
+              Edit.albumOptionsWidget(
+                  context, albumIndex, albumName, () => onDelete());
             },
           ),
         ],
@@ -166,28 +153,10 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
     );
   }
 
-  Future albumOptionsWidget() {
-    return showModalBottomSheet(
-      context: context,
-      builder: (context) => Wrap(
-        children: [
-          ListTile(
-            leading: const Icon(CupertinoIcons.pen),
-            title: const Text("Rename this album"),
-            onTap: () => {},
-          ),
-          ListTile(
-              leading: const Icon(Icons.delete_forever),
-              title: const Text('Delete this album'),
-              onTap: () {
-                Navigator.pop(context);
-              }),
-        ],
-      ),
-    );
-  }
-
-  void getAlbumName() async {
-    albumName = (await GetFile.readAlbumJson())[albumIndex].albumName;
+  void onDelete() {
+    Navigator.pop(context);
+    Navigator.pop(context);
+    Navigator.pop(context);
+    widget.update();
   }
 }
