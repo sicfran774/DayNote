@@ -3,10 +3,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:day_note/screens/components/calendar/calendar.dart';
 import 'package:day_note/spec/get_file.dart';
 import 'package:day_note/spec/text_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AlbumDayNote extends StatefulWidget {
   const AlbumDayNote(
@@ -33,13 +33,18 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
     });
   }
 
+  String convertToUTC(String year, String month, String day) {
+    return DateFormat.yMMMMd()
+        .format(DateTime(int.parse(year), int.parse(month), int.parse(day)))
+        .toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     String date = "";
-    //TODO: Make this better this code sucks
-    try {
-      date = dayNoteList[0];
-    } catch (e) {}
+    if (dayNoteList.isNotEmpty) {
+      date = dayNoteList[0].split('/')[0];
+    }
 
     final PageController horizontalController = PageController();
     final ValueNotifier<String> dateNotifier = ValueNotifier(date);
@@ -49,8 +54,8 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
         title: ValueListenableBuilder(
           valueListenable: dateNotifier,
           builder: (context, value, child) {
-            return Text(
-                value); //TODO: parse value so that it reflects date (Month Day, Year)
+            List<String> tempDate = value.split('_');
+            return Text(convertToUTC(tempDate[0], tempDate[1], tempDate[2]));
           },
         ),
       ),
@@ -72,7 +77,7 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
         ],
         onPageChanged: (index) {
           currentPage = index;
-          dateNotifier.value = dayNoteList[index];
+          dateNotifier.value = dayNoteList[index].split('/')[0];
         },
       ),
       floatingActionButton: (dayNoteList.isNotEmpty)
