@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print
 
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:day_note/screens/components/album/album_daynote.dart';
@@ -139,7 +138,11 @@ class _AlbumScreenState extends State<AlbumScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => AlbumDayNote(
-                        dayNoteList: album.dayNotes, albumIndex: albumIndex)));
+                          dayNoteList: album.dayNotes,
+                          albumIndex: albumIndex,
+                          albumName: album.albumName,
+                          update: () => setState(() {}),
+                        )));
           }
         },
         child: Stack(
