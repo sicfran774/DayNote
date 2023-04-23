@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:day_note/screens/components/album/album_daynote.dart';
 import 'package:day_note/spec/color_styles.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:day_note/spec/get_file.dart';
@@ -28,38 +29,6 @@ class _AlbumScreenState extends State<AlbumScreen> {
 
   Future updateAlbumList() async {
     albums = await GetFile.readAlbumJson();
-  }
-
-  void createAlbumDialog() {
-    String text = "";
-    Widget cancel = TextButton(
-        onPressed: () => Navigator.pop(context), child: const Text("Cancel"));
-    Widget create = TextButton(
-        onPressed: () {
-          Navigator.pop(context);
-          createAlbum(text);
-        },
-        child: const Text("Create"));
-
-    AlertDialog confirmation = AlertDialog(
-      title: const Center(child: Text("Create New Album")),
-      content: SingleChildScrollView(
-        child: Column(
-          children: [
-            const Text("Type a name for your new album: "),
-            TextField(
-              onChanged: (value) {
-                text = value;
-              },
-            ),
-          ],
-        ),
-      ),
-      actions: [cancel, create],
-    );
-
-    showDialog(
-        context: context, builder: (BuildContext context) => confirmation);
   }
 
   Album createAlbum(String albumName) {
@@ -87,7 +56,14 @@ class _AlbumScreenState extends State<AlbumScreen> {
                     actions: [
                       IconButton(
                           tooltip: "Create a new album",
-                          onPressed: () => createAlbumDialog(),
+                          onPressed: () => Edit.nameAlbumDialog(
+                                  context,
+                                  "Create New Album",
+                                  "Type a name for your new album: ",
+                                  "Create", () {
+                                createAlbum(Edit.textField);
+                                Navigator.pop(context);
+                              }),
                           icon: const Icon(Icons.add))
                     ],
                   ),

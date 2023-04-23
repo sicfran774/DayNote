@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:day_note/spec/get_file.dart';
 import 'package:day_note/spec/text_styles.dart';
 import 'package:day_note/spec/edit.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
