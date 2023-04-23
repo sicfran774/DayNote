@@ -13,7 +13,12 @@ import '../../../spec/get_file.dart';
 class NotesSection extends StatefulWidget {
   final String date;
   final int index;
-  const NotesSection({super.key, required this.date, required this.index});
+  final FocusNode focusNode;
+  const NotesSection(
+      {super.key,
+      required this.date,
+      required this.index,
+      required this.focusNode});
 
   @override
   State<NotesSection> createState() => _NotesSectionState();
@@ -23,16 +28,18 @@ class _NotesSectionState extends State<NotesSection> {
   late final String _date = widget.date;
   late final _index = widget.index;
   late List<dynamic> defaultNote = json.decode(GetFile.defaultString);
+  late FocusNode focusNode = widget.focusNode;
   QuillController controller = QuillController.basic();
   ScrollController scrollController = ScrollController();
-  FocusNode focusNode = FocusNode();
-  bool _newNote = true;
 
   @override
   void initState() {
     super.initState();
     focusNode.addListener(() {
-      if (_newNote) controller.clear();
+      if (!GetFile.exists(_date, 'note', index: _index)) {
+        controller.clear();
+        print("clear invoked");
+      }
     });
   }
 
@@ -49,7 +56,6 @@ class _NotesSectionState extends State<NotesSection> {
 
   void readNote() async {
     if (GetFile.exists(_date, 'note', index: _index)) {
-      _newNote = false;
       try {
         setState(() {
           defaultNote = json.decode(
@@ -77,14 +83,13 @@ class _NotesSectionState extends State<NotesSection> {
       saveNote(context);
     });
 
-    return Scaffold(
-        body: Container(
-            decoration: const BoxDecoration(
-                border: Border(
-              top: BorderSide(width: 3, color: Colors.black),
-            )),
-            height: 500,
-            child: quillEditor()));
+    return Container(
+        decoration: const BoxDecoration(
+            border: Border(
+          top: BorderSide(width: 3, color: Colors.black),
+        )),
+        height: 500,
+        child: quillEditor());
   }
 
   QuillEditor quillEditor() {

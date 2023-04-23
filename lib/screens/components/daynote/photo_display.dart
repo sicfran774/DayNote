@@ -2,7 +2,6 @@
 
 import 'dart:io';
 import 'package:day_note/screens/components/album/album.dart';
-import 'package:day_note/screens/components/album/album_daynote.dart';
 import 'package:day_note/screens/components/daynote/notes_section.dart';
 import 'package:day_note/spec/color_styles.dart';
 import 'package:day_note/spec/edit.dart';
@@ -33,6 +32,7 @@ class PhotoDisplay extends StatefulWidget {
 class _PhotoDisplayState extends State<PhotoDisplay> {
   final storageRef = FirebaseStorage.instance.ref();
   final ImagePicker _picker = ImagePicker();
+  final FocusNode focusNode = FocusNode();
   late String date = widget.date;
   late String? title = widget.title;
 
@@ -203,131 +203,114 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   Widget build(BuildContext context) {
     PageController horizontalController = PageController(initialPage: page);
     GetFile.generateNewDay(date);
+    int currentPage = 0;
     return FutureBuilder(
         future: amountOfDayNotes(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return Scaffold(
-                endDrawer: SizedBox(
-                  width: 250,
-                  child: Drawer(
-                      backgroundColor: gitHubBlack,
-                      shadowColor: Colors.blueGrey,
-                      child: ListView(
-                        children: [
-                          const DrawerHeader(
-                              margin: EdgeInsets.only(bottom: 0),
-                              child: Center(
-                                child: Text(
-                                  "DayNote Options",
-                                  style: headerLarge,
-                                ),
-                              )),
-                          ListTile(
-                            tileColor: primaryAppColor,
-                            leading: const Icon(
-                              Icons.ios_share_rounded,
-                              color: white,
-                            ),
-                            title: const Text('Upload this DayNote',
-                                style: headerMedium),
-                            onTap: () {},
+              endDrawer: SizedBox(
+                width: 250,
+                child: Drawer(
+                    backgroundColor: gitHubBlack,
+                    shadowColor: Colors.blueGrey,
+                    child: ListView(
+                      children: [
+                        const DrawerHeader(
+                            margin: EdgeInsets.only(bottom: 0),
+                            child: Center(
+                              child: Text(
+                                "DayNote Options",
+                                style: headerLarge,
+                              ),
+                            )),
+                        ListTile(
+                          tileColor: primaryAppColor,
+                          leading: const Icon(
+                            Icons.ios_share_rounded,
+                            color: white,
                           ),
-                          ListTile(
-                            tileColor: primaryAppColor,
-                            leading: const Icon(
-                              Icons.delete_forever_outlined,
-                              color: white,
-                            ),
-                            title: const Text('Delete all DayNotes',
-                                style: headerMedium),
-                            onTap: () {
-                              Edit.confirmDelete(context, "Delete All DayNotes",
-                                  "Are you sure you want to clear all DayNotes for this day?",
-                                  () {
-                                deleteAllDayNotes();
-                                Navigator.pop(context);
-                                Navigator.pop(context);
-                              });
-                            },
+                          title: const Text('Upload this DayNote',
+                              style: headerMedium),
+                          onTap: () {
+                            showSnackBarAlert(
+                                "Feature available in the future!");
+                          },
+                        ),
+                        ListTile(
+                          tileColor: primaryAppColor,
+                          leading: const Icon(
+                            Icons.delete_forever_outlined,
+                            color: white,
                           ),
-                        ],
-                      )),
-                ),
-                backgroundColor: gitHubBlack,
-                appBar: AppBar(title: Text(title!)),
-                body: PageView.builder(
-                  controller: horizontalController,
-                  itemBuilder: (context, index) {
-                    return FutureBuilder(
-                        future: GetFile.getFile(date, 'photo', index: index),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            return individualDayNote(snapshot.data, index);
-                          } else {
-                            return Container(color: gitHubBlack);
-                          }
-                        });
-                  },
-                  itemCount: snapshot.data,
-                ));
+                          title: const Text('Delete all DayNotes',
+                              style: headerMedium),
+                          onTap: () {
+                            Edit.confirmDelete(context, "Delete All DayNotes",
+                                "Are you sure you want to clear all DayNotes for this day?",
+                                () {
+                              deleteAllDayNotes();
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            });
+                          },
+                        ),
+                      ],
+                    )),
+              ),
+              backgroundColor: gitHubBlack,
+              appBar: AppBar(title: Text(title!)),
+              body: PageView.builder(
+                controller: horizontalController,
+                itemBuilder: (context, index) {
+                  return FutureBuilder(
+                      future: GetFile.getFile(date, 'photo', index: index),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return individualDayNote(snapshot.data, index);
+                        } else {
+                          return Container(color: gitHubBlack);
+                        }
+                      });
+                },
+                itemCount: snapshot.data,
+                onPageChanged: (index) {
+                  currentPage = index;
+                },
+              ),
+              floatingActionButton: FloatingActionButton(
+                  tooltip: (GetFile.exists(date, 'photo', index: currentPage))
+                      ? "DayNote options"
+                      : "Add a new photo",
+                  child: (!GetFile.exists(date, 'photo', index: currentPage))
+                      ? const Icon(Icons.add)
+                      : const Icon(Icons.photo),
+                  onPressed: () {
+                    chooseImageWidget(context, currentPage);
+                    focusNode.unfocus();
+                  }),
+            );
           } else {
             return Container(color: gitHubBlack);
           }
         });
   }
 
-  PageView individualDayNote(data, int index) {
-    PageController verticalController = PageController();
-    return PageView(
-      controller: verticalController,
-      scrollDirection: Axis.vertical,
+  Widget individualDayNote(data, int index) {
+    return SingleChildScrollView(
+        child: Column(
       children: [
         if (data == null) ...[
-          photoSection(data, index),
+          photoSection(data),
         ] else ...[
-          photoSection(data, index),
-          NotesSection(date: date, index: index),
+          photoSection(data),
+          NotesSection(date: date, index: index, focusNode: focusNode),
         ]
       ],
-    );
+    ));
   }
 
-  Scaffold photoSection(data, index) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-          tooltip: (GetFile.exists(date, 'photo', index: index))
-              ? "DayNote options"
-              : "Add a new photo",
-          child:
-              (data == null) ? const Icon(Icons.add) : const Icon(Icons.photo),
-          onPressed: () => chooseImageWidget(context, index)),
-      body: Stack(children: [
-        Center(child: imageWidget(data)),
-        if (GetFile.exists(date, "photo", index: index)) ...[
-          Container(
-              alignment: Alignment.topRight,
-              padding: (index == 0)
-                  ? const EdgeInsets.all(15)
-                  : const EdgeInsets.only(right: 15, top: 7),
-              child: (index == 0)
-                  ? const Icon(
-                      Icons.star,
-                      color: starColor,
-                      size: 40,
-                    )
-                  : IconButton(
-                      onPressed: () => setAsDisplayDayNote(index),
-                      tooltip: "Set as cover photo",
-                      icon: const Icon(Icons.star_border_outlined,
-                          color: starColor, size: 40)))
-        ],
-      ]),
-    );
-  }
-
-  Widget imageWidget(data) {
+  Widget photoSection(data) {
     if (data != null) {
       //uploadImage(displayImage);
       return Row(
@@ -400,6 +383,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   /* Album Functions */
 
   void addToAlbum(int index) {
+    print("Adding $index to album");
     Navigator.push(
         context,
         MaterialPageRoute(
