@@ -3,6 +3,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:day_note/screens/components/bottom_bar.dart';
+import 'package:day_note/screens/components/daynote/photo_display.dart';
 import 'package:day_note/spec/get_file.dart';
 import 'package:day_note/spec/text_styles.dart';
 import 'package:day_note/spec/edit.dart';
@@ -185,6 +187,27 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
               },
             ),
           ],
+          ListTile(
+            leading: const Icon(Icons.arrow_circle_right),
+            title: const Text("Go to this day on the calendar"),
+            onTap: () {
+              List<String> tempDate =
+                  dayNoteList[index].split('/')[0].split('_');
+              Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const BottomBar()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PhotoDisplay(
+                            date: dayNoteList[index].split('/')[0],
+                            title: convertToUTC(
+                                tempDate[0], tempDate[1], tempDate[2]),
+                          )));
+            },
+          ),
           ListTile(
               leading: const Icon(Icons.delete_forever),
               title: const Text('Remove this DayNote from this album'),
