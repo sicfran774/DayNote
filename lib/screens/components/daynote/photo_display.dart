@@ -252,8 +252,6 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
                                 "Are you sure you want to clear all DayNotes for this day?",
                                 () {
                               deleteAllDayNotes();
-                              Navigator.pop(context);
-                              Navigator.pop(context);
                             });
                           },
                         ),

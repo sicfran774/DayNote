@@ -18,12 +18,20 @@ class _HomeScreenState extends State<HomeScreen> {
       slivers: [
         SliverAppBar(
           floating: true,
+          leading: Container(
+            decoration: const BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/images/icon.png'))),
+          ),
+          leadingWidth: 40,
           title: const Text("DayNote"),
           actions: [
             IconButton(
                 tooltip: "Settings",
-                onPressed: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SettingsScreen())),
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SettingsScreen())),
                 icon: const Icon(Icons.settings))
           ],
         ),
