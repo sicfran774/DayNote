@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:day_note/screens/components/album/album_daynote.dart';
 import 'package:day_note/spec/color_styles.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:day_note/spec/get_file.dart';

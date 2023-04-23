@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 
 import 'package:path_provider/path_provider.dart';
@@ -92,6 +94,7 @@ class GetFile {
 
   static void renameAlbum(int albumIndex, String newName) async {
     var albums = await readAlbumJson();
+    print("Renamed album ${albums[albumIndex].albumName} to $newName");
     albums[albumIndex].albumName = newName;
     saveAlbumJson(albums);
   }

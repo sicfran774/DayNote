@@ -45,10 +45,9 @@ class Edit {
               leading: const Icon(Icons.delete_forever),
               title: const Text('Delete this album'),
               onTap: () {
-                Edit.confirmDelete(context, "Delete Album",
+                confirmDelete(context, "Delete Album",
                     "Are you sure you want to delete $albumName?", () {
                   GetFile.deleteAlbum(albumIndex);
-                  print("Deleted album $albumName");
                   onConfirm();
                 });
               }),
