@@ -35,8 +35,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   final FocusNode focusNode = FocusNode();
   late String date = widget.date;
   late String? title = widget.title;
-
-  int page = 0;
+  late int currentPage = 0;
 
   Future directories(int index) async {
     final photoDir = Directory('${GetFile.appDir}/photos/$date');
@@ -138,7 +137,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     }
 
     setState(() {
-      page = 0;
+      currentPage = 0;
     });
 
     showSnackBarAlert("Deleted all DayNotes");
@@ -167,7 +166,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     File(tempImage.path).copy('$photoPath/$date/$index.png');
 
     setState(() {
-      page = index;
+      currentPage = index;
       imageCache.clear();
     });
 
@@ -179,7 +178,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     switchDayNotes(index, 'note');
 
     setState(() {
-      page = 0;
+      currentPage = 0;
     });
   }
 
@@ -201,9 +200,9 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
 
   @override
   Widget build(BuildContext context) {
-    PageController horizontalController = PageController(initialPage: page);
+    final PageController horizontalController =
+        PageController(initialPage: currentPage);
     GetFile.generateNewDay(date);
-    int currentPage = 0;
     return FutureBuilder(
         future: amountOfDayNotes(),
         builder: (context, snapshot) {

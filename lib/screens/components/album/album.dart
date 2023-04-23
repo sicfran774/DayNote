@@ -135,6 +135,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
               Container(
                 decoration: BoxDecoration(
                     image: DecorationImage(
+                        fit: BoxFit.cover,
                         image: FileImage(File(
                             GetFile.path(date, "photo", index: photoIndex)))),
                     color: primaryAppColor),

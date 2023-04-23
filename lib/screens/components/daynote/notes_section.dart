@@ -45,10 +45,6 @@ class _NotesSectionState extends State<NotesSection> {
 
   void saveNote(BuildContext context) {
     var jsonString = jsonEncode(controller.document.toDelta().toJson());
-
-    if (GetFile.exists(_date, 'note', index: _index)) {
-      File(GetFile.path(_date, 'note', index: _index)).delete();
-    }
     File file = File(GetFile.path(_date, 'note', index: _index));
     file.writeAsString(jsonString);
     print("Saved note to ${GetFile.path(_date, 'note', index: _index)}");
