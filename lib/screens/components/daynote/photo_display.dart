@@ -177,6 +177,9 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     switchDayNotes(index, 'photo');
     switchDayNotes(index, 'note');
 
+    //For albums
+    verifyAlbums("$date/$index", newFileName: "$date/0", switching: true);
+
     setState(() {
       currentPage = 0;
     });
@@ -395,11 +398,23 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   //If at any point that a DayNote is renamed/deleted,
   //you must check all the albums if that DayNote is within any of them
   Future verifyAlbums(String oldFileName,
-      {bool delete = false, String newFileName = ""}) async {
+      {bool delete = false,
+      bool switching = false,
+      String newFileName = ""}) async {
     List<Album> albums = await GetFile.readAlbumJson();
     for (Album album in albums) {
       if (delete) {
         album.dayNotes.removeWhere((dayNote) => dayNote == oldFileName);
+      } else if (switching) {
+        for (int i = 0; i < album.dayNotes.length; i++) {
+          if (album.dayNotes[i] == oldFileName) {
+            print("renaming ${album.dayNotes[i]} to $newFileName");
+            album.dayNotes[i] = newFileName;
+          } else if (album.dayNotes[i] == newFileName) {
+            print("renaming ${album.dayNotes[i]} to $oldFileName");
+            album.dayNotes[i] = oldFileName;
+          }
+        }
       } else {
         for (int i = 0; i < album.dayNotes.length; i++) {
           if (album.dayNotes[i] == oldFileName) {

@@ -58,6 +58,7 @@ class Edit {
 
   static void nameAlbumDialog(BuildContext context, String title,
       String directions, String confirmOption, Function() onConfirm) {
+    textField = "";
     Widget cancel = TextButton(
         onPressed: () => Navigator.pop(context), child: const Text("Cancel"));
     Widget create =

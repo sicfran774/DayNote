@@ -173,14 +173,16 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
       context: context,
       builder: (context) => Wrap(
         children: [
-          ListTile(
-            leading: const Icon(Icons.star),
-            title: const Text('Set as album display'),
-            onTap: () {
-              //TODO: setAsDisplayDayNote(index);
-              Navigator.pop(context);
-            },
-          ),
+          if (index != 0) ...[
+            ListTile(
+              leading: const Icon(Icons.star),
+              title: const Text('Set as album display'),
+              onTap: () {
+                //TODO: setAsDisplayDayNote(index);
+                Navigator.pop(context);
+              },
+            ),
+          ],
           ListTile(
               leading: const Icon(Icons.delete_forever),
               title: const Text('Remove this DayNote from this album'),
