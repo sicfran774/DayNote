@@ -99,6 +99,18 @@ class GetFile {
     saveAlbumJson(albums);
   }
 
+  static Future<List<String>> moveAlbumDayNotePosition(
+      int albumIndex, int initialIndex, int destIndex) async {
+    List<Album> albums = await readAlbumJson();
+    List<String> dayNotes = albums[albumIndex].dayNotes;
+    final temp = dayNotes[initialIndex];
+    dayNotes[initialIndex] = dayNotes[destIndex];
+    dayNotes[destIndex] = temp;
+    albums[albumIndex].dayNotes = dayNotes;
+    saveAlbumJson(albums);
+    return dayNotes;
+  }
+
   static Future generateNewDay(String date) async {
     if (!await File('$appDir/photos/$date').exists()) {
       Directory('$appDir/photos/$date').create();

@@ -36,8 +36,6 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
   FocusNode focusNode = FocusNode();
   int currentPage = 0;
 
-  void renameDialog() {}
-
   void removeFromAlbum() async {
     dayNoteList.removeAt(currentPage);
     var albums = await GetFile.readAlbumJson();
@@ -178,8 +176,12 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
               leading: const Icon(Icons.star),
               title: const Text('Set as album display'),
               onTap: () {
-                //TODO: setAsDisplayDayNote(index);
+                GetFile.moveAlbumDayNotePosition(albumIndex, index, 0);
                 Navigator.pop(context);
+                Navigator.pop(context);
+                setState(() {
+                  widget.update();
+                });
               },
             ),
           ],
