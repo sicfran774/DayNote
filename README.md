@@ -5,9 +5,7 @@ Editable journal-like calendar app
 ## Features
 - Upload images to specific days on calendar
 - Add notes to each image
-
-### Currently Working On
-- Add specific images to groups to see occurrences
+- Add specific image/note "DayNotes" to albums
 
 ### Possible Future Features
 - See others' uploads for that day
