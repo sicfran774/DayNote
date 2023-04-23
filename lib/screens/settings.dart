@@ -29,7 +29,9 @@ class SettingsScreen extends StatelessWidget {
             title: const Text("Delete All Data"),
             textColor: white,
             iconColor: white,
-            onTap: () => confirmDeleteAllData(context),
+            onTap: () {
+              confirmDeleteAllData(context);
+            },
           )
         ],
       ),
@@ -42,7 +44,7 @@ class SettingsScreen extends StatelessWidget {
     Widget confirm = TextButton(
         onPressed: () {
           Navigator.pop(context);
-          GetFile.deleteAllData();
+          GetFile.deleteAllData(context);
         },
         child: const Text("Delete"));
 

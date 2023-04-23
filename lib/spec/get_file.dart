@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
@@ -118,12 +119,20 @@ class GetFile {
     }
   }
 
-  static void deleteAllData() {
+  static void deleteAllData(BuildContext context) {
     File('$appDir/photos').delete(recursive: true);
     File('$appDir/notes').delete(recursive: true);
     if (File('$appDir/album.json').existsSync()) {
       File('$appDir/album.json').delete(recursive: true);
     }
     generateDirectories();
+    showSnackBarAlert(context, "Deleted all DayNotes and albums");
+  }
+
+  static void showSnackBarAlert(BuildContext context, String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(msg),
+      duration: const Duration(seconds: 1),
+    ));
   }
 }
