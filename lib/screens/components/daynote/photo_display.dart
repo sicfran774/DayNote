@@ -297,17 +297,25 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   }
 
   Widget individualDayNote(data, int index) {
-    return SingleChildScrollView(
-        child: Column(
-      children: [
-        if (data == null) ...[
-          photoSection(data),
-        ] else ...[
-          photoSection(data),
-          NotesSection(date: date, index: index, focusNode: focusNode),
-        ]
-      ],
-    ));
+    return GestureDetector(
+      onTap: () {
+        if (focusNode.hasPrimaryFocus) {
+          GetFile.showSnackBarAlert(context, "Note saved", seconds: 1);
+        }
+        focusNode.unfocus();
+      },
+      child: SingleChildScrollView(
+          child: Column(
+        children: [
+          if (data == null) ...[
+            photoSection(data),
+          ] else ...[
+            photoSection(data),
+            NotesSection(date: date, index: index, focusNode: focusNode),
+          ]
+        ],
+      )),
+    );
   }
 
   Widget photoSection(data) {

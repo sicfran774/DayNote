@@ -2,12 +2,14 @@
 
 import 'dart:convert';
 
+import 'package:day_note/screens/components/album/album_daynote.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
 
 import '../screens/components/album/album_class.dart';
+import '../screens/components/bottom_bar.dart';
 
 class GetFile {
   static String appDir = "";
@@ -129,10 +131,11 @@ class GetFile {
     showSnackBarAlert(context, "Deleted all DayNotes and albums");
   }
 
-  static void showSnackBarAlert(BuildContext context, String msg) {
+  static void showSnackBarAlert(BuildContext context, String msg,
+      {int seconds = 2}) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(msg),
-      duration: const Duration(seconds: 1),
+      duration: Duration(seconds: seconds),
     ));
   }
 }

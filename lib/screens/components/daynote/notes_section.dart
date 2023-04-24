@@ -3,7 +3,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:day_note/spec/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:tuple/tuple.dart';
@@ -38,7 +37,6 @@ class _NotesSectionState extends State<NotesSection> {
     focusNode.addListener(() {
       if (!GetFile.exists(_date, 'note', index: _index)) {
         controller.clear();
-        print("clear invoked");
       }
     });
   }

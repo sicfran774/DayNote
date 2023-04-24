@@ -43,7 +43,9 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
     var albums = await GetFile.readAlbumJson();
     albums[albumIndex].dayNotes = dayNoteList;
     GetFile.saveAlbumJson(albums);
+
     setState(() {
+      currentPage = 0;
       print("Removed page $currentPage from $albumName");
     });
   }
@@ -193,9 +195,7 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
             onTap: () {
               List<String> tempDate =
                   dayNoteList[index].split('/')[0].split('_');
-              Navigator.pop(context);
-              Navigator.pop(context);
-              Navigator.pop(context);
+              Navigator.popUntil(context, (route) => route.isFirst);
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const BottomBar()));
               Navigator.push(
@@ -218,6 +218,8 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
                   removeFromAlbum();
                   Navigator.pop(context);
                   Navigator.pop(context);
+                  GetFile.showSnackBarAlert(
+                      context, "Removed DayNote from $albumName");
                   widget.update();
                 });
               }),

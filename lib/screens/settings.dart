@@ -1,3 +1,4 @@
+import 'package:day_note/screens/onboarding.dart';
 import 'package:day_note/spec/color_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -26,7 +27,14 @@ class SettingsScreen extends StatelessWidget {
               title: const Text("How to use this app"),
               textColor: white,
               iconColor: white,
-              onTap: () => {}),
+              onTap: () => {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const OnboardingScreen(
+                                  typeTutorial: "calendar",
+                                )))
+                  }),
           ListTile(
             leading: const Icon(Icons.folder_delete_rounded),
             title: const Text("Delete All Data"),

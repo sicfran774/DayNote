@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:day_note/screens/components/album/album_daynote.dart';
 import 'package:day_note/spec/color_styles.dart';
+import 'package:day_note/spec/text_styles.dart';
 import 'package:flutter/material.dart';
 
 import 'package:day_note/spec/get_file.dart';
@@ -36,6 +37,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
     setState(() {
       GetFile.saveAlbumJson(albums);
     });
+    GetFile.showSnackBarAlert(context, "Created new album: $albumName");
     return newAlbum;
   }
 
@@ -103,51 +105,80 @@ class _AlbumScreenState extends State<AlbumScreen> {
       photoIndex = 0;
     }
 
-    return ElevatedButton(
-        onPressed: () {
-          if (addingNote) {
-            albums[albumIndex].dayNotes.add(dayNoteDate);
-            GetFile.saveAlbumJson(albums);
-            Navigator.pop(context);
-          } else {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AlbumDayNote(
-                          dayNoteList: album.dayNotes,
-                          albumIndex: albumIndex,
-                          albumName: album.albumName,
-                          update: () => setState(() {}),
-                        )));
-          }
-        },
-        onLongPress: () {
-          Edit.albumOptionsWidget(
-              context, albumIndex, albums[albumIndex].albumName, () {
-            Navigator.pop(context);
-            Navigator.pop(context);
-            setState(() {});
-          });
-        },
-        child: Stack(
-          children: [
-            if (hasDayNote) ...[
+    if (hasDayNote) {
+      return Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: FileImage(
+                      File(GetFile.path(date, "photo", index: photoIndex)))),
+              color: primaryAppColor,
+              borderRadius: const BorderRadius.all(Radius.circular(20))),
+          child: albumButton(album, albumIndex));
+    } else {
+      return Container(
+        decoration: const BoxDecoration(
+            color: primaryAppColor,
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        child: albumButton(album, albumIndex),
+      );
+    }
+  }
+
+  Widget albumButton(Album album, int albumIndex) {
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20)))),
+      onPressed: () {
+        if (addingNote) {
+          Navigator.pop(context);
+          Navigator.pop(context);
+          albums[albumIndex].dayNotes.add(dayNoteDate);
+          GetFile.saveAlbumJson(albums);
+          GetFile.showSnackBarAlert(
+              context, "Added DayNote to album ${album.albumName}");
+          setState(() {});
+        } else {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AlbumDayNote(
+                        dayNoteList: album.dayNotes,
+                        albumIndex: albumIndex,
+                        albumName: album.albumName,
+                        update: () => setState(() {}),
+                      )));
+        }
+      },
+      onLongPress: () {
+        Edit.albumOptionsWidget(
+            context, albumIndex, albums[albumIndex].albumName, () {
+          Navigator.pop(context);
+          Navigator.pop(context);
+          setState(() {});
+        });
+      },
+      child: Stack(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
               Container(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: FileImage(File(
-                            GetFile.path(date, "photo", index: photoIndex)))),
-                    color: primaryAppColor),
+                height: 25,
+                decoration: const BoxDecoration(
+                    color: gitHubBlack,
+                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                child: Center(
+                    child: Text(
+                  album.albumName,
+                  style: headerMedium,
+                )),
               ),
             ],
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Center(child: Text(album.albumName)),
-              ],
-            ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 }

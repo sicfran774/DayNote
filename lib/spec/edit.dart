@@ -48,6 +48,8 @@ class Edit {
                 confirmDelete(context, "Delete Album",
                     "Are you sure you want to delete $albumName?", () {
                   GetFile.deleteAlbum(albumIndex);
+                  GetFile.showSnackBarAlert(
+                      context, "Deleted album: $albumName");
                   onConfirm();
                 });
               }),

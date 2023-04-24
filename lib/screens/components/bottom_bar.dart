@@ -6,14 +6,15 @@ import 'package:day_note/screens/components/album/album.dart';
 import '../home.dart';
 
 class BottomBar extends StatefulWidget {
-  const BottomBar({super.key});
+  const BottomBar({super.key, this.initialIndex = 1});
+  final int initialIndex;
 
   @override
   State<BottomBar> createState() => _BottomBarState();
 }
 
 class _BottomBarState extends State<BottomBar> {
-  int _selectedIndex = 1;
+  late int _selectedIndex = widget.initialIndex;
 
   static final List<Widget> _screens = <Widget>[
     const HomeScreen(),
