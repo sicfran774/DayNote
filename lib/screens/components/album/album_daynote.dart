@@ -244,13 +244,17 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
               List<String> tempDate =
                   dayNoteList[index].split('/')[0].split('_');
               Navigator.popUntil(context, (route) => route.isFirst);
-              Navigator.pushReplacementNamed(context, '/calendar');
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PhotoDisplay(
-                        date: dayNoteList[index].split('/')[0],
-                        title:
-                            convertToUTC(tempDate[0], tempDate[1], tempDate[2]),
-                      )));
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/calendar');
+
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PhotoDisplay(
+                            date: dayNoteList[index].split('/')[0],
+                            title: convertToUTC(
+                                tempDate[0], tempDate[1], tempDate[2]),
+                          )));
             },
           ),
           ListTile(

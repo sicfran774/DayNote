@@ -168,6 +168,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     setState(() {
       currentPage = index;
       imageCache.clear();
+      imageCache.clearLiveImages();
     });
 
     print("Saved image to $photoPath/$date/$index.png");
@@ -183,6 +184,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     setState(() {
       currentPage = 0;
     });
+    imageCache.clearLiveImages();
   }
 
   void switchDayNotes(int index, String type) {

@@ -46,7 +46,7 @@ class CalendarCell extends StatelessWidget {
           future: GetFile.getFile(date, 'photo'),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              return cellBuilder(date, snapshot.data);
+              return cellBuilder(date);
             } else {
               return Container(
                 width: width,
@@ -60,7 +60,7 @@ class CalendarCell extends StatelessWidget {
     }
   }
 
-  Widget cellBuilder(String date, File? displayImage) {
+  Widget cellBuilder(String date) {
     bool today = (DateTime.now().day == day &&
         DateTime.now().month == month &&
         DateTime.now().year == year);
