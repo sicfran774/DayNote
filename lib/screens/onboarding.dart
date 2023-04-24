@@ -31,6 +31,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         description:
             "Awesome! Now you can scroll down and tap below the photo to start typing a note. Notes are automatically saved as you type.",
         image: "assets/images/step3.png"),
+    OnboardPage(
+        title: "Create an album",
+        description:
+            "To create a new album, tap the plus icon at the top right of the screen",
+        image: "assets/images/albumStep2.png"),
+    OnboardPage(
+        title: "Add to an album",
+        description:
+            'If you want to add a DayNote to an album, tap the bottom right photo button, and tap "Add this DayNote to an album"',
+        image: "assets/images/albumStep1.png"),
   ];
 
   @override
