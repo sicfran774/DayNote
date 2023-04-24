@@ -49,7 +49,7 @@ class SplashScreenState extends State<SplashScreen> {
   Future checkNewUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     //TODO: REMOVE THIS BEFORE YOU BUILD
-    await prefs.remove('newUser');
+    //await prefs.remove('newUser');
     bool newUser = prefs.getBool('newUser') ?? true;
 
     Duration duration = const Duration(seconds: 1);

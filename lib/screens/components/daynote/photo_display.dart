@@ -210,7 +210,9 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   Widget build(BuildContext context) {
     final PageController horizontalController =
         PageController(initialPage: currentPage);
+    existsNotifier.value = ((GetFile.exists(date, 'photo')));
     GetFile.generateNewDay(date);
+
     return FutureBuilder(
         future: amountOfDayNotes(),
         builder: (context, snapshot) {
@@ -342,9 +344,9 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
         ],
       );
     } else {
-      return const SizedBox(
-        height: 500,
-        child: Center(child: Text("Add an image!", style: headerMedium)),
+      return const Center(
+        heightFactor: 40,
+        child: Text("Tap the plus icon to add a new image", style: dayStyle),
       );
     }
   }
