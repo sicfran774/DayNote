@@ -48,42 +48,69 @@ class _AlbumScreenState extends State<AlbumScreen> {
         future: updateAlbumList(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return Scaffold(
-              body: CustomScrollView(
-                slivers: [
-                  SliverAppBar(
-                    floating: true,
-                    title: const Text("Albums"),
-                    actions: [
-                      IconButton(
-                          tooltip: "Create a new album",
-                          onPressed: () => Edit.nameAlbumDialog(
-                                  context,
-                                  "Create New Album",
-                                  "Type a name for your new album: ",
-                                  "Create", () {
-                                createAlbum(Edit.textField);
-                                Navigator.pop(context);
-                              }),
-                          icon: const Icon(Icons.add))
-                    ],
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.all(10),
-                    sliver: SliverGrid.count(
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10,
-                      crossAxisCount: 2,
-                      children: [
-                        for (Album album in albums) ...[
-                          albumCell(album, albumIndex++)
-                        ]
+            if (albums.isNotEmpty) {
+              return Scaffold(
+                body: CustomScrollView(
+                  slivers: [
+                    SliverAppBar(
+                      floating: true,
+                      title: const Text("Albums"),
+                      actions: [
+                        IconButton(
+                            tooltip: "Create a new album",
+                            onPressed: () => Edit.nameAlbumDialog(
+                                    context,
+                                    "Create New Album",
+                                    "Type a name for your new album: ",
+                                    "Create", () {
+                                  createAlbum(Edit.textField);
+                                  Navigator.pop(context);
+                                }),
+                            icon: const Icon(Icons.add))
                       ],
                     ),
+                    SliverPadding(
+                      padding: const EdgeInsets.all(10),
+                      sliver: SliverGrid.count(
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10,
+                        crossAxisCount: 2,
+                        children: [
+                          for (Album album in albums) ...[
+                            albumCell(album, albumIndex++)
+                          ]
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return Scaffold(
+                appBar: AppBar(
+                  title: const Text("Albums"),
+                  actions: [
+                    IconButton(
+                        tooltip: "Create a new album",
+                        onPressed: () => Edit.nameAlbumDialog(
+                                context,
+                                "Create New Album",
+                                "Type a name for your new album: ",
+                                "Create", () {
+                              createAlbum(Edit.textField);
+                              Navigator.pop(context);
+                            }),
+                        icon: const Icon(Icons.add))
+                  ],
+                ),
+                body: const Center(
+                  child: Text(
+                    "Tap the plus icon to create a new album",
+                    style: dayStyle,
                   ),
-                ],
-              ),
-            );
+                ),
+              );
+            }
           } else {
             return Scaffold(
               appBar: AppBar(title: const Text("Albums")),

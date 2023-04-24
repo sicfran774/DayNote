@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
           primaryColorDark: gitHubBlack,
           scaffoldBackgroundColor: gitHubBlack),
       home: const SplashScreen(),
+      routes: {'/calendar': (context) => const BottomBar()},
     );
   }
 }
@@ -62,13 +63,12 @@ class SplashScreenState extends State<SplashScreen> {
   }
 
   void navigateBottomBar() {
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const BottomBar()));
+    Navigator.pushNamed(context, '/calendar');
   }
 
   void navigateOnboarding() {
     Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const OnboardingScreen(
+        builder: (BuildContext context) => const OnboardingScreen(
               newUser: true,
             )));
   }

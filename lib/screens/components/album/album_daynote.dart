@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:day_note/screens/components/bottom_bar.dart';
+import 'package:day_note/screens/components/calendar/calendar_cell.dart';
 import 'package:day_note/screens/components/daynote/photo_display.dart';
 import 'package:day_note/spec/get_file.dart';
 import 'package:day_note/spec/text_styles.dart';
@@ -130,11 +131,7 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
                 TextButton(
                   onPressed: () {
                     Navigator.popUntil(context, (route) => route.isFirst);
-                    Navigator.pop(context);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (route) => const BottomBar()));
+                    Navigator.pushNamed(context, '/calendar');
                   },
                   child: const Text(
                     "Add one from the calendar!",
@@ -247,16 +244,13 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
               List<String> tempDate =
                   dayNoteList[index].split('/')[0].split('_');
               Navigator.popUntil(context, (route) => route.isFirst);
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const BottomBar()));
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PhotoDisplay(
-                            date: dayNoteList[index].split('/')[0],
-                            title: convertToUTC(
-                                tempDate[0], tempDate[1], tempDate[2]),
-                          )));
+              Navigator.pushReplacementNamed(context, '/calendar');
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => PhotoDisplay(
+                        date: dayNoteList[index].split('/')[0],
+                        title:
+                            convertToUTC(tempDate[0], tempDate[1], tempDate[2]),
+                      )));
             },
           ),
           ListTile(

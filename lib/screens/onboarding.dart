@@ -113,10 +113,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           curve: Curves.easeInOut);
                       if (currentPage == pages.length - 1) {
                         if (newUser) {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (route) => const BottomBar()));
+                          Navigator.pushNamed(context, '/calendar');
                         } else {
                           Navigator.pop(context);
                         }
