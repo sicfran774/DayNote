@@ -1,7 +1,11 @@
+import 'dart:async';
+
+import 'package:day_note/screens/onboarding.dart';
 import 'package:day_note/spec/color_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:day_note/screens/components/bottom_bar.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'spec/get_file.dart';
 
@@ -10,6 +14,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   await GetFile.generateDirectories();
   GetFile.cleanAlbumList(await GetFile.readAlbumJson());
   runApp(const MyApp());
@@ -27,7 +32,50 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blueGrey,
           primaryColorDark: gitHubBlack,
           scaffoldBackgroundColor: gitHubBlack),
-      home: const BottomBar(),
+      home: const SplashScreen(),
     );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  SplashScreenState createState() => SplashScreenState();
+}
+
+class SplashScreenState extends State<SplashScreen> {
+  Future checkNewUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    //TODO: REMOVE THIS BEFORE YOU BUILD
+    await prefs.remove('newUser');
+    bool newUser = prefs.getBool('newUser') ?? true;
+
+    Duration duration = const Duration(seconds: 1);
+
+    if (!newUser) {
+      return Timer(duration, navigateBottomBar);
+    } else {
+      await prefs.setBool('newUser', false);
+      return Timer(duration, navigateOnboarding);
+    }
+  }
+
+  void navigateBottomBar() {
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const BottomBar()));
+  }
+
+  void navigateOnboarding() {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => const OnboardingScreen(
+              newUser: true,
+            )));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    checkNewUser();
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }

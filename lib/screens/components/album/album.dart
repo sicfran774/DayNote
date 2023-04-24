@@ -87,6 +87,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
           } else {
             return Scaffold(
               appBar: AppBar(title: const Text("Albums")),
+              body: const CircularProgressIndicator(),
             );
           }
         });

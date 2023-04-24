@@ -199,6 +199,8 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       File(GetFile.path(date, type, index: 9999))
           .renameSync(GetFile.path(date, type, index: index));
     }
+
+    //setState(() {});
   }
 
   @override

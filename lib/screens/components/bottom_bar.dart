@@ -1,9 +1,10 @@
+import 'package:day_note/screens/onboarding.dart';
+import 'package:day_note/screens/settings.dart';
 import 'package:day_note/spec/color_styles.dart';
+import 'package:day_note/spec/get_file.dart';
 import 'package:flutter/material.dart';
 import 'package:day_note/screens/components/calendar/calendar.dart';
 import 'package:day_note/screens/components/album/album.dart';
-
-import '../home.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({super.key, this.initialIndex = 1});
@@ -17,7 +18,7 @@ class _BottomBarState extends State<BottomBar> {
   late int _selectedIndex = widget.initialIndex;
 
   static final List<Widget> _screens = <Widget>[
-    const HomeScreen(),
+    const SettingsScreen(),
     const CalendarScreen(),
     const AlbumScreen(),
   ];
@@ -40,9 +41,9 @@ class _BottomBarState extends State<BottomBar> {
           unselectedItemColor: gitHubBlack,
           items: const [
             BottomNavigationBarItem(
-                icon: Icon(Icons.home_outlined),
-                label: "Home",
-                activeIcon: Icon(Icons.home)),
+                icon: Icon(Icons.settings),
+                label: "Settings",
+                activeIcon: Icon(Icons.settings)),
             BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_month_outlined),
                 label: "Calendar",

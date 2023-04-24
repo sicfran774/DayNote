@@ -32,9 +32,12 @@ class SettingsScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => const OnboardingScreen(
-                                  typeTutorial: "calendar",
+                                  newUser: false,
                                 )))
                   }),
+          const Divider(
+            color: Colors.white,
+          ),
           ListTile(
             leading: const Icon(Icons.folder_delete_rounded),
             title: const Text("Delete All Data"),
@@ -43,7 +46,7 @@ class SettingsScreen extends StatelessWidget {
             onTap: () {
               confirmDeleteAllData(context);
             },
-          )
+          ),
         ],
       ),
     );

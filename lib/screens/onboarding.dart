@@ -1,11 +1,12 @@
+import 'package:day_note/screens/components/bottom_bar.dart';
 import 'package:day_note/spec/color_styles.dart';
 import 'package:day_note/spec/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/number_symbols_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key, required this.typeTutorial});
-  final String typeTutorial;
+  const OnboardingScreen({super.key, required this.newUser});
+  final bool newUser;
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -13,40 +14,54 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   late PageController pageController;
-  late String typeTutorial;
+  late bool newUser = widget.newUser;
   late List<OnboardPage> pages;
   int currentPage = 0;
-
-  final List<OnboardPage> calendarPages = [
-    OnboardPage(
-        title: "Choose a date",
-        description: "Tap on any cell of the calendar to select that day",
-        image: "assets/images/step1.png"),
-    OnboardPage(
-        title: "Add a photo",
-        description: "Tap on the plus to bring up options to upload a photo",
-        image: "assets/images/step2.png"),
-    OnboardPage(
-        title: "Add a note",
-        description:
-            "Awesome! Now you can scroll down and tap below the photo to start typing a note. Notes are automatically saved as you type.",
-        image: "assets/images/step3.png"),
-    OnboardPage(
-        title: "Create an album",
-        description:
-            "To create a new album, tap the plus icon at the top right of the screen",
-        image: "assets/images/albumStep2.png"),
-    OnboardPage(
-        title: "Add to an album",
-        description:
-            'If you want to add a DayNote to an album, tap the bottom right photo button, and tap "Add this DayNote to an album"',
-        image: "assets/images/albumStep1.png"),
-  ];
 
   @override
   void initState() {
     pageController = PageController(initialPage: 0);
-    typeTutorial = widget.typeTutorial;
+
+    pages = [
+      if (newUser) ...[
+        OnboardPage(
+            title: "Welcome to DayNote!",
+            description: "Here's a little tutorial to get you going",
+            image: "assets/images/icon.png",
+            border: false),
+      ],
+      OnboardPage(
+          title: "Choose a date",
+          description: "Tap on any cell of the calendar to select that day",
+          image: "assets/images/step1.png"),
+      OnboardPage(
+          title: "Add a photo",
+          description: "Tap on the plus to bring up options to upload a photo",
+          image: "assets/images/step2.png"),
+      OnboardPage(
+          title: "Add a note",
+          description:
+              "Awesome! Now you can scroll down and tap below the photo to start typing a note. Notes are automatically saved as you type.",
+          image: "assets/images/step3.png"),
+      OnboardPage(
+          title: "Create an album",
+          description:
+              "To create a new album, tap the plus icon at the top right of the screen",
+          image: "assets/images/albumStep2.png"),
+      OnboardPage(
+          title: "Add to an album",
+          description:
+              'If you want to add a DayNote to an album, tap the bottom right photo button, and tap "Add this DayNote to an album"',
+          image: "assets/images/albumStep1.png"),
+      if (newUser) ...[
+        OnboardPage(
+            title: "Ready to start editing your calendar?",
+            description:
+                "Tap the right arrow to begin!\n\nYou can view this tutorial again in the Settings",
+            image: "assets/images/icon.png",
+            border: false),
+      ]
+    ];
     super.initState();
   }
 
@@ -56,7 +71,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: SafeArea(
           child: Column(
         children: [
-          Expanded(child: tutorial(typeTutorial)),
+          Expanded(child: tutorial()),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -77,7 +92,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               children: [
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    if (newUser) {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (route) => const BottomBar()));
+                    } else {
+                      Navigator.pop(context);
+                    }
                   },
                   child: const Text("Skip"),
                 ),
@@ -90,7 +112,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut);
                       if (currentPage == pages.length - 1) {
-                        Navigator.pop(context);
+                        if (newUser) {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (route) => const BottomBar()));
+                        } else {
+                          Navigator.pop(context);
+                        }
                       }
                     },
                     style:
@@ -106,15 +135,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  Widget tutorial(String type) {
-    switch (type) {
-      case "calendar":
-        pages = calendarPages;
-        break;
-      default:
-        pages = calendarPages;
-        break;
-    }
+  Widget tutorial() {
     return PageView.builder(
         itemCount: pages.length,
         controller: pageController,
@@ -124,10 +145,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           });
         },
         itemBuilder: (context, index) => individualPage(
-            pages[index].title, pages[index].description, pages[index].image));
+            pages[index].title, pages[index].description, pages[index].image,
+            border: pages[index].border));
   }
 
-  Widget individualPage(String title, String description, String image) {
+  Widget individualPage(String title, String description, String image,
+      {bool border = false}) {
     return Column(
       children: [
         const Spacer(),
@@ -136,13 +159,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           height: 550,
           decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(20)),
-              border: Border.all(color: Colors.white),
+              border: (border) ? Border.all(color: Colors.white) : null,
               image: DecorationImage(image: AssetImage(image))),
         ),
         const Spacer(),
         Text(
           title,
           style: headerLarge,
+          textAlign: TextAlign.center,
         ),
         const SizedBox(),
         Padding(
@@ -156,6 +180,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         const Spacer()
       ],
     );
+  }
+
+  Future<bool> isNewUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('newUser') ?? true;
   }
 }
 
@@ -177,10 +206,12 @@ class PageIndicator extends StatelessWidget {
 
 class OnboardPage {
   final String title, description, image;
+  final bool border;
 
   OnboardPage({
     required this.title,
     required this.description,
     required this.image,
+    this.border = true,
   });
 }
