@@ -63,8 +63,16 @@ class Edit {
     textField = "";
     Widget cancel = TextButton(
         onPressed: () => Navigator.pop(context), child: const Text("Cancel"));
-    Widget create =
-        TextButton(onPressed: () => onConfirm(), child: Text(confirmOption));
+    Widget create = TextButton(
+        onPressed: () {
+          if (textField.isNotEmpty && textField.length < 16) {
+            onConfirm();
+          } else {
+            GetFile.showSnackBarAlert(
+                context, "Album name must be between 1 and 14 characters");
+          }
+        },
+        child: Text(confirmOption));
 
     AlertDialog confirmation = AlertDialog(
       title: Center(child: Text(title)),

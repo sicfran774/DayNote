@@ -69,15 +69,47 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: ValueListenableBuilder(
           valueListenable: dateNotifier,
           builder: (context, value, child) {
             List<String> tempDate = value.split('_');
-            return (tempDate.length == 3)
-                ? Text(convertToUTC(tempDate[0], tempDate[1], tempDate[2]))
-                : const Text("");
+            return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    albumName,
+                    style: headerLarge,
+                  ),
+                  if (tempDate.length == 3) ...[
+                    Text(
+                      convertToUTC(tempDate[0], tempDate[1], tempDate[2]),
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ],
+                ]);
           },
         ),
+        actions: [
+          if (date != "") ...[
+            IconButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                            title: const Text("Why can't I edit anything?"),
+                            content: const Text(
+                                "You are currently in an album. To edit a DayNote, you can click on the cog below and go to that day on the calendar."),
+                            actions: [
+                              TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text("OK"))
+                            ],
+                          ));
+                },
+                icon: const Icon(Icons.question_mark_rounded))
+          ]
+        ],
       ),
       body: PageView(
         controller: horizontalController,
@@ -87,11 +119,30 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
                 dayNote.split('/')[0], int.parse(dayNote.split('/')[1]))
           ],
           if (dayNoteList.isEmpty) ...[
-            const Center(
-              child: Text(
-                "No DayNotes found :(\nAdd one from the calendar!",
-                style: headerMedium,
-              ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "No DayNotes found :(",
+                  style: headerMedium,
+                  textAlign: TextAlign.center,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (route) => const BottomBar()));
+                  },
+                  child: const Text(
+                    "Add one from the calendar!",
+                    style: TextStyle(color: Colors.blue),
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              ],
             )
           ]
         ],

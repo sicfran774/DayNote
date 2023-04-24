@@ -252,6 +252,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
                                 "Are you sure you want to clear all DayNotes for this day?",
                                 () {
                               deleteAllDayNotes();
+                              Navigator.pop(context);
                             });
                           },
                         ),
@@ -259,7 +260,10 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
                     )),
               ),
               backgroundColor: gitHubBlack,
-              appBar: AppBar(title: Text(title!)),
+              appBar: AppBar(
+                title: Text(title!),
+                centerTitle: true,
+              ),
               body: PageView.builder(
                 controller: horizontalController,
                 itemBuilder: (context, index) {
