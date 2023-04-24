@@ -3,7 +3,7 @@ import 'package:day_note/spec/color_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:day_note/spec/get_file.dart';
 
-const double width = 10;
+const double width = 100;
 const double height = 100;
 
 class CellImage extends StatefulWidget {
@@ -58,7 +58,8 @@ class _CellImageState extends State<CellImage> {
       return DecorationImage(image: FileImage(image), fit: BoxFit.cover);
     } else {
       //print('image not found for $day');
-      return const DecorationImage(image: AssetImage('assets/images/plus.png'));
+      return const DecorationImage(
+          opacity: 0.5, image: AssetImage('assets/images/plus.png'));
     }
   }
 }
