@@ -1,7 +1,5 @@
-import 'package:day_note/screens/onboarding.dart';
 import 'package:day_note/screens/settings.dart';
 import 'package:day_note/spec/color_styles.dart';
-import 'package:day_note/spec/get_file.dart';
 import 'package:flutter/material.dart';
 import 'package:day_note/screens/components/calendar/calendar.dart';
 import 'package:day_note/screens/components/album/album.dart';

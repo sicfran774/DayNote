@@ -37,6 +37,9 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
   late String? title = widget.title;
   late int currentPage = 0;
 
+  bool photoExists = false;
+  late ValueNotifier<bool> existsNotifier = ValueNotifier(photoExists);
+
   Future directories(int index) async {
     final photoDir = Directory('${GetFile.appDir}/photos/$date');
     final noteDir = Directory('${GetFile.appDir}/notes/$date');
@@ -282,18 +285,23 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
                 itemCount: snapshot.data,
                 onPageChanged: (index) {
                   currentPage = index;
+                  existsNotifier.value =
+                      ((GetFile.exists(date, 'photo', index: index)));
                 },
               ),
-              floatingActionButton: FloatingActionButton(
-                  tooltip: (GetFile.exists(date, 'photo', index: currentPage))
-                      ? "DayNote options"
-                      : "Add a new photo",
-                  child: (!GetFile.exists(date, 'photo', index: currentPage))
-                      ? const Icon(Icons.add)
-                      : const Icon(Icons.photo),
-                  onPressed: () {
-                    chooseImageWidget(context, currentPage);
-                    focusNode.unfocus();
+              floatingActionButton: ValueListenableBuilder(
+                  valueListenable: existsNotifier,
+                  builder: (context, value, child) {
+                    return FloatingActionButton(
+                        tooltip:
+                            (value) ? "DayNote options" : "Add a new photo",
+                        child: (value)
+                            ? const Icon(Icons.photo)
+                            : const Icon(Icons.add),
+                        onPressed: () {
+                          chooseImageWidget(context, currentPage);
+                          focusNode.unfocus();
+                        });
                   }),
             );
           } else {

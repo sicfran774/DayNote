@@ -55,9 +55,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           image: "assets/images/albumStep1.png"),
       if (newUser) ...[
         OnboardPage(
-            title: "Ready to start editing your calendar?",
-            description:
-                "Tap the right arrow to begin!\n\nYou can view this tutorial again in the Settings",
+            title: "That's all! Let's get started!",
+            description: "You can view this tutorial again in the Settings",
             image: "assets/images/icon.png",
             border: false),
       ]
