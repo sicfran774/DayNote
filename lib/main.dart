@@ -48,6 +48,7 @@ class SplashScreen extends StatefulWidget {
 class SplashScreenState extends State<SplashScreen> {
   Future checkNewUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
     bool newUser = prefs.getBool('newUser') ?? true;
 
     Duration duration = const Duration(seconds: 1);

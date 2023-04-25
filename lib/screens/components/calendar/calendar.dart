@@ -79,8 +79,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
           children: [
             monthCell("Jan", 1),
             monthCell("Feb", 2),
-            monthCell("March", 3),
-            monthCell("April", 4),
+            monthCell("Mar", 3),
+            monthCell("Apr", 4),
             monthCell("May", 5),
             monthCell("June", 6),
             monthCell("July", 7),

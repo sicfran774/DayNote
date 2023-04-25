@@ -54,10 +54,15 @@ class _CellImageState extends State<CellImage> {
   }
 
   DecorationImage imageWidget(File? image) {
-    if (image != null) {
-      return DecorationImage(image: FileImage(image), fit: BoxFit.cover);
-    } else {
-      //print('image not found for $day');
+    try {
+      if (image != null) {
+        return DecorationImage(image: FileImage(image), fit: BoxFit.cover);
+      } else {
+        //print('image not found for $day');
+        return const DecorationImage(
+            opacity: 0.5, image: AssetImage('assets/images/plus.png'));
+      }
+    } catch (e) {
       return const DecorationImage(
           opacity: 0.5, image: AssetImage('assets/images/plus.png'));
     }

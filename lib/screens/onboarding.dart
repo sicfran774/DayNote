@@ -153,7 +153,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Column(
       children: [
         Expanded(
-          flex: 10,
+          flex: 11,
           child: Container(
             constraints: BoxConstraints.loose(const Size(260, 500)),
             decoration: BoxDecoration(
@@ -174,16 +174,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
         ),
         Expanded(
-          flex: 1,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: Text(
-              description,
-              style: dayStyle,
-              textAlign: TextAlign.center,
-            ),
+          flex: 2,
+          child: Text(
+            description,
+            style: dayStyle,
+            textAlign: TextAlign.center,
           ),
-        ),
+        )
       ],
     );
   }
