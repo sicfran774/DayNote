@@ -139,9 +139,7 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
       note.delete();
     }
 
-    setState(() {
-      currentPage = 0;
-    });
+    setState(() {});
 
     showSnackBarAlert("Deleted all DayNotes");
   }

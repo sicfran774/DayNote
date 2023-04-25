@@ -86,8 +86,9 @@ class SettingsScreen extends StatelessWidget {
         onPressed: () => _launchUrl(gitHubURL), child: const Text("GitHub"));
 
     AlertDialog about = AlertDialog(
+      title: Text("DayNote v${GetFile.version}"),
       content: const Text(
-          "Thank you for downloading this app! DayNote was created by Francis Rodriguez."),
+          "Thank you for downloading this app! Created by Francis Rodriguez"),
       actions: [linkedIn, gitHub, close],
     );
     showDialog(context: context, builder: (context) => about);

@@ -27,12 +27,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
   final ValueNotifier<String> dateNotifier = ValueNotifier(date);
   final ValueNotifier<bool> monthPageNotifier = ValueNotifier(monthPage);
 
-  /*void changePage(int index, controller) {
-    controller.animateToPage(index,
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.fastOutSlowIn);
-  }*/
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

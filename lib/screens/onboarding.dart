@@ -44,6 +44,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               "Awesome! Now you can scroll down and tap below the photo to start typing a note. Notes are automatically saved as you type.",
           image: "assets/images/step3.png"),
       OnboardPage(
+          title: "Add multiple photos",
+          description:
+              "You can have more than one photo! Swipe right to generate a new DayNote",
+          image: "assets/images/step4.png"),
+      OnboardPage(
           title: "Create an album",
           description:
               "To create a new album, tap the plus icon at the top right of the screen",
@@ -80,9 +85,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       padding: const EdgeInsets.only(left: 4, right: 4),
                       child: PageIndicator(onPage: index == currentPage)))
             ],
-          ),
-          const SizedBox(
-            height: 10,
           ),
           Padding(
             padding: const EdgeInsets.only(left: 12, right: 12, bottom: 5),
@@ -150,31 +152,38 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       {bool border = false}) {
     return Column(
       children: [
-        const Spacer(),
-        Container(
-          width: 250,
-          height: 550,
-          decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(20)),
-              border: (border) ? Border.all(color: Colors.white) : null,
-              image: DecorationImage(image: AssetImage(image))),
-        ),
-        const Spacer(),
-        Text(
-          title,
-          style: headerLarge,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            description,
-            style: dayStyle,
-            textAlign: TextAlign.center,
+        Expanded(
+          flex: 10,
+          child: Container(
+            constraints: BoxConstraints.loose(const Size(260, 500)),
+            decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                border: (border) ? Border.all(color: Colors.white) : null,
+                image: DecorationImage(image: AssetImage(image))),
           ),
         ),
-        const Spacer()
+        Expanded(
+          flex: 1,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              title,
+              style: headerLarge,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Text(
+              description,
+              style: dayStyle,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
       ],
     );
   }

@@ -3,8 +3,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:day_note/screens/components/bottom_bar.dart';
-import 'package:day_note/screens/components/calendar/calendar_cell.dart';
 import 'package:day_note/screens/components/daynote/photo_display.dart';
 import 'package:day_note/spec/get_file.dart';
 import 'package:day_note/spec/text_styles.dart';
@@ -131,7 +129,7 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
                 TextButton(
                   onPressed: () {
                     Navigator.popUntil(context, (route) => route.isFirst);
-                    Navigator.pushNamed(context, '/calendar');
+                    Navigator.pushReplacementNamed(context, '/calendar');
                   },
                   child: const Text(
                     "Add one from the calendar!",
@@ -243,10 +241,10 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
             onTap: () {
               List<String> tempDate =
                   dayNoteList[index].split('/')[0].split('_');
+
               Navigator.popUntil(context, (route) => route.isFirst);
               Navigator.pop(context);
               Navigator.pushNamed(context, '/calendar');
-
               Navigator.push(
                   context,
                   MaterialPageRoute(
