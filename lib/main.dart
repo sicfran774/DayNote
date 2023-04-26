@@ -62,7 +62,7 @@ class SplashScreenState extends State<SplashScreen> {
   }
 
   void navigateBottomBar() {
-    Navigator.pushNamed(context, '/calendar');
+    Navigator.pushReplacementNamed(context, '/calendar');
   }
 
   void navigateOnboarding() {

@@ -48,6 +48,11 @@ class _CellImageState extends State<CellImage> {
               width: width,
               height: height,
               decoration: const BoxDecoration(color: cellColor),
+              child: Container(
+                  alignment: Alignment.center,
+                  width: 50,
+                  height: 50,
+                  child: const CircularProgressIndicator()),
             );
           }
         });

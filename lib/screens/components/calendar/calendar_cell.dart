@@ -42,19 +42,7 @@ class CalendarCell extends StatelessWidget {
     }*/
 
     if (visible) {
-      return FutureBuilder(
-          future: GetFile.getFile(date, 'photo'),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return cellBuilder(date);
-            } else {
-              return Container(
-                width: width,
-                height: height,
-                color: cellColor,
-              );
-            }
-          });
+      return cellBuilder(date);
     } else {
       return const SizedBox(width: width, height: height);
     }
