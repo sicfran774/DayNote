@@ -49,6 +49,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               "You can have more than one photo! Swipe right to generate a new DayNote",
           image: "assets/images/step4.png"),
       OnboardPage(
+          title: "Display specific photo",
+          description:
+              "Tap the photo options button, then tap \"Set as display DayNote\" to make that DayNote show up on the calendar",
+          image: "assets/images/step5.png"),
+      OnboardPage(
           title: "Create an album",
           description:
               "To create a new album, tap the plus icon at the top right of the screen",
