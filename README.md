@@ -1,6 +1,6 @@
 # DayNote
 
-Editable journal-like calendar app
+Personalizable photo-journal calendar app
 
 ## Features
 - Upload images to specific days on calendar
@@ -10,3 +10,8 @@ Editable journal-like calendar app
 ### Possible Future Features
 - See others' uploads for that day
 - Multiple calendars
+
+---
+
+Thank you to [Flutter Quill](https://pub.dev/packages/flutter_quill) for providing
+the note section for this app!
