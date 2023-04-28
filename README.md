@@ -8,6 +8,8 @@ Personalizable photo-journal calendar app
 - Add specific image/note "DayNotes" to albums
 
 ### Possible Future Features
+- Modify colors of app
+- Export calendar to photo collage
 - See others' uploads for that day
 - Multiple calendars
 
