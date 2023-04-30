@@ -2,7 +2,7 @@
 
 Personalizable photo-journal calendar app
 
-Download now on [Google Play]!
+Download now on [Google Play](https://play.google.com/store/apps/details?id=com.sicfran.day_note)!
 
 ## Features
 - Upload images to specific days on calendar
