@@ -2,6 +2,8 @@
 
 Personalizable photo-journal calendar app
 
+Download now on [Google Play]!
+
 ## Features
 - Upload images to specific days on calendar
 - Add notes to each image
