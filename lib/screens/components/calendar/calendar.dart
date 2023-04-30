@@ -61,6 +61,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget monthCalendarHelper() {
     return PageView.builder(
       controller: monthPageController,
+      allowImplicitScrolling: true,
       onPageChanged: ((index) {
         currentYear = DateTime.utc(index - 4000 + year, month, 1).year;
         setState(() {
@@ -134,6 +135,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget dayCalendarHelper() {
     return PageView.builder(
       controller: dayPageController,
+      allowImplicitScrolling: true,
       onPageChanged: ((index) {
         currentYear = DateTime.utc(year, index - 4000 + month, 1).year;
         currentMonth = DateTime.utc(year, index - 4000 + month, 1).month;
