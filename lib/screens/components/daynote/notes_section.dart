@@ -86,24 +86,31 @@ class _NotesSectionState extends State<NotesSection> {
         child: quillEditor());
   }
 
-  QuillEditor quillEditor() {
-    return QuillEditor(
-      controller: controller,
-      scrollController: scrollController,
-      scrollable: true,
-      padding: const EdgeInsets.all(10),
-      autoFocus: false,
-      focusNode: focusNode,
-      readOnly: false,
-      expands: true,
-      customStyles: DefaultStyles(
-        paragraph: DefaultTextBlockStyle(
-            const TextStyle(
-                fontSize: 20, fontWeight: FontWeight.w300, color: Colors.white),
-            const Tuple2(16, 0),
-            const Tuple2(0, 0),
-            null),
-      ),
-    );
+  QuillProvider quillEditor() {
+    return QuillProvider(
+        configurations: QuillConfigurations(
+          controller: controller,
+          sharedConfigurations: const QuillSharedConfigurations(),
+        ),
+        child: QuillEditor(
+            focusNode: focusNode,
+            scrollController: scrollController,
+            configurations: const QuillEditorConfigurations(
+              scrollable: true,
+              padding: EdgeInsets.all(10),
+              autoFocus: false,
+              readOnly: true,
+              expands: true,
+              customStyles: DefaultStyles(
+                paragraph: DefaultTextBlockStyle(
+                    TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.white),
+                    VerticalSpacing(16, 0),
+                    VerticalSpacing(0, 0),
+                    null),
+              ),
+            )));
   }
 }

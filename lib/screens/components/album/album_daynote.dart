@@ -8,7 +8,7 @@ import 'package:day_note/spec/get_file.dart';
 import 'package:day_note/spec/text_styles.dart';
 import 'package:day_note/spec/edit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart' as FlutterQuill;
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:intl/intl.dart';
 import 'package:tuple/tuple.dart';
 
@@ -32,7 +32,7 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
   late List<String> dayNoteList = widget.dayNoteList;
   late int albumIndex = widget.albumIndex;
   late String albumName = widget.albumName;
-  late FlutterQuill.QuillController controller;
+  late QuillController controller;
   late ScrollController scrollController;
   FocusNode focusNode = FocusNode();
   int currentPage = 0;
@@ -176,8 +176,8 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
 
   Widget noteSection(String date, int index) {
     if (GetFile.exists(date, "note", index: index)) {
-      controller = FlutterQuill.QuillController(
-          document: FlutterQuill.Document.fromJson(jsonDecode(
+      controller = QuillController(
+          document: Document.fromJson(jsonDecode(
               File(GetFile.path(date, "note", index: index))
                   .readAsStringSync())),
           selection: const TextSelection.collapsed(offset: 0));
@@ -194,26 +194,35 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
     }
   }
 
-  FlutterQuill.QuillEditor quillEditor() {
+  QuillProvider quillEditor() {
     ScrollController scrollController = ScrollController();
-    return FlutterQuill.QuillEditor(
-      controller: controller,
-      scrollController: scrollController,
-      scrollable: true,
-      padding: const EdgeInsets.all(10),
-      autoFocus: false,
-      focusNode: focusNode,
-      readOnly: true,
-      expands: true,
-      customStyles: FlutterQuill.DefaultStyles(
-        paragraph: FlutterQuill.DefaultTextBlockStyle(
-            const TextStyle(
-                fontSize: 20, fontWeight: FontWeight.w300, color: Colors.white),
-            const Tuple2(16, 0),
-            const Tuple2(0, 0),
-            null),
-      ),
-    );
+    return QuillProvider(
+        configurations: QuillConfigurations(
+          controller: controller,
+          sharedConfigurations: const QuillSharedConfigurations(),
+        ),
+        child: QuillEditor(
+            focusNode: focusNode,
+            scrollController: scrollController,
+            configurations: const QuillEditorConfigurations(
+              scrollable: true,
+              padding: EdgeInsets.all(10),
+              autoFocus: false,
+              readOnly: true,
+              expands: true,
+              customStyles: DefaultStyles(
+                paragraph: DefaultTextBlockStyle(
+                    TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.white),
+                    VerticalSpacing(16, 0),
+                    VerticalSpacing(0, 0),
+                    null),
+              ),
+            )));
+    // return FlutterQuill.QuillEditor(
+    //   controller: controller,
   }
 
   Future photoOptionsWidget(int index) {
