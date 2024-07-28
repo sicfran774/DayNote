@@ -455,6 +455,8 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
     Reference? imagesRef = storageRef.child(date);
     try {
       await imagesRef.putFile(File(file!.path));
-    } on FirebaseException catch (e) {}
+    } on FirebaseException catch (e) {
+      print(e);
+    }
   }
 }

@@ -10,7 +10,6 @@ import 'package:day_note/spec/edit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:intl/intl.dart';
-import 'package:tuple/tuple.dart';
 
 class AlbumDayNote extends StatefulWidget {
   const AlbumDayNote(
@@ -194,35 +193,30 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
     }
   }
 
-  QuillProvider quillEditor() {
+  QuillEditor quillEditor() {
     ScrollController scrollController = ScrollController();
-    return QuillProvider(
-        configurations: QuillConfigurations(
-          controller: controller,
-          sharedConfigurations: const QuillSharedConfigurations(),
+    return QuillEditor(
+      configurations: QuillEditorConfigurations(
+        controller: controller,
+        scrollable: true,
+        padding: const EdgeInsets.all(10),
+        autoFocus: false,
+        expands: true,
+        customStyles: const DefaultStyles(
+          paragraph: DefaultTextBlockStyle(
+              TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w300,
+                  color: Colors.white),
+              HorizontalSpacing(16, 0),
+              VerticalSpacing(0, 0),
+              VerticalSpacing(0, 0),
+              null),
         ),
-        child: QuillEditor(
-            focusNode: focusNode,
-            scrollController: scrollController,
-            configurations: const QuillEditorConfigurations(
-              scrollable: true,
-              padding: EdgeInsets.all(10),
-              autoFocus: false,
-              readOnly: true,
-              expands: true,
-              customStyles: DefaultStyles(
-                paragraph: DefaultTextBlockStyle(
-                    TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w300,
-                        color: Colors.white),
-                    VerticalSpacing(16, 0),
-                    VerticalSpacing(0, 0),
-                    null),
-              ),
-            )));
-    // return FlutterQuill.QuillEditor(
-    //   controller: controller,
+      ),
+      scrollController: scrollController,
+      focusNode: focusNode,
+    );
   }
 
   Future photoOptionsWidget(int index) {

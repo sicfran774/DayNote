@@ -1,11 +1,9 @@
 import 'package:animations/animations.dart';
 import 'package:day_note/spec/color_styles.dart';
-import 'package:day_note/spec/get_file.dart';
 import 'package:flutter/material.dart';
 import 'package:day_note/screens/components/daynote/photo_display.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
-import 'dart:io';
 
 import 'cell_image.dart';
 

@@ -5,7 +5,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:tuple/tuple.dart';
 
 import '../../../spec/get_file.dart';
 
@@ -86,31 +85,28 @@ class _NotesSectionState extends State<NotesSection> {
         child: quillEditor());
   }
 
-  QuillProvider quillEditor() {
-    return QuillProvider(
-        configurations: QuillConfigurations(
-          controller: controller,
-          sharedConfigurations: const QuillSharedConfigurations(),
+  QuillEditor quillEditor() {
+    return QuillEditor(
+      configurations: QuillEditorConfigurations(
+        controller: controller,
+        scrollable: true,
+        padding: const EdgeInsets.all(10),
+        autoFocus: false,
+        expands: true,
+        customStyles: const DefaultStyles(
+          paragraph: DefaultTextBlockStyle(
+              TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w300,
+                  color: Colors.white),
+              HorizontalSpacing(16, 0),
+              VerticalSpacing(0, 0),
+              VerticalSpacing(0, 0),
+              null),
         ),
-        child: QuillEditor(
-            focusNode: focusNode,
-            scrollController: scrollController,
-            configurations: const QuillEditorConfigurations(
-              scrollable: true,
-              padding: EdgeInsets.all(10),
-              autoFocus: false,
-              readOnly: true,
-              expands: true,
-              customStyles: DefaultStyles(
-                paragraph: DefaultTextBlockStyle(
-                    TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w300,
-                        color: Colors.white),
-                    VerticalSpacing(16, 0),
-                    VerticalSpacing(0, 0),
-                    null),
-              ),
-            )));
+      ),
+      scrollController: scrollController,
+      focusNode: focusNode,
+    );
   }
 }
