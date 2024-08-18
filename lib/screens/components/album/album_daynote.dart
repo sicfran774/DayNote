@@ -77,7 +77,7 @@ class _AlbumDayNoteState extends State<AlbumDayNote> {
                 children: [
                   Text(
                     albumName,
-                    style: headerLarge,
+                    style: headerLargeAltColor,
                   ),
                   if (tempDate.length == 3) ...[
                     Text(

@@ -15,6 +15,12 @@ class SettingsScreen extends StatelessWidget {
       body: ListView(
         children: [
           ListTile(
+              leading: const Icon(Icons.upload),
+              title: const Text("Backup data to cloud"),
+              textColor: white,
+              iconColor: white,
+              onTap: () => {}),
+          ListTile(
               leading: const Icon(Icons.accessibility_new),
               title: const Text("About"),
               textColor: white,

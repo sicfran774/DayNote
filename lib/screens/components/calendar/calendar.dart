@@ -115,17 +115,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
             curve: Curves.fastOutSlowIn);
       },
       style: (!today)
-          ? ButtonStyle(
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0))),
-            )
-          : ButtonStyle(
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      side: const BorderSide(color: white))),
-            ),
+          ? ElevatedButton.styleFrom(backgroundColor: cellColor)
+          : ElevatedButton.styleFrom(backgroundColor: cellColor),
       child: Center(
         child: Text(month, style: (!today) ? headerMedium : headerMediumColor),
       ),

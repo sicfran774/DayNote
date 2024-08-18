@@ -234,19 +234,6 @@ class _PhotoDisplayState extends State<PhotoDisplay> {
                         ListTile(
                           tileColor: primaryAppColor,
                           leading: const Icon(
-                            Icons.ios_share_rounded,
-                            color: white,
-                          ),
-                          title: const Text('Upload this DayNote',
-                              style: headerMedium),
-                          onTap: () {
-                            showSnackBarAlert(
-                                "Feature available in the future!");
-                          },
-                        ),
-                        ListTile(
-                          tileColor: primaryAppColor,
-                          leading: const Icon(
                             Icons.delete_forever_outlined,
                             color: white,
                           ),
