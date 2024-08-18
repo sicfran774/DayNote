@@ -1,3 +1,4 @@
+import 'package:day_note/screens/components/firebase/login.dart';
 import 'package:day_note/screens/onboarding.dart';
 import 'package:day_note/spec/color_styles.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +17,11 @@ class SettingsScreen extends StatelessWidget {
         children: [
           ListTile(
               leading: const Icon(Icons.upload),
-              title: const Text("Backup data to cloud"),
+              title: const Text("Sync data with cloud"),
               textColor: white,
               iconColor: white,
-              onTap: () => {}),
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()))),
           ListTile(
               leading: const Icon(Icons.accessibility_new),
               title: const Text("About"),

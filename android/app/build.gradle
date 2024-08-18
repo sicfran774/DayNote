@@ -49,8 +49,8 @@ android {
         applicationId = "com.sicfran.day_note"
         minSdkVersion = 34
         targetSdkVersion = flutter.targetSdkVersion
-        versionCode = 3
-        versionName = "1.0.2"
+        versionCode = 4
+        versionName = "1.1"
     }
 
     signingConfigs {
@@ -73,5 +73,4 @@ flutter {
 }
 
 dependencies {
-    
 }
