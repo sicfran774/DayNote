@@ -18,6 +18,7 @@ Download now on [Google Play](https://play.google.com/store/apps/details?id=com.
 - Upload images to specific days on calendar
 - Add notes to each image
 - Add specific image/note "DayNotes" to albums
+- Backup and download calendar from any device
 
 ### Possible Future Features
 - Modify colors of app
