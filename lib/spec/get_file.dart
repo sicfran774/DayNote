@@ -10,7 +10,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import '../screens/components/album/album_class.dart';
 
 class GetFile {
-  static String version = "1.0";
+  static String version = "1.1";
   static String appDir = "";
   static String defaultString = "";
   static String errorString = "";
