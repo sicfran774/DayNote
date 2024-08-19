@@ -17,6 +17,7 @@ class _LoginPageState extends State<LoginPage> {
 
   var emailError = "";
   var passwordError = "";
+  var userId = "";
 
   void signIn(String email, String password) async {
     try {
@@ -26,7 +27,6 @@ class _LoginPageState extends State<LoginPage> {
       //If the code reaches here, then the account was successfully signed in. If there were
       //any errors, it would be caught and code would be run in the catch block.
       final user = auth.currentUser;
-      var userId = "testUser";
       if (user != null) {
         userId = user.uid;
       }
@@ -70,6 +70,12 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      return UploadScreen(userId: user.uid);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Login"),
