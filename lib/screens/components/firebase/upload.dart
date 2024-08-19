@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:day_note/spec/color_styles.dart';
 import 'package:day_note/spec/get_file.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -24,7 +23,7 @@ class _UploadScreenState extends State<UploadScreen> {
 
   Future uploadData() async {
     if (!uploading) {
-      loadingDialog(context);
+      loadingDialog(context, "Uploading data to the cloud...");
       uploading = true;
       var userFiles = Directory(GetFile.appDir);
       List<FileSystemEntity> files = userFiles.listSync(recursive: true);
@@ -62,6 +61,55 @@ class _UploadScreenState extends State<UploadScreen> {
     }
   }
 
+  Future downloadData() async {
+    if (!downloading) {
+      downloading = true;
+      loadingDialog(context, "Fetching data from the cloud...");
+
+      Reference albumsRef = FirebaseStorage.instance.ref().child(userId);
+      Reference photosRef =
+          FirebaseStorage.instance.ref().child("$userId/photos/");
+      Reference notesRef =
+          FirebaseStorage.instance.ref().child("$userId/notes/");
+
+      ListResult album = await albumsRef.listAll();
+      ListResult photos = await photosRef.listAll();
+      ListResult notes = await notesRef.listAll();
+
+      //Album.json
+      List<String> paths = album.items[0].fullPath.split("/");
+      final path = "${GetFile.appDir}/${paths.last}";
+      final file = await File(path).create(recursive: true);
+      await album.items[0].writeToFile(file);
+
+      // Photos
+      for (var element in photos.prefixes) {
+        referenceToLocalFile(element);
+      }
+
+      // Notes
+      for (var element in notes.prefixes) {
+        referenceToLocalFile(element);
+      }
+
+      downloading = false;
+      showSnackBarAlert("Data downloaded from cloud!");
+      leavePage();
+    }
+  }
+
+  void referenceToLocalFile(var element) async {
+    Reference dayRef = FirebaseStorage.instance.ref().child(element.fullPath);
+    ListResult days = await dayRef.listAll();
+    for (var day in days.items) {
+      List<String> paths = day.fullPath.split("/");
+      final path =
+          "${GetFile.appDir}/${paths[paths.length - 3]}/${paths[paths.length - 2]}/${paths.last}";
+      final file = await File(path).create(recursive: true);
+      await day.writeToFile(file);
+    }
+  }
+
   void leavePage() {
     Navigator.pop(context);
   }
@@ -73,12 +121,12 @@ class _UploadScreenState extends State<UploadScreen> {
     ));
   }
 
-  void loadingDialog(BuildContext context) {
+  void loadingDialog(BuildContext context, String message) {
     Widget cancel = TextButton(
         onPressed: () => Navigator.pop(context), child: const Text("Close"));
 
     AlertDialog about = AlertDialog(
-      title: const Text("Uploading data to cloud"),
+      title: Text(message),
       content: const Row(
         children: [
           Flexible(
@@ -121,7 +169,7 @@ class _UploadScreenState extends State<UploadScreen> {
               ),
               textColor: white,
               iconColor: white,
-              onTap: () => {}),
+              onTap: () => downloadData()),
           const Divider(
             color: Colors.white,
           ),
